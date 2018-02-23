@@ -7,8 +7,9 @@ using Microsoft.Xna.Framework.Input;
 /// Group Project
 /// Class Description   : Game class for group project
 /// Authors             : Benjamin Kleynhans
+///                     : Miranda Auriemma
 ///                       
-/// Modified By         : Benjamin Kleynhans
+/// Modified By         : Miranda Auriemma
 /// Date                : February 23, 2018
 /// Filename            : Game1.cs
 /// </summary>
