@@ -2,6 +2,18 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
+/// <summary>
+/// IGME-106 - Game Development and Algorithmic Problem Solving
+/// Group Project
+/// Class Description   : Game class for group project
+/// Authors             : Benjamin Kleynhans
+///                       
+/// Modified By         : Benjamin Kleynhans
+/// Date                : February 23, 2018
+/// Filename            : Game1.cs
+/// </summary>
+///
+
 namespace Game1
 {
     /// <summary>
