@@ -5,15 +5,17 @@ using Microsoft.Xna.Framework.Input;
 /// <summary>
 /// IGME-106 - Game Development and Algorithmic Problem Solving
 /// Group Project
-/// Class Description   : Game class for group project
+/// Class Description   : 
+/// Created By          : Cullen Sullivan
+/// Creation Date       : March 7, 2018
 /// Authors             : Benjamin Kleynhans
-///                     : Miranda Auriemma
 ///                       
-/// Modified By         : Miranda Auriemma
-/// Date                : February 23, 2018
+///                       
+///                       
+/// Last Modified By    : Benjamin Kleynhans
+/// Last Modified Date  : March 7, 2018
 /// Filename            : Game1.cs
 /// </summary>
-///
 
 namespace Game1
 {

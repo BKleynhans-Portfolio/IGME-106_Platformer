@@ -8,10 +8,14 @@ using System.Threading.Tasks;
 /// IGME-106 - Game Development and Algorithmic Problem Solving
 /// Group Project
 /// Class Description   : 
-/// Authors             : Cullen Sullivan
-///                     : Benjamin Kleynhans
-/// Modified By         : Benjamin Kleynhans
-/// Date                : March 7, 2018
+/// Created By          : Cullen Sullivan
+/// Creation Date       : March 7, 2018
+/// Authors             : Benjamin Kleynhans
+///                       
+///                       
+///                       
+/// Last Modified By    : Benjamin Kleynhans
+/// Last Modified Date  : March 7, 2018
 /// Filename            : World.cs
 /// </summary>
 
