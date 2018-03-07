@@ -8,6 +8,7 @@ namespace Game1
 {
     class Player : GameObject
     {
+        
         public override void Move()
         {
 
@@ -23,6 +24,9 @@ namespace Game1
         public void Jump()
         {
 
+        }
+        public override void Draw()
+        {
         }
     }
 }

@@ -8,5 +8,8 @@ namespace Game1
 {
     class Platform : Environment
     {
+        public override void Draw()
+        {
+        }
     }
 }

@@ -8,5 +8,8 @@ namespace Game1
 {
     class Obstacle : Environment
     {
+        public override void Draw()
+        {
+        }
     }
 }

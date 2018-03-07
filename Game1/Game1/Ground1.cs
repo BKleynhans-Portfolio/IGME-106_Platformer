@@ -11,5 +11,8 @@ namespace Game1
         public override void Move()
         {
         }
+        public override void Draw()
+        {
+        }
     }
 }
