@@ -1,4 +1,10 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -27,8 +33,13 @@ namespace Game1
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-        //Bryan's image
-        Texture2D soup;
+        Texture2D allSprites;                                                   // Create variable to contain spritesheet
+
+        // Create player object and parameters
+        Player player;
+
+        // Create enemy object and parameters
+        List<Enemy> enemy = new List<Enemy>();
 
         public Game1()
         {
@@ -45,6 +56,7 @@ namespace Game1
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
+            
 
             base.Initialize();
         }
@@ -60,8 +72,10 @@ namespace Game1
 
             // TODO: use this.Content to load your game content here
 
-            //Bryan's image load
-            soup = Content.Load<Texture2D>("soup");
+            allSprites = Content.Load<Texture2D>("AllSprites");
+            player = new Player(allSprites, 50, 50, 50, 50);
+
+
         }
 
         /// <summary>
@@ -84,6 +98,7 @@ namespace Game1
                 Exit();
 
             // TODO: Add your update logic here
+
 
             base.Update(gameTime);
         }
