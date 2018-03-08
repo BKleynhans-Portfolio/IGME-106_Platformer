@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 /// <summary>
-/// IGME-106 - Game Development and Algorithmic Problem Solving
+/// IGME-106 - Game Development and Algorithmic Problem Solving                             
 /// Group Project
 /// Class Description   : 
 /// Created By          : Cullen Sullivan
@@ -34,8 +34,8 @@ namespace Game1
         private Texture2D texture;
         private Rectangle position;
 
-        private int xCoordinate;
-        private int yCoordinate;
+        private int xCoord;
+        private int yCoord;
         private int width;
         private int height;
         
@@ -65,14 +65,14 @@ namespace Game1
 
         public int XCoord
         {
-            get { return this.xCoordinate; }
-            set { this.xCoordinate = value; }
+            get { return this.xCoord; }
+            set { this.xCoord = value; }
         }
         
         public int YCoord
         {
-            get { return this.yCoordinate; }
-            set { this.xCoordinate = value; }
+            get { return this.yCoord; }
+            set { this.yCoord = value; }
         }
 
         public int Width
