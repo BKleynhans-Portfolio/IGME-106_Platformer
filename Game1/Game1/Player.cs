@@ -27,6 +27,18 @@ namespace Game1
 {
     class Player : GameObject
     {
+        private enum JumpState
+        {
+            Active,
+            Inactive
+        }
+
+        private enum AttackState
+        {
+            Active,
+            Inactive
+        }
+
         public Player(Texture2D texture2D, int xCoord, int yCoord, int width, int height) : base(texture2D, xCoord, yCoord, width, height)
         {
 

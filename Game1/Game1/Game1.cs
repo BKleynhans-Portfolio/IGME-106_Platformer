@@ -30,10 +30,15 @@ namespace Game1
     /// </summary>
     public class Game1 : Game
     {
+        // Define graphics devices
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-
+        
         Texture2D allSprites;                                                   // Create variable to contain spritesheet
+
+        // Define input devices
+        KeyboardState currentKeyboardState;
+        KeyboardState previousKeyboardState;
 
         // Create player object and parameters
         Player player;
@@ -109,6 +114,7 @@ namespace Game1
                 Exit();
 
             // TODO: Add your update logic here
+
 
 
             base.Update(gameTime);
