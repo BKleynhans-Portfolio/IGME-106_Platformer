@@ -4,6 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+
 /// <summary>
 /// IGME-106 - Game Development and Algorithmic Problem Solving
 /// Group Project
@@ -23,6 +27,11 @@ namespace Game1
 {
     class Platform : Environment
     {
+        public Platform(Texture2D texture2D, int xCoord, int yCoord, int width, int height) : base(texture2D, xCoord, yCoord, width, height)
+        {
+
+        }
+
         public override void Draw()
         {
         }

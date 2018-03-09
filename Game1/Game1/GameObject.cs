@@ -19,7 +19,7 @@ using Microsoft.Xna.Framework.Input;
 ///                       
 ///                       
 /// Last Modified By    : Benjamin Kleynhans
-/// Last Modified Date  : March 7, 2018
+/// Last Modified Date  : March 9, 2018
 /// Filename            : GameObjects.cs
 /// </summary>
 
@@ -32,20 +32,17 @@ namespace Game1
         public abstract void Draw();
 
         private Texture2D texture;
-        private Rectangle position;
+        private Rectangle rectangle;
+        private Color objectColor;
 
         private int xCoord;
         private int yCoord;
-        private int width;
-        private int height;
         
-        public GameObject(Texture2D texture2D, int xCoordinate, int yCoordinate, int width, int height)
+        public GameObject(Texture2D texture2D, int x, int y, int width, int height)
         {
             Texture = texture2D;
-            XCoord = xCoordinate;
-            YCoord = yCoordinate;
-            Width = width;
-            Height = height;
+
+            rectangle = new Rectangle(x, y, width, height);            
         }
 
         public Texture2D Texture
@@ -53,38 +50,47 @@ namespace Game1
             get { return this.texture; }
             private set { this.texture = value; }
         }
-        
-        public Rectangle Position
-        {
-            get { return this.position; }
-            private set
-            {
-                this.position = new Rectangle(XCoord, YCoord, Width, Height);
-            }
-        }
 
         public int XCoord
         {
             get { return this.xCoord; }
-            set { this.xCoord = value; }
+            set
+            {
+                this.xCoord = value;
+
+                CreateRectangle();
+            }
         }
         
         public int YCoord
         {
             get { return this.yCoord; }
-            set { this.yCoord = value; }
+            set
+            {
+                this.yCoord = value;
+
+                CreateRectangle();
+            }
         }
 
-        public int Width
+        public Color ObjectColor
         {
-            get { return this.width; }
-            set { this.width = value; }
+            get { return this.objectColor; }
+            set { this.objectColor = value; }
         }
 
-        public int Height
+        public void CreateRectangle()
         {
-            get { return this.height; }
-            set { this.height = value; }
+            this.rectangle = new Rectangle(XCoord, YCoord, this.rectangle.Width, this.rectangle.Height);
+        }
+
+        public void Draw(SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(
+                Texture,
+                rectangle,
+                ObjectColor
+            );
         }
     }
 }

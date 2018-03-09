@@ -113,12 +113,7 @@ namespace Game1
 
             // TODO: Add your drawing code here
             spriteBatch.Begin();
-            //Bryan's test draw
-            spriteBatch.Draw(
-                soup,
-                new Vector2(100, 100),
-                Color.White
-                );
+            
 
             spriteBatch.End();
 
