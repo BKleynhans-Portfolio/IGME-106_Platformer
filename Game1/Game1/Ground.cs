@@ -25,9 +25,9 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Game1
 {
-    class Ground1 : Enemy
+    class Ground : Enemy
     {
-        public Ground1(Texture2D texture2D, int xCoord, int yCoord, int width, int height) : base(texture2D, xCoord, yCoord, width, height)
+        public Ground(Texture2D texture2D, int xCoord, int yCoord, int width, int height) : base(texture2D, xCoord, yCoord, width, height)
         {
 
         }

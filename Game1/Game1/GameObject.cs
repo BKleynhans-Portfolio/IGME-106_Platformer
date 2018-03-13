@@ -37,6 +37,9 @@ namespace Game1
 
         private int xCoord;
         private int yCoord;
+
+        private bool hasGravity;
+        private bool isStatic;
         
         public GameObject(Texture2D texture2D, int x, int y, int width, int height)
         {
@@ -81,7 +84,12 @@ namespace Game1
 
         public void CreateRectangle()
         {
-            this.rectangle = new Rectangle(XCoord, YCoord, this.rectangle.Width, this.rectangle.Height);
+            this.rectangle = new Rectangle(
+                                    XCoord,
+                                    YCoord,
+                                    this.rectangle.Width,
+                                    this.rectangle.Height
+                                );
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -92,5 +100,21 @@ namespace Game1
                 ObjectColor
             );
         }
+
+        public override string ToString()
+        {
+            string returnString;
+            
+            returnString = (
+                "Texture        : " + texture +
+                "Rectangle      : " + rectangle +
+                "ObjectColor    : " + objectColor +
+                "X Coordinate   : " + xCoord +
+                "Y Coordinate   : " + yCoord +
+                "Has Gravity    : " + hasGravity +
+                "Is Static      : " + isStatic);
+
+            return returnString;
+        }        
     }
 }

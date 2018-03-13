@@ -46,8 +46,7 @@
     <Compile Include="Flying.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="GameObject.cs" />
-    <Compile Include="Ground1.cs" />
-    <Compile Include="Ground2.cs" />
+    <Compile Include="Ground.cs" />
     <Compile Include="Obstacle.cs" />
     <Compile Include="Platform.cs" />
     <Compile Include="Player.cs" />
