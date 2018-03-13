@@ -49,18 +49,7 @@ namespace Game1
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
-            Content.RootDirectory = "Content";
-
-            graphics.PreferredBackBufferWidth = 1600;                           // Set desired width of window
-            graphics.PreferredBackBufferHeight = 900;                           // Set desired height of window            
-            graphics.ApplyChanges();
-
-            Window.Position = new Point(                                        // Center the game view on the screen
-                (GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width / 2) -
-                    (graphics.PreferredBackBufferWidth / 2),
-                (GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height / 2) -
-                    (graphics.PreferredBackBufferHeight / 2)
-            );
+            Content.RootDirectory = "Content";            
         }
 
         /// <summary>
@@ -72,7 +61,17 @@ namespace Game1
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            
+            graphics.PreferredBackBufferWidth = 1600;                           // Set desired width of window
+            graphics.PreferredBackBufferHeight = 900;                           // Set desired height of window            
+            graphics.ApplyChanges();
+
+            Window.Position = new Point(                                        // Center the game view on the screen
+                (GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width / 2) -
+                    (graphics.PreferredBackBufferWidth / 2),
+                (GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height / 2) -
+                    (graphics.PreferredBackBufferHeight / 2)
+            );
+
 
             base.Initialize();
         }
