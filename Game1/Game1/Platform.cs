@@ -32,7 +32,7 @@ namespace Game1
 
         }
 
-        public override void Draw()
+        public  void Draw(SpriteBatch spriteBatch)
         {
         }
     }

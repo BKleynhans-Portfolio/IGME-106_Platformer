@@ -36,15 +36,15 @@ namespace Game1
 
         }
 
-        public override void Move()
-        {
+        //public override void Move()
+        //{
 
-        }
+        //}
 
-        public override void Die()
-        {
+        //public override void Die()
+        //{
 
-        }
+        //}
 
         public void Dash()
         {
@@ -56,11 +56,11 @@ namespace Game1
 
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        protected void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(
                 Texture,
-                rectangle,
+                base.SpriteBox,
                 ObjectColor
             );
         }

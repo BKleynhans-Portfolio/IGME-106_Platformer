@@ -37,7 +37,7 @@ namespace Game1
         {
             spriteBatch.Draw(
                 Texture,
-                rectangle,
+                base.SpriteBox,
                 ObjectColor
             );
         }

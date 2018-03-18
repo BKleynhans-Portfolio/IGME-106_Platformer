@@ -29,7 +29,7 @@ namespace Game1
     {
         //public abstract void Move();                          // Not all game objects can move and die
         //public abstract void Die();
-        public abstract void Draw();
+        //public abstract void Draw();
 
         private Texture2D texture;
         private Rectangle spriteBox;
@@ -52,6 +52,12 @@ namespace Game1
         {
             get { return this.texture; }
             private set { this.texture = value; }
+        }
+
+        public Rectangle SpriteBox
+        {
+            get { return this.spriteBox; }
+            set { this.spriteBox = value; }
         }
 
         public int XCoord
@@ -104,7 +110,7 @@ namespace Game1
                                 );
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        protected void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(
                 Texture,

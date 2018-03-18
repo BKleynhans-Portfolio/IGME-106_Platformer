@@ -32,11 +32,11 @@ namespace Game1
 
         }
 
-        public override void Move()
-        {
-        }
-        public override void Die()//doesn't do anything, just here so there's no error message
-        {
-        }
+        //public override void Move()
+        //{
+        //}
+        //public override void Die()//doesn't do anything, just here so there's no error message
+        //{
+        //}
     }
 }
