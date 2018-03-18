@@ -27,25 +27,25 @@ namespace Game1
 {
     abstract class GameObject
     {
-        public abstract void Move();
-        public abstract void Die();
+        //public abstract void Move();                          // Not all game objects can move and die
+        //public abstract void Die();
         public abstract void Draw();
 
         private Texture2D texture;
-        private Rectangle rectangle;
+        private Rectangle spriteBox;
         private Color objectColor;
 
         private int xCoord;
         private int yCoord;
 
         private bool hasGravity;
-        private bool isStatic;
+        private bool isMoving;
         
         public GameObject(Texture2D texture2D, int x, int y, int width, int height)
         {
             Texture = texture2D;
-
-            rectangle = new Rectangle(x, y, width, height);            
+                        
+            spriteBox = new Rectangle(x, y, width, height);
         }
 
         public Texture2D Texture
@@ -61,7 +61,7 @@ namespace Game1
             {
                 this.xCoord = value;
 
-                CreateRectangle();
+                CreateSpriteBox();
             }
         }
         
@@ -72,7 +72,7 @@ namespace Game1
             {
                 this.yCoord = value;
 
-                CreateRectangle();
+                CreateSpriteBox();
             }
         }
 
@@ -82,13 +82,25 @@ namespace Game1
             set { this.objectColor = value; }
         }
 
-        public void CreateRectangle()
+        public bool HasGravity
         {
-            this.rectangle = new Rectangle(
+            get { return this.hasGravity; }
+            set { this.hasGravity = value; }
+        }
+
+        public bool IsMoving
+        {
+            get { return this.isMoving; }
+            set { this.isMoving = value; }
+        }
+
+        public void CreateSpriteBox()
+        {
+            this.spriteBox = new Rectangle(
                                     XCoord,
                                     YCoord,
-                                    this.rectangle.Width,
-                                    this.rectangle.Height
+                                    this.spriteBox.Width,
+                                    this.spriteBox.Height
                                 );
         }
 
@@ -96,7 +108,7 @@ namespace Game1
         {
             spriteBatch.Draw(
                 Texture,
-                rectangle,
+                this.spriteBox,
                 ObjectColor
             );
         }
@@ -106,13 +118,13 @@ namespace Game1
             string returnString;
             
             returnString = (
-                "Texture        : " + texture +
-                "Rectangle      : " + rectangle +
-                "ObjectColor    : " + objectColor +
-                "X Coordinate   : " + xCoord +
-                "Y Coordinate   : " + yCoord +
-                "Has Gravity    : " + hasGravity +
-                "Is Static      : " + isStatic);
+                "Texture        : " + this.Texture +
+                "Rectangle      : " + this.spriteBox +
+                "ObjectColor    : " + this.ObjectColor +
+                "X Coordinate   : " + this.XCoord +
+                "Y Coordinate   : " + this.YCoord +
+                "Has Gravity    : " + this.HasGravity +
+                "Is Static      : " + this.IsMoving);
 
             return returnString;
         }        

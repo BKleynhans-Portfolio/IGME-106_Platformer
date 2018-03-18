@@ -46,6 +46,12 @@ namespace Game1
         // Create enemy object and parameters
         List<Enemy> enemy = new List<Enemy>();
 
+        // Animation variables
+        public static int currentFrame;
+        public static double fps;
+        public static double secondsPerFrame;
+        public static double timeCounter;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -90,6 +96,9 @@ namespace Game1
             allSprites = Content.Load<Texture2D>("AllSprites");
             player = new Player(allSprites, 50, 50, 50, 50);
 
+            // Set up animation variables;
+            currentFrame = 1;
+            fps = 10.0f;
 
         }
 

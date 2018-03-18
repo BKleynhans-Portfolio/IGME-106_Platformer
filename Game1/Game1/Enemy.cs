@@ -27,7 +27,8 @@ namespace Game1
 {
     abstract class Enemy : GameObject
     {
-        public Enemy(Texture2D texture2D, int xCoord, int yCoord, int width, int height) : base(texture2D, xCoord, yCoord, width, height)
+        public Enemy(Texture2D texture2D, int xCoord, int yCoord, int width, int height) :
+                 base(texture2D, xCoord, yCoord, width, height)
         {
 
         }
@@ -35,6 +36,15 @@ namespace Game1
         public override void Die()
         {
 
+        }
+
+        public void Draw(SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(
+                Texture,
+                rectangle,
+                ObjectColor
+            );
         }
     }
 }

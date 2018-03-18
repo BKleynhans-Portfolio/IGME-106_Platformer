@@ -27,7 +27,8 @@ namespace Game1
 {
     class Ground : Enemy
     {
-        public Ground(Texture2D texture2D, int xCoord, int yCoord, int width, int height) : base(texture2D, xCoord, yCoord, width, height)
+        public Ground(Texture2D texture2D, int xCoord, int yCoord, int width, int height) :
+                 base(texture2D, xCoord, yCoord, width, height)
         {
 
         }
@@ -40,6 +41,15 @@ namespace Game1
         public override void Draw()
         {
 
+        }
+
+        public void Draw(SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(
+                Texture,
+                rectangle,
+                ObjectColor
+            );
         }
     }
 }

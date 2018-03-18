@@ -11,47 +11,24 @@ using Microsoft.Xna.Framework.Input;
 /// <summary>
 /// IGME-106 - Game Development and Algorithmic Problem Solving
 /// Group Project
-/// Class Description   : 
-/// Created By          : Cullen Sullivan
-/// Creation Date       : March 7, 2018
+/// Class Description   : Creates and manages game menus
+/// Created By          : Benjamin Kleynhans
+/// Creation Date       : March 13, 2018
 /// Authors             : Benjamin Kleynhans
 ///                       
 ///                       
 ///                       
 /// Last Modified By    : Benjamin Kleynhans
-/// Last Modified Date  : March 7, 2018
-/// Filename            : Player.cs
+/// Last Modified Date  : March 13, 2018
+/// Filename            : Menu.cs
 /// </summary>
 
 namespace Game1
 {
-    class Player : GameObject
+    class Menu : GameObject
     {
-        private bool jumping = false;
-        private bool attacking = false;
-        
-        public Player(Texture2D texture2D, int xCoord, int yCoord, int width, int height) : 
+        public Menu(Texture2D texture2D, int xCoord, int yCoord, int width, int height) :
                  base(texture2D, xCoord, yCoord, width, height)
-        {
-
-        }
-
-        public override void Move()
-        {
-
-        }
-
-        public override void Die()
-        {
-
-        }
-
-        public void Dash()
-        {
-
-        }
-
-        public void Jump()
         {
 
         }
