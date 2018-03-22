@@ -9,11 +9,17 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 /// <summary>
-/// Game1 - Platformer for Learning
-/// Class Description   : NPC class
-/// Author              : Benjamin Kleynhans
-/// Modified By         : Benjamin Kleynhans
-/// Date                : March 13, 2018
+/// IGME-106 - Game Development and Algorithmic Problem Solving
+/// Group Project
+/// Class Description   : 
+/// Created By          : Benjamin Kleynhans
+/// Creation Date       : March 22, 2018
+/// Authors             : Benjamin Kleynhans
+///                       
+///                       
+///                       
+/// Last Modified By    : Benjamin Kleynhans
+/// Last Modified Date  : March 22, 2018
 /// Filename            : NPC.cs
 /// </summary>
 
