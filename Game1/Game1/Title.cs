@@ -10,29 +10,25 @@ using Microsoft.Xna.Framework.Input;
 
 /// <summary>
 /// Game1 - Platformer for Learning
-/// Class Description   : Platform class
+/// Class Description   : Title class
 /// Author              : Benjamin Kleynhans
 /// Modified By         : Benjamin Kleynhans
 /// Date                : March 13, 2018
-/// Filename            : Platform.cs
+/// Filename            : Title.cs
 /// </summary>
 
 namespace Game1
 {
-    class Platform : Environment
+    class Title : Menu
     {
-        public Platform(Texture2D spriteTexture, int x, int y, int width, int height) : base(spriteTexture, x, y, width, height)
+        public Title(Texture2D texture2D, int x, int y, int width, int height) : base(texture2D, x, y, width, height)
         {
 
         }
 
-        public Platform(Texture2D spriteTexture, int x, int y, int width, int height,
-                          bool addGravity, float appliedMoveForce, float appliedVerticalMovementForce,
-                          float appliedGravitationalAcceleration, float appliedObjectMass) :
-                base(spriteTexture, x, y, width, height, addGravity, appliedMoveForce, appliedVerticalMovementForce,
-                    appliedGravitationalAcceleration, appliedObjectMass)
+        protected override void Update(GameTime gameTime)
         {
-
+            throw new NotImplementedException();
         }
 
         public override void Draw(SpriteBatch spriteBatch)

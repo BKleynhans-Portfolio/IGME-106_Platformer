@@ -9,37 +9,29 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 /// <summary>
-/// IGME-106 - Game Development and Algorithmic Problem Solving
-/// Group Project
-/// Class Description   : Creates and manages game menus
-/// Created By          : Benjamin Kleynhans
-/// Creation Date       : March 13, 2018
-/// Authors             : Benjamin Kleynhans
-///                       
-///                       
-///                       
-/// Last Modified By    : Benjamin Kleynhans
-/// Last Modified Date  : March 13, 2018
+/// Game1 - Platformer for Learning
+/// Class Description   : Menu class
+/// Author              : Benjamin Kleynhans
+/// Modified By         : Benjamin Kleynhans
+/// Date                : March 13, 2018
 /// Filename            : Menu.cs
 /// </summary>
 
 namespace Game1
 {
-    class Menu : GameObject
+    abstract class Menu : Screen
     {
-        public Menu(Texture2D texture2D, int xCoord, int yCoord, int width, int height) :
-                 base(texture2D, xCoord, yCoord, width, height)
+        public abstract override void Draw(SpriteBatch spriteBatch);
+        protected abstract override void Update(GameTime gameTime);
+
+        public Menu(Texture2D texture2D, int x, int y, int width, int height) : base(texture2D, x, y, width, height)
         {
 
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public override bool Intersects(GameObject passedGameObject)
         {
-            spriteBatch.Draw(
-                Texture,
-                base.SpriteBox,
-                ObjectColor
-            );
+            return false;
         }
     }
 }

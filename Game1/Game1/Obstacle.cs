@@ -9,17 +9,11 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 /// <summary>
-/// IGME-106 - Game Development and Algorithmic Problem Solving
-/// Group Project
-/// Class Description   : 
-/// Created By          : Cullen Sullivan
-/// Creation Date       : March 7, 2018
-/// Authors             : Benjamin Kleynhans
-///                       
-///                       
-///                       
-/// Last Modified By    : Benjamin Kleynhans
-/// Last Modified Date  : March 7, 2018
+/// Game1 - Platformer for Learning
+/// Class Description   : Obstacle class
+/// Author              : Benjamin Kleynhans
+/// Modified By         : Benjamin Kleynhans
+/// Date                : March 13, 2018
 /// Filename            : Obstacle.cs
 /// </summary>
 
@@ -27,13 +21,32 @@ namespace Game1
 {
     class Obstacle : Environment
     {
-        public Obstacle(Texture2D texture2D, int xCoord, int yCoord, int width, int height) : base(texture2D, xCoord, yCoord, width, height)
+        public Obstacle(Texture2D spriteTexture, int x, int y, int width, int height) : base(spriteTexture, x, y, width, height)
         {
 
         }
 
-        public  void Draw(SpriteBatch spriteBatch)
+        public Obstacle(Texture2D spriteTexture, int x, int y, int width, int height,
+                          bool addGravity, float appliedMoveForce, float appliedVerticalMovementForce,
+                          float appliedGravitationalAcceleration, float appliedObjectMass) :
+                base(spriteTexture, x, y, width, height, addGravity, appliedMoveForce, appliedVerticalMovementForce,
+                    appliedGravitationalAcceleration, appliedObjectMass)
         {
+
+        }
+
+        protected override void Update(GameTime gameTime)
+        {
+
+        }
+
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(                                                   // Draw the sprite from the spriteBatch
+                base.ObjectTexture,
+                base.Rectangle,
+                Color.White
+            );
         }
     }
 }

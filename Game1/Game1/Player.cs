@@ -9,59 +9,139 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 /// <summary>
-/// IGME-106 - Game Development and Algorithmic Problem Solving
-/// Group Project
-/// Class Description   : 
-/// Created By          : Cullen Sullivan
-/// Creation Date       : March 7, 2018
-/// Authors             : Benjamin Kleynhans
-///                       
-///                       
-///                       
-/// Last Modified By    : Benjamin Kleynhans
-/// Last Modified Date  : March 7, 2018
+/// Game1 - Platformer for Learning
+/// Class Description   : Player class
+/// Author              : Benjamin Kleynhans
+/// Modified By         : Benjamin Kleynhans
+/// Date                : March 13, 2018
 /// Filename            : Player.cs
 /// </summary>
 
 namespace Game1
 {
-    class Player : GameObject
+    class Player : Character
     {
-        private bool jumping = false;
-        private bool attacking = false;
-        
-        public Player(Texture2D texture2D, int xCoord, int yCoord, int width, int height) : 
-                 base(texture2D, xCoord, yCoord, width, height)
+        public Player(Texture2D spriteTexture, int x, int y, int width, int height) : base(spriteTexture, x, y, width, height)
         {
-
+            base.IsAlive = true;
+            base.JumpsAllowed = 2;
+            base.JumpCount = 0;
         }
 
-        //public override void Move()
-        //{
-
-        //}
-
-        //public override void Die()
-        //{
-
-        //}
-
-        public void Dash()
+        public Player(Texture2D spriteTexture, int x, int y, int width, int height,
+                          bool addGravity, float appliedMoveForce, float appliedVerticalMovementForce,
+                          float appliedGravitationalAcceleration, float appliedObjectMass) :
+                base(spriteTexture, x, y, width, height, addGravity, appliedMoveForce, appliedVerticalMovementForce,
+                    appliedGravitationalAcceleration, appliedObjectMass)
         {
-
+            base.IsAlive = true;
+            base.JumpsAllowed = 2;
+            base.JumpCount = 0;
         }
 
-        public void Jump()
+        protected override void Die()
         {
+            Console.WriteLine("Player Died");
 
+            base.CreateRectangle(new Vector2(50, 50));
+            this.IsAlive = true;
         }
 
-        protected void Draw(SpriteBatch spriteBatch)
+        public override Vector2 ApplyMovement()
         {
-            spriteBatch.Draw(
-                Texture,
-                base.SpriteBox,
-                ObjectColor
+            Vector2 returnValue;
+
+            if (currentKeyboardState.IsKeyDown(Keys.A))
+            {
+                base.movementAppliedTo = MovementAppliedTo.Left;
+            }
+            else if ((currentKeyboardState.IsKeyDown(Keys.D)) && (previousKeyboardState.IsKeyUp(Keys.D)))
+            {
+                base.movementAppliedTo = MovementAppliedTo.Right;
+            }
+            else if (((currentKeyboardState.IsKeyDown(Keys.Space)) && (previousKeyboardState.IsKeyUp(Keys.Space))) &&
+                    ((this.hitObstacle == HitObstacle.Bottom) || (this.JumpCount == 1)))
+            {
+                base.movementAppliedTo = MovementAppliedTo.Up;
+
+                this.hitObstacle = HitObstacle.None;
+
+                if (this.HasJumped == false)
+                {
+                    this.HasJumped = true;
+                    base.CalculatedVerticalForce = (base.VerticalMovementForce * -1);
+                    this.CalculatedVerticalForce += this.GravitationalForce;
+                }
+            }
+            else if ((currentKeyboardState.IsKeyUp(Keys.A)) && (currentKeyboardState.IsKeyUp(Keys.D)))
+            {
+                base.movementAppliedTo = MovementAppliedTo.None;
+            }
+
+            if ((base.CalculatedHorizontalForce >= -5) && (movementAppliedTo == MovementAppliedTo.Left))
+            {
+                base.CalculatedHorizontalForce -= 5;
+            }
+            else if ((base.CalculatedHorizontalForce <= 5) && (movementAppliedTo == MovementAppliedTo.Right))
+            {
+                base.CalculatedHorizontalForce += 5;
+            }
+            else if (((base.CalculatedHorizontalForce > 0) || (base.CalculatedHorizontalForce < 0)) && (movementAppliedTo == MovementAppliedTo.None))
+            {
+                base.CalculatedHorizontalForce = 0;
+            }
+
+            base.CalculateForces();
+
+            returnValue = new Vector2(
+                this.Rectangle.X + base.CalculatedHorizontalForce,
+                this.Rectangle.Y + VerticalAcceleration
+            );
+
+            return returnValue;
+        }
+
+        protected override void Update(GameTime gameTime)
+        {
+            if ((this.Rectangle.Y + this.Rectangle.Height) > screenHeight)
+            {
+                this.IsAlive = false;
+            }
+
+            if (this.IsAlive)
+            {
+                for (int i = 0; i < base.intersectedBy.Count; i++)
+                {
+                    bool stillIntersecting = base.Intersects(intersectedBy[i]);
+
+                    if ((!stillIntersecting) && (this.HasJumped == false))
+                    {
+                        base.Falling = true;
+                        base.hitObstacle = HitObstacle.None;
+
+                        base.intersectedBy.Remove(intersectedBy[i]);
+                    } else if ((!stillIntersecting) & (this.HasJumped == true))
+                    {
+                        base.hitObstacle = HitObstacle.None;
+
+                        base.intersectedBy.Remove(intersectedBy[i]);
+                    }
+                }
+
+                CreateRectangle(ApplyMovement());
+            }
+            else
+            {
+                Die();
+            }
+        }
+
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(                                                   // Draw the sprite from the spriteBatch
+                base.ObjectTexture,
+                base.Rectangle,
+                Color.White
             );
         }
     }

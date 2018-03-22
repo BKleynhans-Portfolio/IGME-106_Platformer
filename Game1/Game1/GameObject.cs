@@ -9,130 +9,408 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 /// <summary>
-/// IGME-106 - Game Development and Algorithmic Problem Solving                             
-/// Group Project
-/// Class Description   : 
-/// Created By          : Cullen Sullivan
-/// Creation Date       : March 7, 2018
-/// Authors             : Benjamin Kleynhans
-///                       
-///                       
-///                       
-/// Last Modified By    : Benjamin Kleynhans
-/// Last Modified Date  : March 9, 2018
-/// Filename            : GameObjects.cs
+/// Game1 - Platformer for Learning
+/// Class Description   : GameObject class
+/// Author              : Benjamin Kleynhans
+/// Modified By         : Benjamin Kleynhans
+/// Date                : March 13, 2018
+/// Filename            : GameObject.cs
 /// </summary>
 
 namespace Game1
 {
-    abstract class GameObject
+    public enum GravityDirection
     {
-        //public abstract void Move();                          // Not all game objects can move and die
-        //public abstract void Die();
-        //public abstract void Draw();
+        Up,
+        Down,
+        Left,
+        Right
+    }
 
-        private Texture2D texture;
-        private Rectangle spriteBox;
-        private Color objectColor;
+    public enum HitObstacle
+    {
+        Left,
+        Right,
+        Top,
+        Bottom,
+        None
+    }
 
-        private int xCoord;
-        private int yCoord;
+    public enum MovementAppliedTo
+    {
+        Left,
+        Right,
+        Up,
+        Down,
+        None
+    }
 
-        private bool hasGravity;
-        private bool isMoving;
-        
-        public GameObject(Texture2D texture2D, int x, int y, int width, int height)
+    public abstract class GameObject : Game1
+    {
+        public GravityDirection gravityDirection = GravityDirection.Down;        
+        public HitObstacle hitObstacle = HitObstacle.None;
+        public MovementAppliedTo movementAppliedTo = MovementAppliedTo.None;
+
+        public abstract void Draw(SpriteBatch spriteBatch);
+
+        private Texture2D objectTexture;                                                    // Texture and rectangle
+        private Rectangle rectangle;
+
+        private float gravitationalForce;                                                   // Force of gravity on objects
+        private float gravitationalAcceleration;
+
+        private float surfaceForce;                                                         // Force object applies to surface
+
+        private float horizontalMovementForce;                                              // Maximum force for horizontal movement (left/right movement)
+        private float calculatedHorizontalForce;                                            // Horizontal force that will be applied to character each loop
+
+        private float verticalMovementForce;                                                // Maximum force for upward movement (jumping)
+        private float calculatedVerticalForce;                                              // Vertical force that will be applied to character each loop
+        private float verticalAcceleration;                                                 // Acceleration of object in vertical direction
+
+        private float objectMass;                                                           // Mass of objects                
+
+        private bool applyGravity;                                                          // Should the object have gravity
+
+        private bool falling;                                                               // Is the object falling?
+
+        private float currentX;
+        private float currentY;
+
+        private float previousX;
+        private float previousY;
+
+        public GameObject(Texture2D spriteTexture, int x, int y, int width, int height)
         {
-            Texture = texture2D;
-                        
-            spriteBox = new Rectangle(x, y, width, height);
+            this.ObjectTexture = spriteTexture;
+            this.Rectangle = new Rectangle(x, y, width, height);
+
+            this.Falling = true;
+
+            this.ApplyGravity = false;
+
+            this.GravitationalAcceleration = 9.8f;
+            this.HorizontalMovementForce = 3.0f;
+            this.VerticalMovementForce = 1000.0f;
+
+            this.ObjectMass = 50;
+
+            this.GravitationalForce = this.ObjectMass * this.GravitationalAcceleration;
         }
 
-        public Texture2D Texture
+        public GameObject(Texture2D spriteTexture, int x, int y, int width, int height,
+                          bool addGravity, float appliedMoveForce, float appliedVerticalMovementForce,
+                          float appliedGravitationalAcceleration, float appliedObjectMass)
         {
-            get { return this.texture; }
-            private set { this.texture = value; }
+            this.ObjectTexture = spriteTexture;
+            this.Rectangle = new Rectangle(x, y, width, height);
+
+            this.ApplyGravity = addGravity;
+
+            this.GravitationalAcceleration = appliedGravitationalAcceleration;
+
+            this.GravitationalForce = this.ObjectMass * this.GravitationalAcceleration;
+            this.HorizontalMovementForce = appliedMoveForce;
+            this.VerticalMovementForce = appliedVerticalMovementForce;
+
+            this.ObjectMass = appliedObjectMass;
         }
 
-        public Rectangle SpriteBox
+        public float ObjectMass
         {
-            get { return this.spriteBox; }
-            set { this.spriteBox = value; }
+            get { return this.objectMass; }
+            set { this.objectMass = value; }
         }
 
-        public int XCoord
+        public float GravitationalForce
         {
-            get { return this.xCoord; }
+            get { return this.gravitationalForce; }
+            set { this.gravitationalForce = value; }
+        }
+
+        public float GravitationalAcceleration
+        {
+            get { return this.gravitationalAcceleration; }
+            set { this.gravitationalAcceleration = value; }
+        }
+
+        public float HorizontalMovementForce
+        {
+            get { return this.horizontalMovementForce; }
+            set { this.horizontalMovementForce = value; }
+        }
+
+        public float VerticalMovementForce
+        {
+            get { return this.verticalMovementForce; }
+            set { this.verticalMovementForce = value; }
+        }
+
+        public float CalculatedHorizontalForce
+        {
+            get { return this.calculatedHorizontalForce; }
+            set { this.calculatedHorizontalForce = value; }
+        }
+
+        public float CalculatedVerticalForce
+        {
+            get { return this.calculatedVerticalForce; }
+            set { this.calculatedVerticalForce = value; }
+        }
+
+        public float VerticalAcceleration
+        {
+            get { return this.verticalAcceleration; }
+            set { this.verticalAcceleration = value; }
+        }
+
+        public float SurfaceForce
+        {
+            get { return this.surfaceForce; }
+            set { this.surfaceForce = value; }
+        }        
+
+        public bool Falling
+        {
+            get { return this.falling; }
+            set { this.falling = value; }
+        }
+
+        public bool ApplyGravity
+        {
+            get { return this.applyGravity; }
+            set { this.applyGravity = value; }
+        }
+
+        public Texture2D ObjectTexture
+        {
+            get { return this.objectTexture; }
+            set { this.objectTexture = value; }
+        }
+
+        public Rectangle Rectangle
+        {
+            get { return this.rectangle; }
+            set { this.rectangle = value; }
+        }
+
+        public int XPosition
+        {
+            get { return this.Rectangle.X; }
             set
             {
-                this.xCoord = value;
-
-                CreateSpriteBox();
-            }
+                this.CreateRectangle(value, this.Rectangle.Y);                              // rectangle is a struct, therefore it
+            }                                                                               // has to be recreated
         }
-        
-        public int YCoord
+
+        public int YPosition
         {
-            get { return this.yCoord; }
+            get { return this.Rectangle.Y; }
             set
             {
-                this.yCoord = value;
+                this.CreateRectangle(this.Rectangle.X, value);                              // rectangle is a struct, therefore it
+            }                                                                               // has to be recreated
+        }
 
-                CreateSpriteBox();
+        public float CurrentX
+        {
+            get { return this.currentX; }
+            set { this.currentX = value; }
+        }
+
+        public float CurrentY
+        {
+            get { return this.currentY; }
+            set { this.currentY = value; }
+        }
+
+        public float PreviousX
+        {
+            get { return this.previousX; }
+            set { this.previousX = value; }
+        }
+
+        public float PreviousY
+        {
+            get { return this.previousY; }
+            set { this.previousY = value; }
+        }
+
+        public void CreateRectangle(int x, int y)
+        {
+            this.Rectangle = new Rectangle(x, y, this.Rectangle.Width, this.Rectangle.Height);
+        }
+
+        public void CreateRectangle(Vector2 vector2)
+        {
+            this.Rectangle = new Rectangle((int)vector2.X, (int)vector2.Y, this.Rectangle.Width, this.Rectangle.Height);
+        }
+
+        public virtual bool Intersects(GameObject passedGameObject)
+        {
+            bool returnValue = false;
+
+            if (this.Rectangle.Intersects(passedGameObject.Rectangle))
+            {
+                returnValue = true;               
             }
+
+            return returnValue;
         }
 
-        public Color ObjectColor
+        public virtual void CalculateForces()
         {
-            get { return this.objectColor; }
-            set { this.objectColor = value; }
+            if (this.ApplyGravity)
+            {
+                switch (gravityDirection)
+                {
+                    case GravityDirection.Up://This is where I'm working
+                        switch (hitObstacle)
+                        {
+                            case HitObstacle.None:
+                                this.SurfaceForce = 0;
+                                this.CalculatedVerticalForce -= this.GravitationalForce;
+                                this.VerticalAcceleration = this.CalculatedVerticalForce / this.ObjectMass;
+
+                                break;
+                            case HitObstacle.Bottom:
+                                Console.ReadLine();
+                                this.SurfaceForce = this.SurfaceForce - this.GravitationalForce - this.CalculatedVerticalForce;
+                                this.SurfaceForce *= -1;                                            //Surface force pushes up and therefore should be negative
+                                this.VerticalAcceleration = this.SurfaceForce / this.ObjectMass;
+
+                                break;
+                            case HitObstacle.Left:
+                                this.CalculatedHorizontalForce = 0;
+
+                                break;
+                            case HitObstacle.Top:
+                                break;
+                            case HitObstacle.Right:
+                                this.CalculatedHorizontalForce = 0;
+
+                                break;
+                        }
+
+                        break;
+                    case GravityDirection.Down:
+                        switch (hitObstacle)
+                        {
+                            case HitObstacle.None:
+                                this.SurfaceForce = 0;
+                                this.CalculatedVerticalForce += this.GravitationalForce;
+                                this.VerticalAcceleration = this.CalculatedVerticalForce / this.ObjectMass;
+
+                                break;
+                            case HitObstacle.Bottom:
+                                Console.ReadLine();
+                                this.SurfaceForce = this.SurfaceForce + this.GravitationalForce + this.CalculatedVerticalForce;
+                                this.SurfaceForce *= -1;                                            //Surface force pushes up and therefore should be negative
+                                this.VerticalAcceleration = this.SurfaceForce / this.ObjectMass;
+
+                                break;
+                            case HitObstacle.Left:
+                                this.CalculatedHorizontalForce = 0;
+
+                                break;
+                            case HitObstacle.Top:
+                                this.SurfaceForce = 0;
+                                this.CalculatedVerticalForce += this.GravitationalForce;
+                                this.VerticalAcceleration = this.CalculatedVerticalForce / this.ObjectMass;
+
+                                break;
+                            case HitObstacle.Right:
+                                this.CalculatedHorizontalForce = 0;
+
+                                break;
+                        }
+
+                        break;
+                    case GravityDirection.Left:
+                        this.SurfaceForce = this.GravitationalForce;
+
+                        switch (hitObstacle)
+                        {
+                            case HitObstacle.None:                                
+                                if (this.CalculatedHorizontalForce > -5)
+                                {
+                                    this.CalculatedHorizontalForce -= 0.2f;
+                                }
+
+                                break;
+                            case HitObstacle.Bottom:
+                                if (this.CalculatedHorizontalForce > -5)
+                                {
+                                    this.CalculatedHorizontalForce -= 0.2f;
+                                }
+
+                                break;
+                            case HitObstacle.Left:
+                                this.CalculatedHorizontalForce = 0;
+
+                                break;
+                            case HitObstacle.Top:
+                                if (this.CalculatedHorizontalForce > -5)
+                                {
+                                    this.CalculatedHorizontalForce -= 0.2f;
+                                }
+
+                                break;
+                            case HitObstacle.Right:
+                                this.CalculatedHorizontalForce = 0;
+
+                                break;
+                        }
+
+                        break;
+                    
+                    case GravityDirection.Right:
+                        this.SurfaceForce = this.GravitationalForce;
+
+                        switch (hitObstacle)
+                        {
+                            case HitObstacle.None:
+                                if (this.CalculatedHorizontalForce < 5)
+                                {
+                                    this.CalculatedHorizontalForce += 0.2f;
+                                }
+
+                                break;
+                            case HitObstacle.Bottom:
+                                if (this.CalculatedHorizontalForce < 5)
+                                {
+                                    this.CalculatedHorizontalForce += 0.2f;
+                                }
+
+                                break;
+                            case HitObstacle.Left:
+                                this.CalculatedHorizontalForce = 0;
+
+                                break;
+                            case HitObstacle.Top:
+                                if (this.CalculatedHorizontalForce < 5)
+                                {
+                                    this.CalculatedHorizontalForce += 0.2f;
+                                }
+
+                                break;
+                            case HitObstacle.Right:
+                                this.CalculatedHorizontalForce = 0;
+
+                                break;
+                        }
+
+                        break;
+                }
+                
+            }
+
+            CalculatedVerticalForce *= (float)(secondsPerFrame * 2);
         }
 
-        public bool HasGravity
+        protected override void Update(GameTime gameTime)
         {
-            get { return this.hasGravity; }
-            set { this.hasGravity = value; }
-        }
-
-        public bool IsMoving
-        {
-            get { return this.isMoving; }
-            set { this.isMoving = value; }
-        }
-
-        public void CreateSpriteBox()
-        {
-            this.spriteBox = new Rectangle(
-                                    XCoord,
-                                    YCoord,
-                                    this.spriteBox.Width,
-                                    this.spriteBox.Height
-                                );
-        }
-
-        protected void Draw(SpriteBatch spriteBatch)
-        {
-            spriteBatch.Draw(
-                Texture,
-                this.spriteBox,
-                ObjectColor
-            );
-        }
-
-        public override string ToString()
-        {
-            string returnString;
             
-            returnString = (
-                "Texture        : " + this.Texture +
-                "Rectangle      : " + this.spriteBox +
-                "ObjectColor    : " + this.ObjectColor +
-                "X Coordinate   : " + this.XCoord +
-                "Y Coordinate   : " + this.YCoord +
-                "Has Gravity    : " + this.HasGravity +
-                "Is Static      : " + this.IsMoving);
-
-            return returnString;
         }        
     }
 }
