@@ -51,7 +51,7 @@ namespace Game1
         {
             Vector2 returnValue;
 
-            if (currentKeyboardState.IsKeyDown(Keys.A))
+            if ((currentKeyboardState.IsKeyDown(Keys.A)) && (previousKeyboardState.IsKeyUp(Keys.A)))
             {
                 base.movementAppliedTo = MovementAppliedTo.Left;
             }
