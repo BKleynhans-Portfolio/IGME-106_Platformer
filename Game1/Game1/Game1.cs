@@ -113,18 +113,18 @@ namespace Game1
             //player.gravityDirection = GravityDirection.Right;
                         
             platformSprites = Content.Load<Texture2D>("TestPlatform");                      // Load a platform
-            platform.Add(new Platform(platformSprites, 0, 200, 500, 50));
+            platform.Add(new Platform(platformSprites, 0, 200, 500, 50));                   // Creates three platforms in the game window
             platform.Add(new Platform(platformSprites, 400, 400, 500, 50));
             platform.Add(new Platform(platformSprites, 0, 600, 500, 50));
 
-            //platform[0].ApplyGravity = true;
-            //platform[0].gravityDirection = GravityDirection.Right;
+            //platform[0].ApplyGravity = true;                                              // MOST OF THESE ARE FOR TESTING PURPOSES
+            //platform[0].gravityDirection = GravityDirection.Right;                        // YOU CAN UNCOMMENT TO SEE WHAT HAPPENS
             //platform[0].gravityOnProximityFrom = GravityOnProximityFrom.Top;
 
-            platform[1].ApplyGravity = false;
-            //platform[1].gravityDirection = GravityDirection.Down;
-            platform[1].gravityDirection = GravityDirection.Right;
-            platform[1].gravityOnProximityFrom = GravityOnProximityFrom.Top;
+            platform[1].ApplyGravity = false;                                               // State that the second platform should not have gravity
+            //platform[1].gravityDirection = GravityDirection.Down;                         // during instantiation because gravity will be implemented
+            platform[1].gravityDirection = GravityDirection.Right;                          // to the right if the object receives a proximity warning
+            platform[1].gravityOnProximityFrom = GravityOnProximityFrom.Top;                // from above and then moves back and forth
             platform[1].platformMovement = PlatformMovement.ToAndFroRightFirst;
             //platform[1].platformMovement = PlatformMovement.ToAndFroLeftFirst;
             //platform[1].platformMovement = PlatformMovement.ToAndFroDownFirst;
@@ -136,7 +136,7 @@ namespace Game1
             enemy.Add(new Enemy(playerSprites, 100, 50, 50, 50));                           // Load enemy sprite
             enemy[0].ApplyGravity = true;
 
-            gameObject.Add(player);
+            gameObject.Add(player);                                                         // All objects need to be added to the gameObject list
             gameObject.Add(enemy[0]);
             gameObject.Add(platform[0]);
             gameObject.Add(platform[1]);
@@ -166,17 +166,17 @@ namespace Game1
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            previousKeyboardState = currentKeyboardState;
+            previousKeyboardState = currentKeyboardState;                                   // Get comparitive keyboard states
             currentKeyboardState = Keyboard.GetState();
 
-            for (int i = 0; i < (gameObject.Count - 1); i++)
-            {
+            for (int i = 0; i < (gameObject.Count - 1); i++)                                // Cycle through gameObject list and test
+            {                                                                               // all created objects for intersection
                 for (int j = i + 1; j < gameObject.Count; j++)
                 {
                     if (gameObject[i].Intersects(gameObject[j]))
                     {
-                        if (!gameObject[i].intersectedBy.Contains(gameObject[j]))
-                        {
+                        if (!gameObject[i].intersectedBy.Contains(gameObject[j]))           // If there is an intersection, create
+                        {                                                                   // references in the objects to each other
                             gameObject[i].intersectedBy.Add(gameObject[j]);
                         }
 
@@ -188,7 +188,7 @@ namespace Game1
                 }
             }
 
-            for (int i = 0; i < gameObject.Count; i++)
+            for (int i = 0; i < gameObject.Count; i++)                                      // Update all the objects in the game
             {                
                 gameObject[i].Update(gameTime);
             }
@@ -206,7 +206,7 @@ namespace Game1
 
             spriteBatch.Begin();
 
-            for (int i = 0; i < gameObject.Count; i++)
+            for (int i = 0; i < gameObject.Count; i++)                                      // Draw all the objects in the game
             {
                 gameObject[i].Draw(spriteBatch);
             }
