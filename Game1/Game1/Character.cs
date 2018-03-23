@@ -38,11 +38,14 @@ namespace Game1
         private int jumpCount;
         private int jumpCurveCounter;
 
+
+        private int jumpDuration;                                                           // In seconds
+
         public Character(Texture2D spriteTexture, int x, int y, int width, int height) : base(spriteTexture, x, y, width, height)
         {
             this.HasJumped = false;
 
-            this.JumpCurveCounter = 10;
+            this.JumpDuration = 2;
 
         }
 
@@ -54,7 +57,7 @@ namespace Game1
         {
             this.HasJumped = false;
 
-            this.JumpCurveCounter = 10;
+            this.JumpDuration = 2;
         }
 
         public bool IsAlive
@@ -69,22 +72,10 @@ namespace Game1
             set { this.hasJumped = value; }
         }
 
-        public int JumpsAllowed
+        public int JumpDuration
         {
-            get { return this.jumpsAllowed; }
-            set { this.jumpsAllowed = value; }
-        }
-
-        public int JumpCount
-        {
-            get { return this.jumpCount; }
-            set { this.jumpCount = value; }
-        }
-
-        public int JumpCurveCounter
-        {
-            get { return this.jumpCurveCounter; }
-            set { this.jumpCurveCounter = value; }
+            get { return this.jumpDuration; }
+            set { this.jumpDuration = value; }
         }
 
         public virtual Vector2 ApplyMovement()
@@ -179,42 +170,38 @@ namespace Game1
             }
         }
 
-        public override bool Intersects(GameObject passedGameObject)
-        {
-            bool returnValue = false;
+        //public override bool Intersects(GameObject passedGameObject)
+        //{
+        //    bool returnValue = false;
 
-            if (this.Rectangle.Intersects(passedGameObject.Rectangle))
-            {
-                returnValue = true;
+        //    if (this.Rectangle.Intersects(passedGameObject.Rectangle))
+        //    {
+        //        returnValue = true;
 
-                if ((this.HasJumped == false) && (this.Falling == true))
-                {
-                    if ((this.Rectangle.Bottom >= passedGameObject.Rectangle.Top) && (passedGameObject.GetType() == typeof(Platform)))
-                    {
-                        this.hitObstacle = HitObstacle.Bottom;
-                        base.CalculatedVerticalForce = 0;
-                        this.Falling = false;
-                    }
-                    else if ((this.Rectangle.Top <= passedGameObject.Rectangle.Bottom) && (passedGameObject.GetType() == typeof(Platform)))
-                    {
-                        this.hitObstacle = HitObstacle.Top;
-                    }
-                    else if ((this.Rectangle.Left <= passedGameObject.Rectangle.Right) && (passedGameObject.GetType() == typeof(Platform)))
-                    {
-                        this.hitObstacle = HitObstacle.Left;
-                    }                    
-                    else if ((this.Rectangle.Right >= passedGameObject.Rectangle.Left) && (passedGameObject.GetType() == typeof(Platform)))
-                    {
-                        this.hitObstacle = HitObstacle.Right;
-                    }
-                }
-            }
-            else
-            {
-                returnValue = false;
-            }
+        //        if ((this.HasJumped == false) && (this.Falling == true))
+        //        {
+        //            if ((this.Rectangle.Bottom >= passedGameObject.Rectangle.Top) && (passedGameObject.GetType() == typeof(Platform)))
+        //            {
+        //                this.hitObstacle = HitObstacle.Bottom;
+        //                base.CalculatedVerticalForce = 0;
+        //                this.Falling = false;
+        //            }
+        //            else if ((this.Rectangle.Top <= passedGameObject.Rectangle.Bottom) && (passedGameObject.GetType() == typeof(Platform)))
+        //            {
+        //                this.hitObstacle = HitObstacle.Top;
+        //            }
+        //            else if ((this.Rectangle.Left <= passedGameObject.Rectangle.Right) && (passedGameObject.GetType() == typeof(Platform)))
+        //            {
+        //                this.hitObstacle = HitObstacle.Left;
+        //            }                    
+        //            else if ((this.Rectangle.Right >= passedGameObject.Rectangle.Left) && (passedGameObject.GetType() == typeof(Platform)))
+        //            {
+        //                this.hitObstacle = HitObstacle.Right;
+        //            }
+        //        }
+        //    }
 
-            return returnValue;
-        }
+        //    return returnValue;
+        //}
     }
 }

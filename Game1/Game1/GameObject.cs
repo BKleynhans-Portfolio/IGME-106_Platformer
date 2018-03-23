@@ -80,11 +80,11 @@ namespace Game1
 
         private bool falling;                                                               // Is the object falling?
 
-        private float currentX;
-        private float currentY;
+        //private float currentX;
+        //private float currentY;
 
-        private float previousX;
-        private float previousY;
+        //private float previousX;
+        //private float previousY;
 
         /// <summary>
         /// Default constructor.  Creates a GameObject with default values.
@@ -295,13 +295,41 @@ namespace Game1
         /// </summary>
         /// <param name="passedGameObject">Object of type GameObject to use for intersect checking</param>
         /// <returns>TRUE if the two objects intersect and FALSE if they do not</returns>
+        //public virtual bool Intersects(GameObject passedGameObject)
+        //{
+        //    bool returnValue = false;
+
+        //    if (this.Rectangle.Intersects(passedGameObject.Rectangle))
+        //    {
+        //        returnValue = true;               
+        //    }
+
+        //    return returnValue;
+        //}
         public virtual bool Intersects(GameObject passedGameObject)
         {
             bool returnValue = false;
 
             if (this.Rectangle.Intersects(passedGameObject.Rectangle))
             {
-                returnValue = true;               
+                returnValue = true;
+                                
+                if (this.Rectangle.Bottom >= passedGameObject.Rectangle.Top)
+                {
+                    this.hitObstacle = HitObstacle.Bottom;
+                }
+                else if (this.Rectangle.Top <= passedGameObject.Rectangle.Bottom)
+                {
+                    this.hitObstacle = HitObstacle.Top;
+                }
+                else if (this.Rectangle.Left <= passedGameObject.Rectangle.Right)
+                {
+                    this.hitObstacle = HitObstacle.Left;
+                }
+                else if (this.Rectangle.Right >= passedGameObject.Rectangle.Left)
+                {
+                    this.hitObstacle = HitObstacle.Right;
+                }                
             }
 
             return returnValue;
@@ -316,7 +344,7 @@ namespace Game1
             {
                 switch (gravityDirection)
                 {
-                    case GravityDirection.Up:
+                    case GravityDirection.Up://This is where I'm working
                         switch (hitObstacle)
                         {
                             case HitObstacle.None:

@@ -27,6 +27,8 @@ namespace Game1
 {
     class Player : Character
     {
+        private int jumpCount;
+
         public Player(Texture2D spriteTexture, int x, int y, int width, int height) : base(spriteTexture, x, y, width, height)
         {
             base.IsAlive = true;
@@ -41,8 +43,12 @@ namespace Game1
                     appliedGravitationalAcceleration, appliedObjectMass)
         {
             base.IsAlive = true;
-            base.JumpsAllowed = 2;
-            base.JumpCount = 0;
+        }
+
+        public int JumpCount
+        {
+            get { return this.jumpCount; }
+            set { this.jumpCount = value; }
         }
 
         protected override void Die()
@@ -127,7 +133,7 @@ namespace Game1
                             base.Falling = true;
                             base.hitObstacle = HitObstacle.None;
                         }
-                                                
+
                         base.intersectedBy.Remove(intersectedBy[i]);
                     }
                     else if ((!stillIntersecting) & (this.HasJumped == true))
