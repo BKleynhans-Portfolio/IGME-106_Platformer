@@ -124,9 +124,10 @@ namespace Game1
                     {
                         base.Falling = true;
                         base.hitObstacle = HitObstacle.None;
-
+                                                
                         base.intersectedBy.Remove(intersectedBy[i]);
-                    } else if ((!stillIntersecting) & (this.HasJumped == true))
+                    }
+                    else if ((!stillIntersecting) & (this.HasJumped == true))
                     {
                         base.hitObstacle = HitObstacle.None;
 

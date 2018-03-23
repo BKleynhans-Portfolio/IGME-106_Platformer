@@ -108,7 +108,7 @@ namespace Game1
             spriteBatch = new SpriteBatch(GraphicsDevice);                                  // Create a new SpriteBatch, which can be used to draw textures.
                         
             playerSprites = Content.Load<Texture2D>("TestImage");                           // Load player sprite
-            player = new Player(playerSprites, 550, 50, 50, 50);
+            player = new Player(playerSprites, 50, 50, 50, 50);
             player.ApplyGravity = true;
             //player.gravityDirection = GravityDirection.Right;
                         
@@ -129,9 +129,10 @@ namespace Game1
             //platform[1].platformMovement = PlatformMovement.ToAndFroLeftFirst;
             //platform[1].platformMovement = PlatformMovement.ToAndFroDownFirst;
 
-            //platform[2].ApplyGravity = true;
-            //platform[2].gravityDirection = GravityDirection.Right;
-            //platform[2].gravityOnProximityFrom = GravityOnProximityFrom.Top;
+            platform[2].ApplyGravity = false;
+            platform[2].gravityDirection = GravityDirection.Up;
+            platform[2].gravityOnProximityFrom = GravityOnProximityFrom.Top;
+            platform[2].platformMovement = PlatformMovement.OneDirection;
 
             enemy.Add(new Enemy(playerSprites, 100, 50, 50, 50));                           // Load enemy sprite
             enemy[0].ApplyGravity = true;

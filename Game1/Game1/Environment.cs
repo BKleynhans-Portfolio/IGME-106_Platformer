@@ -159,7 +159,7 @@ namespace Game1
                 if (!stillIntersecting)
                 {   
                     base.hitObstacle = HitObstacle.None;
-
+                                        
                     base.intersectedBy.Remove(intersectedBy[i]);
                 }
                 
