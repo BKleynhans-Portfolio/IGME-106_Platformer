@@ -122,8 +122,11 @@ namespace Game1
 
                     if ((!stillIntersecting) && (this.HasJumped == false))
                     {
-                        base.Falling = true;
-                        base.hitObstacle = HitObstacle.None;
+                        if (base.intersectedBy[i].GetType() == typeof(Platform))
+                        {
+                            base.Falling = true;
+                            base.hitObstacle = HitObstacle.None;
+                        }
                                                 
                         base.intersectedBy.Remove(intersectedBy[i]);
                     }

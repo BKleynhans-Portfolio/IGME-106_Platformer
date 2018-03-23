@@ -189,21 +189,21 @@ namespace Game1
 
                 if ((this.HasJumped == false) && (this.Falling == true))
                 {
-                    if (this.Rectangle.Bottom >= passedGameObject.Rectangle.Top)
+                    if ((this.Rectangle.Bottom >= passedGameObject.Rectangle.Top) && (passedGameObject.GetType() == typeof(Platform)))
                     {
                         this.hitObstacle = HitObstacle.Bottom;
                         base.CalculatedVerticalForce = 0;
                         this.Falling = false;
                     }
-                    else if (this.Rectangle.Top <= passedGameObject.Rectangle.Bottom)
+                    else if ((this.Rectangle.Top <= passedGameObject.Rectangle.Bottom) && (passedGameObject.GetType() == typeof(Platform)))
                     {
                         this.hitObstacle = HitObstacle.Top;
                     }
-                    else if (this.Rectangle.Left <= passedGameObject.Rectangle.Right)
+                    else if ((this.Rectangle.Left <= passedGameObject.Rectangle.Right) && (passedGameObject.GetType() == typeof(Platform)))
                     {
                         this.hitObstacle = HitObstacle.Left;
                     }                    
-                    else if (this.Rectangle.Right >= passedGameObject.Rectangle.Left)
+                    else if ((this.Rectangle.Right >= passedGameObject.Rectangle.Left) && (passedGameObject.GetType() == typeof(Platform)))
                     {
                         this.hitObstacle = HitObstacle.Right;
                     }

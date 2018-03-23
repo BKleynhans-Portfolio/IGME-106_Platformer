@@ -316,7 +316,7 @@ namespace Game1
             {
                 switch (gravityDirection)
                 {
-                    case GravityDirection.Up://This is where I'm working
+                    case GravityDirection.Up:
                         switch (hitObstacle)
                         {
                             case HitObstacle.None:
