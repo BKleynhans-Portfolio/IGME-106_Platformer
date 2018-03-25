@@ -19,7 +19,7 @@ using Microsoft.Xna.Framework.Input;
 ///                       
 ///                       
 /// Last Modified By    : Benjamin Kleynhans
-/// Last Modified Date  : March 25, 2018
+/// Last Modified Date  : March 22, 2018
 /// Filename            : GameObject.cs
 /// </summary>
 
@@ -193,7 +193,7 @@ namespace Game1
             get { return this.objectMass; }
             set { this.objectMass = value; }
         }
-
+        
         /// <summary>
         /// Properties for variable containing the boolean value which is true when the object
         /// is falling and false when the object is not falling.
@@ -302,7 +302,6 @@ namespace Game1
                     {
                         this.hitObstacle = HitObstacle.FromTop;
                     }
-
                 }
                 else if ((this.Rectangle.Top < passedGameObject.Rectangle.Bottom) && (this.Rectangle.Bottom != passedGameObject.Rectangle.Bottom))
                 {
