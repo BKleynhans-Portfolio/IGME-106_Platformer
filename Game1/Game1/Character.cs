@@ -19,7 +19,7 @@ using Microsoft.Xna.Framework.Input;
 ///                       
 ///                       
 /// Last Modified By    : Benjamin Kleynhans
-/// Last Modified Date  : March 22, 2018
+/// Last Modified Date  : March 25, 2018
 /// Filename            : Character.cs
 /// </summary>
 
@@ -33,29 +33,20 @@ namespace Game1
         protected abstract void Die();
 
         private bool isAlive;
-        private bool hasJumped;        
-
-        //private int jumpDuration;                                                           // In seconds
+        private bool hasJumped;
 
         public Character(Texture2D spriteTexture, int x, int y, int width, int height) : base(spriteTexture, x, y, width, height)
         {
             this.HasJumped = false;
             base.JumpInProgress = false;
-
-            //this.JumpDuration = 2;
-
         }
 
         public Character(Texture2D spriteTexture, int x, int y, int width, int height,
-                          bool addGravity, float appliedMoveForce, float appliedVerticalMovementForce,
-                          float appliedGravitationalAcceleration, float appliedObjectMass) :
-                base(spriteTexture, x, y, width, height, addGravity, appliedMoveForce, appliedVerticalMovementForce,
-                    appliedGravitationalAcceleration, appliedObjectMass)
+                          bool addGravity, float appliedObjectMass) :
+                base(spriteTexture, x, y, width, height, addGravity, appliedObjectMass)
         {
             this.HasJumped = false;
             base.JumpInProgress = false;
-
-            //this.JumpDuration = 2;
         }
 
         public bool IsAlive
@@ -69,12 +60,6 @@ namespace Game1
             get { return this.hasJumped; }
             set { this.hasJumped = value; }
         }
-
-        //public int JumpDuration
-        //{
-        //    get { return this.jumpDuration; }
-        //    set { this.jumpDuration = value; }
-        //}
 
         public virtual Vector2 ApplyMovement()
         {

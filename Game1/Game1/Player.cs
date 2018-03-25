@@ -19,7 +19,7 @@ using Microsoft.Xna.Framework.Input;
 ///                       
 ///                       
 /// Last Modified By    : Benjamin Kleynhans
-/// Last Modified Date  : March 22, 2018
+/// Last Modified Date  : March 25, 2018
 /// Filename            : Player.cs
 /// </summary>
 
@@ -35,10 +35,8 @@ namespace Game1
         }
 
         public Player(Texture2D spriteTexture, int x, int y, int width, int height,
-                          bool addGravity, float appliedMoveForce, float appliedVerticalMovementForce,
-                          float appliedGravitationalAcceleration, float appliedObjectMass) :
-                base(spriteTexture, x, y, width, height, addGravity, appliedMoveForce, appliedVerticalMovementForce,
-                    appliedGravitationalAcceleration, appliedObjectMass)
+                          bool addGravity, float appliedObjectMass) :
+                base(spriteTexture, x, y, width, height, addGravity, appliedObjectMass)
         {
             base.IsAlive = true;
         }

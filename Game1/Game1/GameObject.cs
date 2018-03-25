@@ -19,7 +19,7 @@ using Microsoft.Xna.Framework.Input;
 ///                       
 ///                       
 /// Last Modified By    : Benjamin Kleynhans
-/// Last Modified Date  : March 22, 2018
+/// Last Modified Date  : March 25, 2018
 /// Filename            : GameObject.cs
 /// </summary>
 
@@ -81,18 +81,6 @@ namespace Game1
         private const float defaultHorizonalVelocity = 5f;
         private const float defaultVerticalVelocity = 5f;
 
-        //private float gravitationalForce;                                                   // Force of gravity on objects
-        //private float gravitationalAcceleration;
-
-        //private float surfaceForce;                                                         // Force object applies to surface
-
-        //private float horizontalMovementForce;                                              // Maximum force for horizontal movement (left/right movement)
-        //private float calculatedHorizontalForce;                                            // Horizontal force that will be applied to character each loop
-
-        //private float verticalMovementForce;                                                // Maximum force for upward movement (jumping)
-        //private float calculatedVerticalForce;                                              // Vertical force that will be applied to character each loop
-        //private float verticalAcceleration;                                                 // Acceleration of object in vertical direction
-
         private float objectMass;                                                           // Mass of objects                
 
         private bool applyGravity;                                                          // Should the object have gravity
@@ -101,12 +89,6 @@ namespace Game1
         private bool jumpInProgress;
 
         private int lives;
-
-        //private float currentX;
-        //private float currentY;
-
-        //private float previousX;
-        //private float previousY;
 
         /// <summary>
         /// Default constructor.  Creates a GameObject with default values.
@@ -125,13 +107,7 @@ namespace Game1
 
             this.ApplyGravity = false;
 
-            //this.GravitationalAcceleration = 9.8f;
-            //this.HorizontalMovementForce = 3.0f;
-            //this.VerticalMovementForce = 1000.0f;
-
             this.ObjectMass = 50;
-
-            //this.GravitationalForce = this.ObjectMass * this.GravitationalAcceleration;
 
             this.ActionTime = 2f;
             this.Acceleration = 0.25f;
@@ -153,19 +129,12 @@ namespace Game1
         /// <param name="appliedGravitationalAcceleration">This is the unit used for gravitational acceleration</param>
         /// <param name="appliedObjectMass">This is the mass that should be applied to the object</param>
         public GameObject(Texture2D spriteTexture, int x, int y, int width, int height,
-                          bool addGravity, float appliedHorizontalMoveForce, float appliedVerticalMovementForce,
-                          float appliedGravitationalAcceleration, float appliedObjectMass)
+                          bool addGravity, float appliedObjectMass)
         {
             this.ObjectTexture = spriteTexture;
             this.Rectangle = new Rectangle(x, y, width, height);
 
             this.ApplyGravity = addGravity;
-
-            //this.GravitationalAcceleration = appliedGravitationalAcceleration;
-
-            //this.GravitationalForce = this.ObjectMass * this.GravitationalAcceleration;
-            //this.HorizontalMovementForce = appliedHorizontalMoveForce;
-            //this.VerticalMovementForce = appliedVerticalMovementForce;
 
             this.ObjectMass = appliedObjectMass;
         }
@@ -224,82 +193,6 @@ namespace Game1
             get { return this.objectMass; }
             set { this.objectMass = value; }
         }
-
-        ///// <summary>
-        ///// Properties for variable containing the gravitational force applied to the object
-        ///// </summary>
-        //public float GravitationalForce
-        //{
-        //    get { return this.gravitationalForce; }
-        //    set { this.gravitationalForce = value; }
-        //}
-
-        ///// <summary>
-        ///// Properties for variable containing the gravitational acceleration applied to the object
-        ///// </summary>
-        //public float GravitationalAcceleration
-        //{
-        //    get { return this.gravitationalAcceleration; }
-        //    set { this.gravitationalAcceleration = value; }
-        //}
-
-        ///// <summary>
-        ///// Properties for variable containing the default horizontal movement force
-        ///// </summary>
-        //public float HorizontalMovementForce
-        //{
-        //    get { return this.horizontalMovementForce; }
-        //    set { this.horizontalMovementForce = value; }
-        //}
-
-        ///// <summary>
-        ///// Properties for variable containing the default vertical movement force
-        ///// </summary>
-        //public float VerticalMovementForce
-        //{
-        //    get { return this.verticalMovementForce; }
-        //    set { this.verticalMovementForce = value; }
-        //}
-
-        ///// <summary>
-        ///// Properties for variable containing this force is calculated using all applied forces
-        ///// to determine what horizontal force to apply to the object during a specific instance
-        ///// in the game.
-        ///// </summary>
-        //public float CalculatedHorizontalForce
-        //{
-        //    get { return this.calculatedHorizontalForce; }
-        //    set { this.calculatedHorizontalForce = value; }
-        //}
-
-        ///// <summary>
-        ///// Properties for variable containing this force is calculated using all applied forces
-        ///// to determine what vertical force to apply to the object during a specific instance
-        ///// in the game.
-        ///// </summary>
-        //public float CalculatedVerticalForce
-        //{
-        //    get { return this.calculatedVerticalForce; }
-        //    set { this.calculatedVerticalForce = value; }
-        //}
-
-        ///// <summary>
-        ///// Properties for variable containing the vertical acceleration applied to the object
-        ///// </summary>
-        //public float VerticalAcceleration
-        //{
-        //    get { return this.verticalAcceleration; }
-        //    set { this.verticalAcceleration = value; }
-        //}
-
-        ///// <summary>
-        ///// Properties for variable containing the surface (normal) force
-        ///// </summary>
-        //public float SurfaceForce
-        //{
-        //    get { return this.surfaceForce; }
-        //    set { this.surfaceForce = value; }
-        //}
 
         /// <summary>
         /// Properties for variable containing the boolean value which is true when the object
@@ -362,22 +255,6 @@ namespace Game1
             this.Rectangle = new Rectangle((int)vector2.X, (int)vector2.Y, this.Rectangle.Width, this.Rectangle.Height);
         }
 
-        /// <summary>
-        /// Checks whether the current object (this) intersects with any other object (the one passed in)
-        /// </summary>
-        /// <param name="passedGameObject">Object of type GameObject to use for intersect checking</param>
-        /// <returns>TRUE if the two objects intersect and FALSE if they do not</returns>
-        //public virtual bool Intersects(GameObject passedGameObject)
-        //{
-        //    bool returnValue = false;
-
-        //    if (this.Rectangle.Intersects(passedGameObject.Rectangle))
-        //    {
-        //        returnValue = true;               
-        //    }
-
-        //    return returnValue;
-        //}
         public virtual bool Intersects(GameObject passedGameObject)
         {
             bool returnValue = false;
@@ -403,7 +280,7 @@ namespace Game1
                         {
                             CreateRectangle(new Vector2(newX, newY));
                         }
-                    }/**/
+                    }
                     else if 
                         (
                             ((this.GetType().BaseType == typeof(Character)) && (passedGameObject.GetType().BaseType.BaseType == typeof(Character))) ||
@@ -425,20 +302,6 @@ namespace Game1
                     {
                         this.hitObstacle = HitObstacle.FromTop;
                     }
-                    /*else if 
-                        (((
-                            ((this.GetType().BaseType == typeof(Character)) && (passedGameObject.GetType().BaseType.BaseType == typeof(Character))) ||
-                            ((this.GetType().BaseType.BaseType == typeof(Character)) && (passedGameObject.GetType().BaseType == typeof(Character)))
-                        ) && (this.JumpInProgress == true)) ||
-                            ((this.GetType().BaseType == typeof(Environment)) && (passedGameObject.GetType().BaseType == typeof(Environment))))
-                        
-                    {
-                        this.hitObstacle = HitObstacle.None;
-                    }
-                    else
-                    {
-                        this.hitObstacle = HitObstacle.FromTop;
-                    }*/
 
                 }
                 else if ((this.Rectangle.Top < passedGameObject.Rectangle.Bottom) && (this.Rectangle.Bottom != passedGameObject.Rectangle.Bottom))
@@ -478,17 +341,6 @@ namespace Game1
                     {
                         this.hitObstacle = HitObstacle.FromBottom;
                     }
-                    //else if (((((this.GetType().BaseType == typeof(Character)) && (passedGameObject.GetType().BaseType.BaseType == typeof(Character))) ||
-                    //    ((this.GetType().BaseType.BaseType == typeof(Character)) && (passedGameObject.GetType().BaseType == typeof(Character))))
-                    //    && (this.JumpInProgress == true)) ||
-                    //        ((this.GetType().BaseType == typeof(Environment)) && (passedGameObject.GetType().BaseType == typeof(Environment))))
-                    //{
-                    //    this.hitObstacle = HitObstacle.None;
-                    //}
-                    //else
-                    //{
-                    //    this.hitObstacle = HitObstacle.FromBottom;
-                    //}
                 }
                 else if ((this.Rectangle.Left < passedGameObject.Rectangle.Right) && (this.Rectangle.Right != passedGameObject.Rectangle.Right))                  
                 {
@@ -526,17 +378,6 @@ namespace Game1
                     {
                         this.hitObstacle = HitObstacle.FromRight;
                     }
-                    //else if (((((this.GetType().BaseType == typeof(Character)) && (passedGameObject.GetType().BaseType.BaseType == typeof(Character))) ||
-                    //    ((this.GetType().BaseType.BaseType == typeof(Character)) && (passedGameObject.GetType().BaseType == typeof(Character))))
-                    //    && (this.JumpInProgress == true)) ||
-                    //        ((this.GetType().BaseType == typeof(Environment)) && (passedGameObject.GetType().BaseType == typeof(Environment))))
-                    //{
-                    //    this.hitObstacle = HitObstacle.None;
-                    //}
-                    //else
-                    //{
-                    //    this.hitObstacle = HitObstacle.FromRight;
-                    //}
                 }
                 else if ((this.Rectangle.Right > passedGameObject.Rectangle.Left) && (this.Rectangle.Left != passedGameObject.Rectangle.Left))
                 {
@@ -574,17 +415,6 @@ namespace Game1
                     {
                         this.hitObstacle = HitObstacle.FromLeft;
                     }
-                    //else if (((((this.GetType().BaseType == typeof(Character)) && (passedGameObject.GetType().BaseType.BaseType == typeof(Character))) ||
-                    //    ((this.GetType().BaseType.BaseType == typeof(Character)) && (passedGameObject.GetType().BaseType == typeof(Character))))
-                    //    && (this.JumpInProgress == true)) ||
-                    //        ((this.GetType().BaseType == typeof(Environment)) && (passedGameObject.GetType().BaseType == typeof(Environment))))
-                    //{
-                    //    this.hitObstacle = HitObstacle.None;
-                    //}
-                    //else
-                    //{
-                    //    this.hitObstacle = HitObstacle.FromLeft;
-                    //}
                 }                
             }
 

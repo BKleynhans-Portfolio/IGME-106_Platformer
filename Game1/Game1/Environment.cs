@@ -67,10 +67,8 @@ namespace Game1
         }
 
         public Environment(Texture2D spriteTexture, int x, int y, int width, int height,
-                          bool addGravity, float appliedMoveForce, float appliedVerticalMovementForce,
-                          float appliedGravitationalAcceleration, float appliedObjectMass) :
-                base(spriteTexture, x, y, width, height, addGravity, appliedMoveForce, appliedVerticalMovementForce,
-                    appliedGravitationalAcceleration, appliedObjectMass)
+                          bool addGravity, float appliedObjectMass) :
+                base(spriteTexture, x, y, width, height, addGravity, appliedObjectMass)
         {
             this.InitialXPlacement = x;
             this.InitialYPlacement = y;
