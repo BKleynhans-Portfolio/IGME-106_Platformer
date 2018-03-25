@@ -69,8 +69,8 @@ namespace Game1
             CalculateMovement();
 
             returnValue = new Vector2(
-                this.Rectangle.X + base.AVelocity,
-                this.Rectangle.Y + base.GVelocity
+                this.Rectangle.X + base.MovementVelocity,
+                this.Rectangle.Y + base.GravitationalVelocity
             );
 
             return returnValue;
@@ -90,11 +90,11 @@ namespace Game1
                         if (hitObstacle == HitObstacle.FromTop)
                         {
                             base.Falling = false;
-                            this.GVelocity = 0;                            
+                            this.GravitationalVelocity = 0;                            
                         }
                         else if (!HasJumped)
                         {
-                            this.GVelocity += this.Acceleration;
+                            this.GravitationalVelocity += this.Acceleration;
                         }
 
                         break;
@@ -112,37 +112,37 @@ namespace Game1
         {
             if (movementAppliedTo == MovementAppliedTo.None)
             {
-                this.AVelocity = 0;
+                this.MovementVelocity = 0;
             }
 
             if ((movementAppliedTo == MovementAppliedTo.Left) && (hitObstacle != HitObstacle.FromLeft))            
             {
-                this.AVelocity = -DefaultHorizonalVelocity;
+                this.MovementVelocity = -DefaultHorizonalVelocity;
             }
 
             if ((movementAppliedTo == MovementAppliedTo.Right) && (hitObstacle != HitObstacle.FromRight)) 
             {
-                this.AVelocity = DefaultHorizonalVelocity;
+                this.MovementVelocity = DefaultHorizonalVelocity;
             }
 
             if ((movementAppliedTo == MovementAppliedTo.Up) && (hitObstacle != HitObstacle.FromTop))
             {
-                 if ((HasJumped) && (GVelocity == 0))
+                 if ((HasJumped) && (GravitationalVelocity == 0))
                 {
-                    this.GVelocity -= DefaultVerticalVelocity;
+                    this.GravitationalVelocity -= DefaultVerticalVelocity;
                 }
-                else if ((HasJumped) && (GVelocity > -5))                    
+                else if ((HasJumped) && (GravitationalVelocity > -5))                    
                 {
-                    this.GVelocity -= this.Acceleration;
+                    this.GravitationalVelocity -= this.Acceleration;
                 }
-                else if ((HasJumped) && (GVelocity <= -5))
+                else if ((HasJumped) && (GravitationalVelocity <= -5))
                 {
-                    this.GVelocity += this.Acceleration;
+                    this.GravitationalVelocity += this.Acceleration;
                     HasJumped = false;
                 }
-                else if ((!HasJumped) && (JumpInProgress) && (GVelocity <= -5))
+                else if ((!HasJumped) && (JumpInProgress) && (GravitationalVelocity <= -5))
                 {
-                    this.GVelocity += this.Acceleration;
+                    this.GravitationalVelocity += this.Acceleration;
                 }
             }
         }        

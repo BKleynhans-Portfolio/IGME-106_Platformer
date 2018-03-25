@@ -130,8 +130,8 @@ namespace Game1
             base.CalculateMovement();
 
             returnValue = new Vector2(
-                this.Rectangle.X + base.AVelocity,
-                this.Rectangle.Y + base.GVelocity
+                this.Rectangle.X + base.MovementVelocity,
+                this.Rectangle.Y + base.GravitationalVelocity
             );
 
             return returnValue;

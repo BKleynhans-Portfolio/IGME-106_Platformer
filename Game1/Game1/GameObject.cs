@@ -68,25 +68,24 @@ namespace Game1
         public HitNPC hitNPC = HitNPC.None;
 
         public abstract void Draw(SpriteBatch spriteBatch);
+        protected abstract override void Update(GameTime gameTime);
 
         private Texture2D objectTexture;                                                    // Texture and rectangle
         private Rectangle rectangle;
 
-        private float acceleration;
-        private float gVelocity;        
-        private float aVelocity;
-
-        private float actionTime;
-
-        private const float defaultHorizonalVelocity = 5f;
-        private const float defaultVerticalVelocity = 5f;
+        private float acceleration;                                                         // Acceleration to apply to element during each iteration
+        private float gravitationalVelocity;                                                // Gravitational velocity for vertical movement
+        private float movementVelocity;                                                     // Movement velocity for horizontal movement
+        
+        private const float defaultHorizonalVelocity = 5f;                                  // Default velocity to implement horizontally
+        private const float defaultVerticalVelocity = 5f;                                   // Default velocity to implement vertically
 
         private float objectMass;                                                           // Mass of objects                
 
         private bool applyGravity;                                                          // Should the object have gravity
 
         private bool falling;                                                               // Is the object falling?
-        private bool jumpInProgress;
+        private bool jumpInProgress;                                                        // Is the object in a jump process?
 
         private int lives;
 
@@ -109,7 +108,6 @@ namespace Game1
 
             this.ObjectMass = 50;
 
-            this.ActionTime = 2f;
             this.Acceleration = 0.25f;
             this.Lives = 3;
         }
@@ -137,48 +135,84 @@ namespace Game1
             this.ApplyGravity = addGravity;
 
             this.ObjectMass = appliedObjectMass;
+
+            this.Acceleration = 0.25f;
+            this.Lives = 3;
         }
 
+        /// <summary>
+        /// Default velocity applied for horizontal movement if none is specified
+        /// </summary>
         public float DefaultHorizonalVelocity
         {
             get { return defaultHorizonalVelocity; }
         }
 
+        /// <summary>
+        /// Default velocity applied for vertical movement if none is specified
+        /// </summary>
         public float DefaultVerticalVelocity
         {
             get { return defaultVerticalVelocity; }
         }
 
+        /// <summary>
+        /// Properties for variable containing the texture used for the object
+        /// </summary>
+        public Texture2D ObjectTexture
+        {
+            get { return this.objectTexture; }
+            set { this.objectTexture = value; }
+        }
+
+        /// <summary>
+        /// Properties for variable containing the rectangle (X, Y, Width and Height) of the object
+        /// </summary>
+        public Rectangle Rectangle
+        {
+            get { return this.rectangle; }
+            set { this.rectangle = value; }
+        }
+
+        /// <summary>
+        /// Number of lives the player has left
+        /// </summary>
         public int Lives
         {
             get { return this.lives; }
             set { this.lives = value; }
         }
         
+        /// <summary>
+        /// Is the object in a jump process
+        /// </summary>
         public bool JumpInProgress
         {
             get { return this.jumpInProgress; }
             set { this.jumpInProgress = value; }
         }
 
-        public float ActionTime
+        /// <summary>
+        /// Gravitational velocity to apply to an object (up and down)
+        /// </summary>
+        public float GravitationalVelocity
         {
-            get { return this.actionTime; }
-            set { this.actionTime = value; }
+            get { return this.gravitationalVelocity; }
+            set { this.gravitationalVelocity = value; }
         }
 
-        public float GVelocity
+        /// <summary>
+        /// Movement velocity to apply to an object (left and right)
+        /// </summary>
+        public float MovementVelocity
         {
-            get { return this.gVelocity; }
-            set { this.gVelocity = value; }
+            get { return this.movementVelocity; }
+            set { this.movementVelocity = value; }
         }
 
-        public float AVelocity
-        {
-            get { return this.aVelocity; }
-            set { this.aVelocity = value; }
-        }
-
+        /// <summary>
+        /// Acceleration to add to velocity in any of the four cardinal directions
+        /// </summary>
         public float Acceleration
         {
             get { return this.acceleration; }
@@ -215,24 +249,6 @@ namespace Game1
         }
 
         /// <summary>
-        /// Properties for variable containing the texture used for the object
-        /// </summary>
-        public Texture2D ObjectTexture
-        {
-            get { return this.objectTexture; }
-            set { this.objectTexture = value; }
-        }
-
-        /// <summary>
-        /// Properties for variable containing the rectangle (X, Y, Width and Height) of the object
-        /// </summary>
-        public Rectangle Rectangle
-        {
-            get { return this.rectangle; }
-            set { this.rectangle = value; }
-        }
-
-        /// <summary>
         /// Method used to recreate the rectangle containing the location and dimensions of the object.
         /// This is required because the rectangle is a struct datatype and we cannot change the values
         /// within the object.
@@ -255,24 +271,38 @@ namespace Game1
             this.Rectangle = new Rectangle((int)vector2.X, (int)vector2.Y, this.Rectangle.Width, this.Rectangle.Height);
         }
 
+        /// <summary>
+        /// Determines whether the object that is passed in, intersects the current object
+        /// </summary>
+        /// <param name="passedGameObject">object to be tested for intersection against this object</param>
+        /// <returns>true if it intersects and false if it does not</returns>
         public virtual bool Intersects(GameObject passedGameObject)
         {
             bool returnValue = false;
 
+            // Does this object's rectangle intersect with the passed in object's rectangle
             if (this.Rectangle.Intersects(passedGameObject.Rectangle))
             {
                 returnValue = true;
 
+                // New X and Y values in case there is an intersection
                 float newX;
                 float newY;
-                                
-                if ((this.Rectangle.Bottom > passedGameObject.Rectangle.Top) && (this.Rectangle.Bottom != passedGameObject.Rectangle.Bottom))
+
+                // If the lower border of this object has a larger Y coordinate than the upper border
+                //  of the passed in object, and the two are not in line (lower borders are not the same)
+                if ((this.Rectangle.Bottom > passedGameObject.Rectangle.Top) && 
+                    (this.Rectangle.Bottom != passedGameObject.Rectangle.Bottom))
                 {
-                    if (((this.GetType().BaseType == typeof(Character)) || (this.GetType().BaseType.BaseType == typeof(Character))) && (passedGameObject.GetType() == typeof(Platform)))
+                    // If this object is of type Character and the passed in object is of type Platform
+                        // *** Each continuation of the BaseType keyword goes up one additional level in the derived classes
+                    if (((this.GetType().BaseType == typeof(Character)) || (this.GetType().BaseType.BaseType == typeof(Character))) && 
+                        (passedGameObject.GetType() == typeof(Platform)))
                     {
                         this.hitObstacle = HitObstacle.FromTop;
                         this.JumpInProgress = false;
 
+                        // Define new X and Y coordinates and create a new rectangle
                         newX = this.Rectangle.X;
                         newY = passedGameObject.Rectangle.Y - this.Rectangle.Height + 1;
 
@@ -281,20 +311,28 @@ namespace Game1
                             CreateRectangle(new Vector2(newX, newY));
                         }
                     }
-                    else if 
-                        (
-                            ((this.GetType().BaseType == typeof(Character)) && (passedGameObject.GetType().BaseType.BaseType == typeof(Character))) ||
-                            ((this.GetType().BaseType.BaseType == typeof(Character)) && (passedGameObject.GetType().BaseType == typeof(Character)))
-                        )
+                    // If both this object as well as the passed in object are of type Character
+                        // *** Each continuation of the BaseType keyword goes up one additional level in the derived classes
+                    else if ((      
+                                (this.GetType().BaseType == typeof(Character)) &&
+                                (passedGameObject.GetType().BaseType.BaseType == typeof(Character))
+                            ) || (
+                                (this.GetType().BaseType.BaseType == typeof(Character)) &&
+                                (passedGameObject.GetType().BaseType == typeof(Character))
+                            ))
                     {
+                        // Indicate that this object was hit by an NPC coming from the top
                         this.hitNPC = HitNPC.FromTop;
 
-                        if (this.GetType() == typeof(Player))
+                        // If the player was hit by and NPC and it is not a friendly NPC, subtract one life.
+                        if ((this.GetType() == typeof(Player)) && (passedGameObject.GetType() != typeof(Friendly)))
                         {
                             this.Lives--;
                         }                        
                     }
-                    else  if ((this.GetType().BaseType == typeof(Environment)) && (passedGameObject.GetType().BaseType == typeof(Environment)))
+                    // If both this object as well as the passed in object are of type Environment
+                    else if ((this.GetType().BaseType == typeof(Environment)) &&
+                            (passedGameObject.GetType().BaseType == typeof(Environment)))
                     {
                         hitObstacle = HitObstacle.None;
                     }
@@ -303,14 +341,20 @@ namespace Game1
                         this.hitObstacle = HitObstacle.FromTop;
                     }
                 }
-                else if ((this.Rectangle.Top < passedGameObject.Rectangle.Bottom) && (this.Rectangle.Bottom != passedGameObject.Rectangle.Bottom))
+                // If the upper border of this object has a larger Y coordinate than the lower border
+                //  of the passed in object, and the two are not in line (lower borders are not the same)
+                else if ((this.Rectangle.Top < passedGameObject.Rectangle.Bottom) &&
+                        (this.Rectangle.Bottom != passedGameObject.Rectangle.Bottom))
                 {
-                    if ((this.GetType().BaseType == typeof(Character)) && (passedGameObject.GetType() == typeof(Platform)))
+                    // If this object is of type Character and the passed in object is of type Platform
+                    // *** Each continuation of the BaseType keyword goes up one additional level in the derived classes
+                    if (((this.GetType().BaseType == typeof(Character)) || (this.GetType().BaseType.BaseType == typeof(Character))) &&
+                        (passedGameObject.GetType() == typeof(Platform)))
                     {
                         this.hitObstacle = HitObstacle.FromBottom;
                         this.JumpInProgress = false;
 
-
+                        // Define new X and Y coordinates and create a new rectangle
                         newX = this.Rectangle.X;
                         newY = passedGameObject.Rectangle.Y + passedGameObject.Rectangle.Height - 1;
 
@@ -319,19 +363,24 @@ namespace Game1
                             CreateRectangle(new Vector2(newX, newY));
                         }
                     }
+                    // If this object is of type Character and the passed in object is of type Platform
+                    // *** Each continuation of the BaseType keyword goes up one additional level in the derived classes
                     else if
                        (
                            ((this.GetType().BaseType == typeof(Character)) && (passedGameObject.GetType().BaseType.BaseType == typeof(Character))) ||
                            ((this.GetType().BaseType.BaseType == typeof(Character)) && (passedGameObject.GetType().BaseType == typeof(Character)))
                        )
                     {
+                        // Indicate that this object was hit by an NPC coming from the bottom
                         this.hitNPC = HitNPC.FromBottom;
 
-                        if (this.GetType() == typeof(Player))
+                        // If the player was hit by and NPC and it is not a friendly NPC, subtract one life.
+                        if ((this.GetType() == typeof(Player)) && (passedGameObject.GetType() != typeof(Friendly)))
                         {
                             this.Lives--;
                         }
                     }
+                    // If both this object as well as the passed in object are of type Environment
                     else if ((this.GetType().BaseType == typeof(Environment)) && (passedGameObject.GetType().BaseType == typeof(Environment)))
                     {
                         hitObstacle = HitObstacle.None;
@@ -343,7 +392,10 @@ namespace Game1
                 }
                 else if ((this.Rectangle.Left < passedGameObject.Rectangle.Right) && (this.Rectangle.Right != passedGameObject.Rectangle.Right))                  
                 {
-                    if ((this.GetType().BaseType == typeof(Character)) && (passedGameObject.GetType() == typeof(Platform)))
+                    // If this object is of type Character and the passed in object is of type Platform
+                    // *** Each continuation of the BaseType keyword goes up one additional level in the derived classes
+                    if (((this.GetType().BaseType == typeof(Character)) || (this.GetType().BaseType.BaseType == typeof(Character))) &&
+                        (passedGameObject.GetType() == typeof(Platform)))
                     {
                         this.hitObstacle = HitObstacle.FromRight;
                         this.JumpInProgress = false;
@@ -351,24 +403,30 @@ namespace Game1
                         newX = passedGameObject.Rectangle.X + passedGameObject.Rectangle.Width - 1;
                         newY = this.Rectangle.Y;
 
+                        // Define new X and Y coordinates and create a new rectangle
                         if (newX != this.Rectangle.X || newY != this.Rectangle.Y)
                         {
                             CreateRectangle(new Vector2(newX, newY));
                         }
                     }
+                    // If this object is of type Character and the passed in object is of type Platform
+                    // *** Each continuation of the BaseType keyword goes up one additional level in the derived classes
                     else if
                        (
                            ((this.GetType().BaseType == typeof(Character)) && (passedGameObject.GetType().BaseType.BaseType == typeof(Character))) ||
                            ((this.GetType().BaseType.BaseType == typeof(Character)) && (passedGameObject.GetType().BaseType == typeof(Character)))
                        )
                     {
+                        // Indicate that this object was hit by an NPC coming from the right
                         this.hitNPC = HitNPC.FromRight;
 
-                        if (this.GetType() == typeof(Player))
+                        // If the player was hit by and NPC and it is not a friendly NPC, subtract one life.
+                        if ((this.GetType() == typeof(Player)) && (passedGameObject.GetType() != typeof(Friendly)))
                         {
                             this.Lives--;
                         }
                     }
+                    // If both this object as well as the passed in object are of type Environment
                     else if ((this.GetType().BaseType == typeof(Environment)) && (passedGameObject.GetType().BaseType == typeof(Environment)))
                     {
                         hitObstacle = HitObstacle.None;
@@ -380,11 +438,15 @@ namespace Game1
                 }
                 else if ((this.Rectangle.Right > passedGameObject.Rectangle.Left) && (this.Rectangle.Left != passedGameObject.Rectangle.Left))
                 {
-                    if ((this.GetType().BaseType == typeof(Character)) && (passedGameObject.GetType() == typeof(Platform)))
+                    // If this object is of type Character and the passed in object is of type Platform
+                    // *** Each continuation of the BaseType keyword goes up one additional level in the derived classes
+                    if (((this.GetType().BaseType == typeof(Character)) || (this.GetType().BaseType.BaseType == typeof(Character))) &&
+                        (passedGameObject.GetType() == typeof(Platform)))
                     {
                         this.hitObstacle = HitObstacle.FromLeft;
                         this.JumpInProgress = false;
 
+                        // Define new X and Y coordinates and create a new rectangle
                         newX = passedGameObject.Rectangle.X - this.Rectangle.Width + 1;
                         newY = this.Rectangle.Y;
 
@@ -393,19 +455,24 @@ namespace Game1
                             CreateRectangle(new Vector2(newX, newY));
                         }
                     }
+                    // If this object is of type Character and the passed in object is of type Platform
+                    // *** Each continuation of the BaseType keyword goes up one additional level in the derived classes
                     else if
                        (
                            ((this.GetType().BaseType == typeof(Character)) && (passedGameObject.GetType().BaseType.BaseType == typeof(Character))) ||
                            ((this.GetType().BaseType.BaseType == typeof(Character)) && (passedGameObject.GetType().BaseType == typeof(Character)))
                        )
                     {
+                        // Indicate that this object was hit by an NPC coming from the left
                         this.hitNPC = HitNPC.FromLeft;
 
-                        if (this.GetType() == typeof(Player))
+                        // If the player was hit by and NPC and it is not a friendly NPC, subtract one life.
+                        if ((this.GetType() == typeof(Player)) && (passedGameObject.GetType() != typeof(Friendly)))
                         {
                             this.Lives--;
                         }
                     }
+                    // If both this object as well as the passed in object are of type Environment
                     else if ((this.GetType().BaseType == typeof(Environment)) && (passedGameObject.GetType().BaseType == typeof(Environment)))
                     {
                         hitObstacle = HitObstacle.None;
@@ -425,63 +492,77 @@ namespace Game1
         /// </summary>
         public virtual void CalculateGravity()
         {
+            // If the object requires gravity to be implemented
             if (this.ApplyGravity)
             {
+                // Based on which direction the gravity is implemented in
                 switch (gravityDirection)
                 {
                     case GravityDirection.Up:
+                        // If this object is hit from the bottom and it is not an environment object
                         if ((hitObstacle == HitObstacle.FromBottom) && (this.GetType().BaseType != typeof(Environment)))
                         {
-                            this.GVelocity = 0;
+                            // Set gravitational velocity to 0
+                            this.GravitationalVelocity = 0;
                         }
                         else
                         {
-                            if (this.GVelocity > -5)
+                            // If it is not hit, or it is hit and is an environment object, apply appropriate gravity
+                            if (this.GravitationalVelocity > -5)
                             {
-                                this.GVelocity -= this.Acceleration;
+                                this.GravitationalVelocity -= this.Acceleration;
                             }
                         }
 
                         break;
                     case GravityDirection.Down:
+                        // If this object is hit from the top and it is not an environment object
                         if ((hitObstacle == HitObstacle.FromTop) && (this.GetType().BaseType != typeof(Environment)))
                         {
-                            this.GVelocity = 0;
+                            // Set gravitational velocity to 0
+                            this.GravitationalVelocity = 0;
                         }
                         else
                         {
-                            if (this.GVelocity < 5)
+                            // If it is not hit, or it is hit and is an environment object, apply appropriate gravity
+                            if (this.GravitationalVelocity < 5)
                             {
-                                this.GVelocity += this.Acceleration;
+                                this.GravitationalVelocity += this.Acceleration;
                             }
                         }
 
                         break;
                     case GravityDirection.Left:
+                        // If this object is hit from the right and it is not an environment object
                         if ((hitObstacle == HitObstacle.FromRight) && (this.GetType().BaseType != typeof(Environment)))
                         {
-                            this.AVelocity = 0;
+                            // Set gravitational velocity to 0
+                            this.MovementVelocity = 0;
                         }
                         else
                         {
-                            if (this.AVelocity > -5)
+                            // If it is not hit, or it is hit and is an environment object, apply appropriate gravity
+                            if (this.MovementVelocity > -5)
                             {
-                                this.AVelocity -= this.Acceleration;
+                                this.MovementVelocity -= this.Acceleration;
                             }
                         }
 
                         break;
 
                     case GravityDirection.Right:
+                        // If this object is hit from the left and it is not an environment object
                         if ((hitObstacle == HitObstacle.FromLeft) && (this.GetType().BaseType != typeof(Environment)))
                         {
-                            this.AVelocity = 0;
+                            // Set gravitational velocity to 0
+                            this.MovementVelocity = 0;
                         }
                         else
                         {
-                            if (this.AVelocity < 5)
+                            // If it is not hit, or it is hit and is an environment object, apply appropriate gravity
+                            if (this.MovementVelocity < 5)
                             {
-                                this.AVelocity += this.Acceleration;
+                                this.MovementVelocity += this.Acceleration;
                             }
                         }
 
@@ -489,10 +570,5 @@ namespace Game1
                 }
             }
         }
-
-        protected override void Update(GameTime gameTime)
-        {
-            
-        }        
     }
 }
