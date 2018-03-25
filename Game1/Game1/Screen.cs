@@ -29,7 +29,7 @@ namespace Game1
     {
         public abstract override void Draw(SpriteBatch spriteBatch);
         protected abstract override void Update(GameTime gameTime);
-        public abstract override bool Intersects(GameObject passedGameObject);
+        //public abstract override bool Intersects(GameObject passedGameObject);
 
         public Screen(Texture2D spriteTexture, int x, int y, int width, int height) : base(spriteTexture, x, y, width, height)
         {

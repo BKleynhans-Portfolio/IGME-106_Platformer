@@ -33,15 +33,6 @@ namespace Game1
         Right
     }
 
-    public enum HitObstacle                                                                 // These are the intersection parameters used for gravity calculation
-    {
-        Left,
-        Right,
-        Top,
-        Bottom,
-        None
-    }
-
     public enum MovementAppliedTo                                                           // Movement parameters used for all object movement
     {
         Left,
@@ -51,34 +42,65 @@ namespace Game1
         None
     }
 
+    public enum HitObstacle                                                                 // These are the intersection parameters used for gravity calculation
+    {
+        FromLeft,
+        FromRight,
+        FromTop,
+        FromBottom,
+        None
+    }
+
+    public enum HitNPC                                                                      // These are the intersection parameters used for gravity calculation
+    {
+        FromLeft,
+        FromRight,
+        FromTop,
+        FromBottom,
+        None
+    }
+
     public abstract class GameObject : Game1
     {
-        public GravityDirection gravityDirection = GravityDirection.Down;        
-        public HitObstacle hitObstacle = HitObstacle.None;
+        public GravityDirection gravityDirection = GravityDirection.Down;
         public MovementAppliedTo movementAppliedTo = MovementAppliedTo.None;
+        public HitObstacle hitObstacle = HitObstacle.None;
+        public HitNPC hitNPC = HitNPC.None;
 
         public abstract void Draw(SpriteBatch spriteBatch);
 
         private Texture2D objectTexture;                                                    // Texture and rectangle
         private Rectangle rectangle;
 
-        private float gravitationalForce;                                                   // Force of gravity on objects
-        private float gravitationalAcceleration;
+        private float acceleration;
+        private float gVelocity;        
+        private float aVelocity;
 
-        private float surfaceForce;                                                         // Force object applies to surface
+        private float actionTime;
 
-        private float horizontalMovementForce;                                              // Maximum force for horizontal movement (left/right movement)
-        private float calculatedHorizontalForce;                                            // Horizontal force that will be applied to character each loop
+        private const float defaultHorizonalVelocity = 5f;
+        private const float defaultVerticalVelocity = 5f;
 
-        private float verticalMovementForce;                                                // Maximum force for upward movement (jumping)
-        private float calculatedVerticalForce;                                              // Vertical force that will be applied to character each loop
-        private float verticalAcceleration;                                                 // Acceleration of object in vertical direction
+        //private float gravitationalForce;                                                   // Force of gravity on objects
+        //private float gravitationalAcceleration;
+
+        //private float surfaceForce;                                                         // Force object applies to surface
+
+        //private float horizontalMovementForce;                                              // Maximum force for horizontal movement (left/right movement)
+        //private float calculatedHorizontalForce;                                            // Horizontal force that will be applied to character each loop
+
+        //private float verticalMovementForce;                                                // Maximum force for upward movement (jumping)
+        //private float calculatedVerticalForce;                                              // Vertical force that will be applied to character each loop
+        //private float verticalAcceleration;                                                 // Acceleration of object in vertical direction
 
         private float objectMass;                                                           // Mass of objects                
 
         private bool applyGravity;                                                          // Should the object have gravity
 
         private bool falling;                                                               // Is the object falling?
+        private bool jumpInProgress;
+
+        private int lives;
 
         //private float currentX;
         //private float currentY;
@@ -103,13 +125,17 @@ namespace Game1
 
             this.ApplyGravity = false;
 
-            this.GravitationalAcceleration = 9.8f;
-            this.HorizontalMovementForce = 3.0f;
-            this.VerticalMovementForce = 1000.0f;
+            //this.GravitationalAcceleration = 9.8f;
+            //this.HorizontalMovementForce = 3.0f;
+            //this.VerticalMovementForce = 1000.0f;
 
             this.ObjectMass = 50;
 
-            this.GravitationalForce = this.ObjectMass * this.GravitationalAcceleration;
+            //this.GravitationalForce = this.ObjectMass * this.GravitationalAcceleration;
+
+            this.ActionTime = 2f;
+            this.Acceleration = 0.25f;
+            this.Lives = 3;
         }
 
         /// <summary>
@@ -135,13 +161,59 @@ namespace Game1
 
             this.ApplyGravity = addGravity;
 
-            this.GravitationalAcceleration = appliedGravitationalAcceleration;
+            //this.GravitationalAcceleration = appliedGravitationalAcceleration;
 
-            this.GravitationalForce = this.ObjectMass * this.GravitationalAcceleration;
-            this.HorizontalMovementForce = appliedHorizontalMoveForce;
-            this.VerticalMovementForce = appliedVerticalMovementForce;
+            //this.GravitationalForce = this.ObjectMass * this.GravitationalAcceleration;
+            //this.HorizontalMovementForce = appliedHorizontalMoveForce;
+            //this.VerticalMovementForce = appliedVerticalMovementForce;
 
             this.ObjectMass = appliedObjectMass;
+        }
+
+        public float DefaultHorizonalVelocity
+        {
+            get { return defaultHorizonalVelocity; }
+        }
+
+        public float DefaultVerticalVelocity
+        {
+            get { return defaultVerticalVelocity; }
+        }
+
+        public int Lives
+        {
+            get { return this.lives; }
+            set { this.lives = value; }
+        }
+        
+        public bool JumpInProgress
+        {
+            get { return this.jumpInProgress; }
+            set { this.jumpInProgress = value; }
+        }
+
+        public float ActionTime
+        {
+            get { return this.actionTime; }
+            set { this.actionTime = value; }
+        }
+
+        public float GVelocity
+        {
+            get { return this.gVelocity; }
+            set { this.gVelocity = value; }
+        }
+
+        public float AVelocity
+        {
+            get { return this.aVelocity; }
+            set { this.aVelocity = value; }
+        }
+
+        public float Acceleration
+        {
+            get { return this.acceleration; }
+            set { this.acceleration = value; }
         }
 
         /// <summary>
@@ -153,81 +225,81 @@ namespace Game1
             set { this.objectMass = value; }
         }
 
-        /// <summary>
-        /// Properties for variable containing the gravitational force applied to the object
-        /// </summary>
-        public float GravitationalForce
-        {
-            get { return this.gravitationalForce; }
-            set { this.gravitationalForce = value; }
-        }
+        ///// <summary>
+        ///// Properties for variable containing the gravitational force applied to the object
+        ///// </summary>
+        //public float GravitationalForce
+        //{
+        //    get { return this.gravitationalForce; }
+        //    set { this.gravitationalForce = value; }
+        //}
 
-        /// <summary>
-        /// Properties for variable containing the gravitational acceleration applied to the object
-        /// </summary>
-        public float GravitationalAcceleration
-        {
-            get { return this.gravitationalAcceleration; }
-            set { this.gravitationalAcceleration = value; }
-        }
+        ///// <summary>
+        ///// Properties for variable containing the gravitational acceleration applied to the object
+        ///// </summary>
+        //public float GravitationalAcceleration
+        //{
+        //    get { return this.gravitationalAcceleration; }
+        //    set { this.gravitationalAcceleration = value; }
+        //}
 
-        /// <summary>
-        /// Properties for variable containing the default horizontal movement force
-        /// </summary>
-        public float HorizontalMovementForce
-        {
-            get { return this.horizontalMovementForce; }
-            set { this.horizontalMovementForce = value; }
-        }
+        ///// <summary>
+        ///// Properties for variable containing the default horizontal movement force
+        ///// </summary>
+        //public float HorizontalMovementForce
+        //{
+        //    get { return this.horizontalMovementForce; }
+        //    set { this.horizontalMovementForce = value; }
+        //}
 
-        /// <summary>
-        /// Properties for variable containing the default vertical movement force
-        /// </summary>
-        public float VerticalMovementForce
-        {
-            get { return this.verticalMovementForce; }
-            set { this.verticalMovementForce = value; }
-        }
+        ///// <summary>
+        ///// Properties for variable containing the default vertical movement force
+        ///// </summary>
+        //public float VerticalMovementForce
+        //{
+        //    get { return this.verticalMovementForce; }
+        //    set { this.verticalMovementForce = value; }
+        //}
 
-        /// <summary>
-        /// Properties for variable containing this force is calculated using all applied forces
-        /// to determine what horizontal force to apply to the object during a specific instance
-        /// in the game.
-        /// </summary>
-        public float CalculatedHorizontalForce
-        {
-            get { return this.calculatedHorizontalForce; }
-            set { this.calculatedHorizontalForce = value; }
-        }
+        ///// <summary>
+        ///// Properties for variable containing this force is calculated using all applied forces
+        ///// to determine what horizontal force to apply to the object during a specific instance
+        ///// in the game.
+        ///// </summary>
+        //public float CalculatedHorizontalForce
+        //{
+        //    get { return this.calculatedHorizontalForce; }
+        //    set { this.calculatedHorizontalForce = value; }
+        //}
 
-        /// <summary>
-        /// Properties for variable containing this force is calculated using all applied forces
-        /// to determine what vertical force to apply to the object during a specific instance
-        /// in the game.
-        /// </summary>
-        public float CalculatedVerticalForce
-        {
-            get { return this.calculatedVerticalForce; }
-            set { this.calculatedVerticalForce = value; }
-        }
+        ///// <summary>
+        ///// Properties for variable containing this force is calculated using all applied forces
+        ///// to determine what vertical force to apply to the object during a specific instance
+        ///// in the game.
+        ///// </summary>
+        //public float CalculatedVerticalForce
+        //{
+        //    get { return this.calculatedVerticalForce; }
+        //    set { this.calculatedVerticalForce = value; }
+        //}
 
-        /// <summary>
-        /// Properties for variable containing the vertical acceleration applied to the object
-        /// </summary>
-        public float VerticalAcceleration
-        {
-            get { return this.verticalAcceleration; }
-            set { this.verticalAcceleration = value; }
-        }
+        ///// <summary>
+        ///// Properties for variable containing the vertical acceleration applied to the object
+        ///// </summary>
+        //public float VerticalAcceleration
+        //{
+        //    get { return this.verticalAcceleration; }
+        //    set { this.verticalAcceleration = value; }
+        //}
 
-        /// <summary>
-        /// Properties for variable containing the surface (normal) force
-        /// </summary>
-        public float SurfaceForce
-        {
-            get { return this.surfaceForce; }
-            set { this.surfaceForce = value; }
-        }
+        ///// <summary>
+        ///// Properties for variable containing the surface (normal) force
+        ///// </summary>
+        //public float SurfaceForce
+        //{
+        //    get { return this.surfaceForce; }
+        //    set { this.surfaceForce = value; }
+        //}
 
         /// <summary>
         /// Properties for variable containing the boolean value which is true when the object
@@ -313,22 +385,206 @@ namespace Game1
             if (this.Rectangle.Intersects(passedGameObject.Rectangle))
             {
                 returnValue = true;
+
+                float newX;
+                float newY;
                                 
-                if (this.Rectangle.Bottom >= passedGameObject.Rectangle.Top)
+                if ((this.Rectangle.Bottom > passedGameObject.Rectangle.Top) && (this.Rectangle.Bottom != passedGameObject.Rectangle.Bottom))
                 {
-                    this.hitObstacle = HitObstacle.Bottom;
+                    if (((this.GetType().BaseType == typeof(Character)) || (this.GetType().BaseType.BaseType == typeof(Character))) && (passedGameObject.GetType() == typeof(Platform)))
+                    {
+                        this.hitObstacle = HitObstacle.FromTop;
+                        this.JumpInProgress = false;
+
+                        newX = this.Rectangle.X;
+                        newY = passedGameObject.Rectangle.Y - this.Rectangle.Height + 1;
+
+                        if (newX != this.Rectangle.X || newY != this.Rectangle.Y)
+                        {
+                            CreateRectangle(new Vector2(newX, newY));
+                        }
+                    }/**/
+                    else if 
+                        (
+                            ((this.GetType().BaseType == typeof(Character)) && (passedGameObject.GetType().BaseType.BaseType == typeof(Character))) ||
+                            ((this.GetType().BaseType.BaseType == typeof(Character)) && (passedGameObject.GetType().BaseType == typeof(Character)))
+                        )
+                    {
+                        this.hitNPC = HitNPC.FromTop;
+
+                        if (this.GetType() == typeof(Player))
+                        {
+                            this.Lives--;
+                        }                        
+                    }
+                    else  if ((this.GetType().BaseType == typeof(Environment)) && (passedGameObject.GetType().BaseType == typeof(Environment)))
+                    {
+                        hitObstacle = HitObstacle.None;
+                    }
+                    else
+                    {
+                        this.hitObstacle = HitObstacle.FromTop;
+                    }
+                    /*else if 
+                        (((
+                            ((this.GetType().BaseType == typeof(Character)) && (passedGameObject.GetType().BaseType.BaseType == typeof(Character))) ||
+                            ((this.GetType().BaseType.BaseType == typeof(Character)) && (passedGameObject.GetType().BaseType == typeof(Character)))
+                        ) && (this.JumpInProgress == true)) ||
+                            ((this.GetType().BaseType == typeof(Environment)) && (passedGameObject.GetType().BaseType == typeof(Environment))))
+                        
+                    {
+                        this.hitObstacle = HitObstacle.None;
+                    }
+                    else
+                    {
+                        this.hitObstacle = HitObstacle.FromTop;
+                    }*/
+
                 }
-                else if (this.Rectangle.Top <= passedGameObject.Rectangle.Bottom)
+                else if ((this.Rectangle.Top < passedGameObject.Rectangle.Bottom) && (this.Rectangle.Bottom != passedGameObject.Rectangle.Bottom))
                 {
-                    this.hitObstacle = HitObstacle.Top;
+                    if ((this.GetType().BaseType == typeof(Character)) && (passedGameObject.GetType() == typeof(Platform)))
+                    {
+                        this.hitObstacle = HitObstacle.FromBottom;
+                        this.JumpInProgress = false;
+
+
+                        newX = this.Rectangle.X;
+                        newY = passedGameObject.Rectangle.Y + passedGameObject.Rectangle.Height - 1;
+
+                        if (newX != this.Rectangle.X || newY != this.Rectangle.Y)
+                        { 
+                            CreateRectangle(new Vector2(newX, newY));
+                        }
+                    }
+                    else if
+                       (
+                           ((this.GetType().BaseType == typeof(Character)) && (passedGameObject.GetType().BaseType.BaseType == typeof(Character))) ||
+                           ((this.GetType().BaseType.BaseType == typeof(Character)) && (passedGameObject.GetType().BaseType == typeof(Character)))
+                       )
+                    {
+                        this.hitNPC = HitNPC.FromBottom;
+
+                        if (this.GetType() == typeof(Player))
+                        {
+                            this.Lives--;
+                        }
+                    }
+                    else if ((this.GetType().BaseType == typeof(Environment)) && (passedGameObject.GetType().BaseType == typeof(Environment)))
+                    {
+                        hitObstacle = HitObstacle.None;
+                    }
+                    else
+                    {
+                        this.hitObstacle = HitObstacle.FromBottom;
+                    }
+                    //else if (((((this.GetType().BaseType == typeof(Character)) && (passedGameObject.GetType().BaseType.BaseType == typeof(Character))) ||
+                    //    ((this.GetType().BaseType.BaseType == typeof(Character)) && (passedGameObject.GetType().BaseType == typeof(Character))))
+                    //    && (this.JumpInProgress == true)) ||
+                    //        ((this.GetType().BaseType == typeof(Environment)) && (passedGameObject.GetType().BaseType == typeof(Environment))))
+                    //{
+                    //    this.hitObstacle = HitObstacle.None;
+                    //}
+                    //else
+                    //{
+                    //    this.hitObstacle = HitObstacle.FromBottom;
+                    //}
                 }
-                else if (this.Rectangle.Left <= passedGameObject.Rectangle.Right)
+                else if ((this.Rectangle.Left < passedGameObject.Rectangle.Right) && (this.Rectangle.Right != passedGameObject.Rectangle.Right))                  
                 {
-                    this.hitObstacle = HitObstacle.Left;
+                    if ((this.GetType().BaseType == typeof(Character)) && (passedGameObject.GetType() == typeof(Platform)))
+                    {
+                        this.hitObstacle = HitObstacle.FromRight;
+                        this.JumpInProgress = false;
+
+                        newX = passedGameObject.Rectangle.X + passedGameObject.Rectangle.Width - 1;
+                        newY = this.Rectangle.Y;
+
+                        if (newX != this.Rectangle.X || newY != this.Rectangle.Y)
+                        {
+                            CreateRectangle(new Vector2(newX, newY));
+                        }
+                    }
+                    else if
+                       (
+                           ((this.GetType().BaseType == typeof(Character)) && (passedGameObject.GetType().BaseType.BaseType == typeof(Character))) ||
+                           ((this.GetType().BaseType.BaseType == typeof(Character)) && (passedGameObject.GetType().BaseType == typeof(Character)))
+                       )
+                    {
+                        this.hitNPC = HitNPC.FromRight;
+
+                        if (this.GetType() == typeof(Player))
+                        {
+                            this.Lives--;
+                        }
+                    }
+                    else if ((this.GetType().BaseType == typeof(Environment)) && (passedGameObject.GetType().BaseType == typeof(Environment)))
+                    {
+                        hitObstacle = HitObstacle.None;
+                    }
+                    else
+                    {
+                        this.hitObstacle = HitObstacle.FromRight;
+                    }
+                    //else if (((((this.GetType().BaseType == typeof(Character)) && (passedGameObject.GetType().BaseType.BaseType == typeof(Character))) ||
+                    //    ((this.GetType().BaseType.BaseType == typeof(Character)) && (passedGameObject.GetType().BaseType == typeof(Character))))
+                    //    && (this.JumpInProgress == true)) ||
+                    //        ((this.GetType().BaseType == typeof(Environment)) && (passedGameObject.GetType().BaseType == typeof(Environment))))
+                    //{
+                    //    this.hitObstacle = HitObstacle.None;
+                    //}
+                    //else
+                    //{
+                    //    this.hitObstacle = HitObstacle.FromRight;
+                    //}
                 }
-                else if (this.Rectangle.Right >= passedGameObject.Rectangle.Left)
+                else if ((this.Rectangle.Right > passedGameObject.Rectangle.Left) && (this.Rectangle.Left != passedGameObject.Rectangle.Left))
                 {
-                    this.hitObstacle = HitObstacle.Right;
+                    if ((this.GetType().BaseType == typeof(Character)) && (passedGameObject.GetType() == typeof(Platform)))
+                    {
+                        this.hitObstacle = HitObstacle.FromLeft;
+                        this.JumpInProgress = false;
+
+                        newX = passedGameObject.Rectangle.X - this.Rectangle.Width + 1;
+                        newY = this.Rectangle.Y;
+
+                        if (newX != this.Rectangle.X || newY != this.Rectangle.Y)
+                        {
+                            CreateRectangle(new Vector2(newX, newY));
+                        }
+                    }
+                    else if
+                       (
+                           ((this.GetType().BaseType == typeof(Character)) && (passedGameObject.GetType().BaseType.BaseType == typeof(Character))) ||
+                           ((this.GetType().BaseType.BaseType == typeof(Character)) && (passedGameObject.GetType().BaseType == typeof(Character)))
+                       )
+                    {
+                        this.hitNPC = HitNPC.FromLeft;
+
+                        if (this.GetType() == typeof(Player))
+                        {
+                            this.Lives--;
+                        }
+                    }
+                    else if ((this.GetType().BaseType == typeof(Environment)) && (passedGameObject.GetType().BaseType == typeof(Environment)))
+                    {
+                        hitObstacle = HitObstacle.None;
+                    }
+                    else
+                    {
+                        this.hitObstacle = HitObstacle.FromLeft;
+                    }
+                    //else if (((((this.GetType().BaseType == typeof(Character)) && (passedGameObject.GetType().BaseType.BaseType == typeof(Character))) ||
+                    //    ((this.GetType().BaseType.BaseType == typeof(Character)) && (passedGameObject.GetType().BaseType == typeof(Character))))
+                    //    && (this.JumpInProgress == true)) ||
+                    //        ((this.GetType().BaseType == typeof(Environment)) && (passedGameObject.GetType().BaseType == typeof(Environment))))
+                    //{
+                    //    this.hitObstacle = HitObstacle.None;
+                    //}
+                    //else
+                    //{
+                    //    this.hitObstacle = HitObstacle.FromLeft;
+                    //}
                 }                
             }
 
@@ -338,154 +594,71 @@ namespace Game1
         /// <summary>
         /// Calculates the amount of force to apply for the object during each iteration of the game loop
         /// </summary>
-        public virtual void CalculateForces()
+        public virtual void CalculateGravity()
         {
             if (this.ApplyGravity)
             {
                 switch (gravityDirection)
                 {
-                    case GravityDirection.Up://This is where I'm working
-                        switch (hitObstacle)
+                    case GravityDirection.Up:
+                        if ((hitObstacle == HitObstacle.FromBottom) && (this.GetType().BaseType != typeof(Environment)))
                         {
-                            case HitObstacle.None:
-                                this.SurfaceForce = 0;
-                                this.CalculatedVerticalForce -= this.GravitationalForce;
-                                this.VerticalAcceleration = this.CalculatedVerticalForce / this.ObjectMass;
-
-                                break;
-                            case HitObstacle.Bottom:
-                                Console.ReadLine();
-                                this.SurfaceForce = this.SurfaceForce - this.GravitationalForce - this.CalculatedVerticalForce;
-                                this.SurfaceForce *= -1;                                            //Surface force pushes up and therefore should be negative
-                                this.VerticalAcceleration = this.SurfaceForce / this.ObjectMass;
-
-                                break;
-                            case HitObstacle.Left:
-                                this.CalculatedHorizontalForce = 0;
-
-                                break;
-                            case HitObstacle.Top:
-                                break;
-                            case HitObstacle.Right:
-                                this.CalculatedHorizontalForce = 0;
-
-                                break;
+                            this.GVelocity = 0;
+                        }
+                        else
+                        {
+                            if (this.GVelocity > -5)
+                            {
+                                this.GVelocity -= this.Acceleration;
+                            }
                         }
 
                         break;
                     case GravityDirection.Down:
-                        switch (hitObstacle)
+                        if ((hitObstacle == HitObstacle.FromTop) && (this.GetType().BaseType != typeof(Environment)))
                         {
-                            case HitObstacle.None:
-                                this.SurfaceForce = 0;
-                                this.CalculatedVerticalForce += this.GravitationalForce;
-                                this.VerticalAcceleration = this.CalculatedVerticalForce / this.ObjectMass;
-
-                                break;
-                            case HitObstacle.Bottom:
-                                Console.ReadLine();
-                                this.SurfaceForce = this.SurfaceForce + this.GravitationalForce + this.CalculatedVerticalForce;
-                                this.SurfaceForce *= -1;                                            //Surface force pushes up and therefore should be negative
-                                this.VerticalAcceleration = this.SurfaceForce / this.ObjectMass;
-
-                                break;
-                            case HitObstacle.Left:
-                                this.CalculatedHorizontalForce = 0;
-
-                                break;
-                            case HitObstacle.Top:
-                                this.SurfaceForce = 0;
-                                this.CalculatedVerticalForce += this.GravitationalForce;
-                                this.VerticalAcceleration = this.CalculatedVerticalForce / this.ObjectMass;
-
-                                break;
-                            case HitObstacle.Right:
-                                this.CalculatedHorizontalForce = 0;
-
-                                break;
+                            this.GVelocity = 0;
+                        }
+                        else
+                        {
+                            if (this.GVelocity < 5)
+                            {
+                                this.GVelocity += this.Acceleration;
+                            }
                         }
 
                         break;
                     case GravityDirection.Left:
-                        this.SurfaceForce = this.GravitationalForce;
-
-                        switch (hitObstacle)
+                        if ((hitObstacle == HitObstacle.FromRight) && (this.GetType().BaseType != typeof(Environment)))
                         {
-                            case HitObstacle.None:                                
-                                if (this.CalculatedHorizontalForce > -5)
-                                {
-                                    this.CalculatedHorizontalForce -= 0.2f;
-                                }
-
-                                break;
-                            case HitObstacle.Bottom:
-                                if (this.CalculatedHorizontalForce > -5)
-                                {
-                                    this.CalculatedHorizontalForce -= 0.2f;
-                                }
-
-                                break;
-                            case HitObstacle.Left:
-                                this.CalculatedHorizontalForce = 0;
-
-                                break;
-                            case HitObstacle.Top:
-                                if (this.CalculatedHorizontalForce > -5)
-                                {
-                                    this.CalculatedHorizontalForce -= 0.2f;
-                                }
-
-                                break;
-                            case HitObstacle.Right:
-                                this.CalculatedHorizontalForce = 0;
-
-                                break;
+                            this.AVelocity = 0;
+                        }
+                        else
+                        {
+                            if (this.AVelocity > -5)
+                            {
+                                this.AVelocity -= this.Acceleration;
+                            }
                         }
 
                         break;
-                    
+
                     case GravityDirection.Right:
-                        this.SurfaceForce = this.GravitationalForce;
-
-                        switch (hitObstacle)
+                        if ((hitObstacle == HitObstacle.FromLeft) && (this.GetType().BaseType != typeof(Environment)))
                         {
-                            case HitObstacle.None:
-                                if (this.CalculatedHorizontalForce < 5)
-                                {
-                                    this.CalculatedHorizontalForce += 0.2f;
-                                }
-
-                                break;
-                            case HitObstacle.Bottom:
-                                if (this.CalculatedHorizontalForce < 5)
-                                {
-                                    this.CalculatedHorizontalForce += 0.2f;
-                                }
-
-                                break;
-                            case HitObstacle.Left:
-                                this.CalculatedHorizontalForce = 0;
-
-                                break;
-                            case HitObstacle.Top:
-                                if (this.CalculatedHorizontalForce < 5)
-                                {
-                                    this.CalculatedHorizontalForce += 0.2f;
-                                }
-
-                                break;
-                            case HitObstacle.Right:
-                                this.CalculatedHorizontalForce = 0;
-
-                                break;
+                            this.AVelocity = 0;
+                        }
+                        else
+                        {
+                            if (this.AVelocity < 5)
+                            {
+                                this.AVelocity += this.Acceleration;
+                            }
                         }
 
                         break;
                 }
-                
             }
-
-            CalculatedVerticalForce *= (float)(secondsPerFrame * 2);
         }
 
         protected override void Update(GameTime gameTime)

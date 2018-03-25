@@ -40,5 +40,20 @@ namespace Game1
         {
 
         }
+
+        public override Vector2 ApplyMovement()
+        {
+            Vector2 returnValue;
+            
+            base.CalculateGravity();
+            base.CalculateMovement();
+
+            returnValue = new Vector2(
+                this.Rectangle.X + base.AVelocity,
+                this.Rectangle.Y + base.GVelocity
+            );
+
+            return returnValue;
+        }
     }
 }

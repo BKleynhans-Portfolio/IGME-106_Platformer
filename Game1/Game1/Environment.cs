@@ -102,49 +102,16 @@ namespace Game1
             get { return this.initialYPlacement; }
             private set { this.initialYPlacement = value; }
         }
-        
-        public override bool Intersects(GameObject passedGameObject)
-        {
-            bool returnValue = false;
-
-            if (this.Rectangle.Intersects(passedGameObject.Rectangle))
-            {
-                returnValue = true;
-
-                if (this.Rectangle.Top <= passedGameObject.Rectangle.Bottom)
-                {
-                    this.hitObstacle = HitObstacle.Top;
-                }                
-                else if (this.Rectangle.Bottom >= passedGameObject.Rectangle.Top)
-                {
-                    this.hitObstacle = HitObstacle.Bottom;
-                }
-                else if (this.Rectangle.Left <= passedGameObject.Rectangle.Right)
-                {
-                    this.hitObstacle = HitObstacle.Left;
-                }                
-                else if (this.Rectangle.Right >= passedGameObject.Rectangle.Left)
-                {
-                    this.hitObstacle = HitObstacle.Right;
-                }
-            }
-            else
-            {
-                returnValue = false;
-            }
-
-            return returnValue;
-        }
 
         public virtual Vector2 ApplyMovement()
         {
             Vector2 returnValue;
 
-            base.CalculateForces();
+            base.CalculateGravity();
 
             returnValue = new Vector2(
-                this.Rectangle.X + base.CalculatedHorizontalForce,
-                this.Rectangle.Y + VerticalAcceleration
+                this.Rectangle.X + base.AVelocity,
+                this.Rectangle.Y + base.GVelocity
             );
 
             return returnValue;
@@ -166,22 +133,22 @@ namespace Game1
             }
 
             switch (hitObstacle) {
-                case HitObstacle.Left:
+                case HitObstacle.FromLeft:
                     if (gravityOnProximityFrom == GravityOnProximityFrom.Left)
                         base.ApplyGravity = true;
 
                     break;
-                case HitObstacle.Top:
+                case HitObstacle.FromTop:
                     if (gravityOnProximityFrom == GravityOnProximityFrom.Top)
                         base.ApplyGravity = true;
 
                     break;
-                case HitObstacle.Right:
+                case HitObstacle.FromRight:
                     if (gravityOnProximityFrom == GravityOnProximityFrom.Right)
                         base.ApplyGravity = true;
 
                     break;
-                case HitObstacle.Bottom:
+                case HitObstacle.FromBottom:
                     if (gravityOnProximityFrom == GravityOnProximityFrom.Bottom)
                         base.ApplyGravity = true;
 
@@ -191,12 +158,32 @@ namespace Game1
             if (base.ApplyGravity == true)
             {
                 switch (platformMovement)
+                {   
+                    case PlatformMovement.ToAndFroUpFirst:
+                        base.gravityDirection = GravityDirection.Up;
+
+                        break;
+                    case PlatformMovement.ToAndFroDownFirst:
+                        base.gravityDirection = GravityDirection.Down;
+
+                        break;
+                    case PlatformMovement.ToAndFroLeftFirst:
+                        base.gravityDirection = GravityDirection.Left;
+
+                        break;
+                    case PlatformMovement.ToAndFroRightFirst:
+                        base.gravityDirection = GravityDirection.Right;
+
+                        break;
+                }
+
+                switch (platformMovement)
                 {
                     case PlatformMovement.ToAndFroRightFirst:
                         if ((
                                 (base.gravityDirection == GravityDirection.Right) && 
                                 (this.Rectangle.X > (this.InitialXPlacement + this.ObjectXMoveDistance))
-                                ) || (
+                            ) || (
                                 (base.gravityDirection == GravityDirection.Left) && 
                                 (this.Rectangle.X <= this.InitialXPlacement)
                             ))
@@ -209,7 +196,7 @@ namespace Game1
                         if ((
                                 (base.gravityDirection == GravityDirection.Left) &&
                                 (this.Rectangle.X < (this.InitialXPlacement - this.ObjectXMoveDistance))
-                                ) || (
+                            ) || (
                                 (base.gravityDirection == GravityDirection.Right) &&
                                 (this.Rectangle.X >= this.InitialXPlacement)
                             ))
@@ -222,9 +209,25 @@ namespace Game1
                         if ((
                                 (base.gravityDirection == GravityDirection.Down) &&
                                 (this.Rectangle.Y > (this.InitialYPlacement + this.ObjectYMoveDistance))
-                                ) || (
+                            ) || (
                                 (base.gravityDirection == GravityDirection.Up) &&
                                 (this.Rectangle.Y <= this.InitialYPlacement)
+                            ))
+                        {
+                            SwitchDirections();
+                        }
+
+                        break;
+                    case PlatformMovement.ToAndFroUpFirst:
+                        if ((
+                                (base.gravityDirection == GravityDirection.Up) &&
+                                (this.Rectangle.Y < (this.InitialYPlacement + this.ObjectYMoveDistance))
+                            ) || (
+                                (base.gravityDirection == GravityDirection.Down) &&
+                                (this.Rectangle.Y >= this.InitialYPlacement)
+                            ) || (
+                                (base.hitObstacle == HitObstacle.FromTop) ||
+                                (base.hitObstacle == HitObstacle.FromBottom)
                             ))
                         {
                             SwitchDirections();
@@ -255,156 +258,6 @@ namespace Game1
             {
                 base.gravityDirection = GravityDirection.Left;
             }
-        }
-
-        public override void CalculateForces()
-        {
-            if (this.ApplyGravity)
-            {
-                switch (gravityDirection)
-                {
-                    case GravityDirection.Up://This is where I'm working
-                        switch (hitObstacle)
-                        {
-                            case HitObstacle.None:
-                                this.SurfaceForce = 0;
-                                this.CalculatedVerticalForce -= this.GravitationalForce;
-                                this.VerticalAcceleration = this.CalculatedVerticalForce / this.ObjectMass;
-
-                                break;
-                            case HitObstacle.Bottom:
-                                Console.ReadLine();
-                                this.SurfaceForce = this.SurfaceForce - this.GravitationalForce - this.CalculatedVerticalForce;
-                                this.SurfaceForce *= -1;                                            //Surface force pushes up and therefore should be negative
-                                this.VerticalAcceleration = this.SurfaceForce / this.ObjectMass;
-
-                                break;
-                            case HitObstacle.Left:
-                                this.CalculatedHorizontalForce = 0;
-
-                                break;
-                            case HitObstacle.Top:
-                                break;
-                            case HitObstacle.Right:
-                                this.CalculatedHorizontalForce = 0;
-
-                                break;
-                        }
-
-                        break;
-                    case GravityDirection.Down:
-                        switch (hitObstacle)
-                        {
-                            case HitObstacle.None:
-                                this.SurfaceForce = 0;
-                                this.CalculatedVerticalForce += this.GravitationalForce;
-                                this.VerticalAcceleration = this.CalculatedVerticalForce / this.ObjectMass;
-
-                                break;
-                            case HitObstacle.Bottom:
-                                Console.ReadLine();
-                                this.SurfaceForce = this.SurfaceForce + this.GravitationalForce + this.CalculatedVerticalForce;
-                                this.SurfaceForce *= -1;                                            //Surface force pushes up and therefore should be negative
-                                this.VerticalAcceleration = this.SurfaceForce / this.ObjectMass;
-
-                                break;
-                            case HitObstacle.Left:
-                                this.CalculatedHorizontalForce = 0;
-
-                                break;
-                            case HitObstacle.Top:
-                                this.SurfaceForce = 0;
-                                this.CalculatedVerticalForce += this.GravitationalForce;
-                                this.VerticalAcceleration = this.CalculatedVerticalForce / this.ObjectMass;
-
-                                break;
-                            case HitObstacle.Right:
-                                this.CalculatedHorizontalForce = 0;
-
-                                break;
-                        }
-
-                        break;
-                    case GravityDirection.Left:
-                        this.SurfaceForce = this.GravitationalForce;
-
-                        switch (hitObstacle)
-                        {
-                            case HitObstacle.None:
-                                if (this.CalculatedHorizontalForce > -5)
-                                {
-                                    this.CalculatedHorizontalForce -= 0.2f;
-                                }
-
-                                break;
-                            case HitObstacle.Bottom:
-                                if (this.CalculatedHorizontalForce > -5)
-                                {
-                                    this.CalculatedHorizontalForce -= 0.2f;
-                                }
-
-                                break;
-                            case HitObstacle.Left:
-                                this.CalculatedHorizontalForce = 0;
-
-                                break;
-                            case HitObstacle.Top:
-                                if (this.CalculatedHorizontalForce > -5)
-                                {
-                                    this.CalculatedHorizontalForce -= 0.2f;
-                                }
-
-                                break;
-                            case HitObstacle.Right:
-                                this.CalculatedHorizontalForce = 0;
-
-                                break;
-                        }
-
-                        break;
-
-                    case GravityDirection.Right:
-                        this.SurfaceForce = this.GravitationalForce;
-
-                        switch (hitObstacle)
-                        {
-                            case HitObstacle.None:
-                                if (this.CalculatedHorizontalForce < 5)
-                                {
-                                    this.CalculatedHorizontalForce += 0.2f;
-                                }
-
-                                break;
-                            case HitObstacle.Bottom:
-                                if (this.CalculatedHorizontalForce < 5)
-                                {
-                                    this.CalculatedHorizontalForce += 0.2f;
-                                }
-
-                                break;
-                            case HitObstacle.Left:
-                                this.CalculatedHorizontalForce = 0;
-
-                                break;
-                            case HitObstacle.Top:
-                                if (this.CalculatedHorizontalForce < 5)
-                                {
-                                    this.CalculatedHorizontalForce += 0.2f;
-                                }
-
-                                break;
-                            case HitObstacle.Right:
-                                this.CalculatedHorizontalForce = 0;
-
-                                break;
-                        }
-
-                        break;
-                }
-
-            }
-
-            CalculatedVerticalForce *= (float)(secondsPerFrame * 2);
         }
     }
 }

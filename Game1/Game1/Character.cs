@@ -33,19 +33,16 @@ namespace Game1
         protected abstract void Die();
 
         private bool isAlive;
-        private bool hasJumped;
-        private int jumpsAllowed;
-        private int jumpCount;
-        private int jumpCurveCounter;
+        private bool hasJumped;        
 
-
-        private int jumpDuration;                                                           // In seconds
+        //private int jumpDuration;                                                           // In seconds
 
         public Character(Texture2D spriteTexture, int x, int y, int width, int height) : base(spriteTexture, x, y, width, height)
         {
             this.HasJumped = false;
+            base.JumpInProgress = false;
 
-            this.JumpDuration = 2;
+            //this.JumpDuration = 2;
 
         }
 
@@ -56,8 +53,9 @@ namespace Game1
                     appliedGravitationalAcceleration, appliedObjectMass)
         {
             this.HasJumped = false;
+            base.JumpInProgress = false;
 
-            this.JumpDuration = 2;
+            //this.JumpDuration = 2;
         }
 
         public bool IsAlive
@@ -72,136 +70,96 @@ namespace Game1
             set { this.hasJumped = value; }
         }
 
-        public int JumpDuration
-        {
-            get { return this.jumpDuration; }
-            set { this.jumpDuration = value; }
-        }
+        //public int JumpDuration
+        //{
+        //    get { return this.jumpDuration; }
+        //    set { this.jumpDuration = value; }
+        //}
 
         public virtual Vector2 ApplyMovement()
         {
             Vector2 returnValue;
-            
-            CalculateForces();
+
+            CalculateGravity();
+            CalculateMovement();
 
             returnValue = new Vector2(
-                this.Rectangle.X + base.CalculatedHorizontalForce,
-                this.Rectangle.Y + VerticalAcceleration
+                this.Rectangle.X + base.AVelocity,
+                this.Rectangle.Y + base.GVelocity
             );
 
             return returnValue;
         }
 
-        public override void CalculateForces()
+        public override void CalculateGravity()
         {
-            if (base.ApplyGravity)
+            if (this.ApplyGravity)
             {
-                switch (hitObstacle)
+                switch (gravityDirection)
                 {
-                    case HitObstacle.None:
+                    case GravityDirection.Up:
+                        
 
-                        this.SurfaceForce = 0;
-
-                        if (this.HasJumped)
+                        break;
+                    case GravityDirection.Down:
+                        if (hitObstacle == HitObstacle.FromTop)
                         {
-                            this.VerticalAcceleration = this.CalculatedVerticalForce / this.ObjectMass;
-
-                            if (this.VerticalAcceleration < 0)
-                            {
-                                if (((this.GravitationalAcceleration + this.VerticalAcceleration) * this.ObjectMass) == 0)
-                                {
-                                    this.CalculatedVerticalForce -= (-0.4f * this.ObjectMass);
-                                }
-                                else
-                                {
-                                    this.CalculatedVerticalForce += ((this.GravitationalAcceleration + this.VerticalAcceleration) * this.ObjectMass);
-                                }
-
-                                this.CalculatedVerticalForce += 25;
-                            }
-
-                            if (this.VerticalAcceleration > 0)
-                            {
-                                this.HasJumped = false;
-                            }
+                            base.Falling = false;
+                            this.GVelocity = 0;                            
                         }
-                        else if (base.Falling)
+                        else if (!HasJumped)
                         {
-                            if (this.VerticalAcceleration <= 0)
-                            {
-                                this.VerticalAcceleration += this.GravitationalAcceleration;
-                            }
-                            else
-                            {
-                                this.VerticalAcceleration += 0.1f;
-                            }
-                        }
-                        else
-                        {                          
-                            if (VerticalAcceleration > 0)
-                            {
-                                this.hasJumped = false;
-                                base.Falling = true;
-                            }
-                            else
-                            {
-                                VerticalAcceleration++;
-                            }
+                            this.GVelocity += this.Acceleration;
                         }
 
                         break;
-                    case HitObstacle.Bottom:
-                        this.SurfaceForce = (this.GravitationalForce + this.CalculatedVerticalForce) * -1;
-                        this.CalculatedVerticalForce = this.GravitationalForce + this.SurfaceForce;
-                        this.VerticalAcceleration = this.CalculatedVerticalForce / this.ObjectMass;
+                    case GravityDirection.Left:
 
                         break;
-                    case HitObstacle.Left:
-                        this.CalculatedHorizontalForce = 0;
-
-                        break;
-                    case HitObstacle.Top:
-                        break;
-                    case HitObstacle.Right:
-                        this.CalculatedHorizontalForce = 0;
-
+                    case GravityDirection.Right:
+                        
                         break;
                 }
             }
         }
 
-        //public override bool Intersects(GameObject passedGameObject)
-        //{
-        //    bool returnValue = false;
+        public void CalculateMovement()
+        {
+            if (movementAppliedTo == MovementAppliedTo.None)
+            {
+                this.AVelocity = 0;
+            }
 
-        //    if (this.Rectangle.Intersects(passedGameObject.Rectangle))
-        //    {
-        //        returnValue = true;
+            if ((movementAppliedTo == MovementAppliedTo.Left) && (hitObstacle != HitObstacle.FromLeft))            
+            {
+                this.AVelocity = -DefaultHorizonalVelocity;
+            }
 
-        //        if ((this.HasJumped == false) && (this.Falling == true))
-        //        {
-        //            if ((this.Rectangle.Bottom >= passedGameObject.Rectangle.Top) && (passedGameObject.GetType() == typeof(Platform)))
-        //            {
-        //                this.hitObstacle = HitObstacle.Bottom;
-        //                base.CalculatedVerticalForce = 0;
-        //                this.Falling = false;
-        //            }
-        //            else if ((this.Rectangle.Top <= passedGameObject.Rectangle.Bottom) && (passedGameObject.GetType() == typeof(Platform)))
-        //            {
-        //                this.hitObstacle = HitObstacle.Top;
-        //            }
-        //            else if ((this.Rectangle.Left <= passedGameObject.Rectangle.Right) && (passedGameObject.GetType() == typeof(Platform)))
-        //            {
-        //                this.hitObstacle = HitObstacle.Left;
-        //            }                    
-        //            else if ((this.Rectangle.Right >= passedGameObject.Rectangle.Left) && (passedGameObject.GetType() == typeof(Platform)))
-        //            {
-        //                this.hitObstacle = HitObstacle.Right;
-        //            }
-        //        }
-        //    }
+            if ((movementAppliedTo == MovementAppliedTo.Right) && (hitObstacle != HitObstacle.FromRight)) 
+            {
+                this.AVelocity = DefaultHorizonalVelocity;
+            }
 
-        //    return returnValue;
-        //}
+            if ((movementAppliedTo == MovementAppliedTo.Up) && (hitObstacle != HitObstacle.FromTop))
+            {
+                 if ((HasJumped) && (GVelocity == 0))
+                {
+                    this.GVelocity -= DefaultVerticalVelocity;
+                }
+                else if ((HasJumped) && (GVelocity > -5))                    
+                {
+                    this.GVelocity -= this.Acceleration;
+                }
+                else if ((HasJumped) && (GVelocity <= -5))
+                {
+                    this.GVelocity += this.Acceleration;
+                    HasJumped = false;
+                }
+                else if ((!HasJumped) && (JumpInProgress) && (GVelocity <= -5))
+                {
+                    this.GVelocity += this.Acceleration;
+                }
+            }
+        }        
     }
 }

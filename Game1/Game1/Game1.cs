@@ -131,8 +131,8 @@ namespace Game1
             //platform[1].platformMovement = PlatformMovement.ToAndFroDownFirst;
 
             platform[2].ApplyGravity = false;
-            platform[2].gravityDirection = GravityDirection.Up;
-            platform[2].gravityOnProximityFrom = GravityOnProximityFrom.Left;
+            platform[2].gravityDirection = GravityDirection.Down;
+            platform[2].gravityOnProximityFrom = GravityOnProximityFrom.Top;
             platform[2].platformMovement = PlatformMovement.OneDirection;
 
             enemy.Add(new Enemy(playerSprites, 100, 50, 50, 50));                           // Load enemy sprite

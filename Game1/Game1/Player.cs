@@ -32,8 +32,6 @@ namespace Game1
         public Player(Texture2D spriteTexture, int x, int y, int width, int height) : base(spriteTexture, x, y, width, height)
         {
             base.IsAlive = true;
-            base.JumpsAllowed = 2;
-            base.JumpCount = 0;
         }
 
         public Player(Texture2D spriteTexture, int x, int y, int width, int height,
@@ -51,12 +49,23 @@ namespace Game1
             set { this.jumpCount = value; }
         }
 
-        protected override void Die()
+        protected void TakeLife()
         {
-            Console.WriteLine("Player Died");
+            Console.WriteLine("You lost a life, " + base.Lives + " lives left");
+
 
             base.CreateRectangle(new Vector2(50, 50));
             this.IsAlive = true;
+
+            //if (base.Lives == 0)
+            //{
+            //    //Die();
+            //}
+        }
+
+        protected override void Die()
+        {
+            Console.WriteLine("Player Died");
         }
 
         public override Vector2 ApplyMovement()
@@ -71,43 +80,60 @@ namespace Game1
             {
                 base.movementAppliedTo = MovementAppliedTo.Right;
             }
-            else if (((currentKeyboardState.IsKeyDown(Keys.Space)) && (previousKeyboardState.IsKeyUp(Keys.Space))) &&
-                    ((this.hitObstacle == HitObstacle.Bottom) || (this.JumpCount == 1)))
+
+            if (gravityDirection == GravityDirection.Down)
             {
-                base.movementAppliedTo = MovementAppliedTo.Up;
-
-                this.hitObstacle = HitObstacle.None;
-
-                if (this.HasJumped == false)
+                if (((currentKeyboardState.IsKeyDown(Keys.Space)) && (previousKeyboardState.IsKeyUp(Keys.Space))) &&
+                    ((this.hitObstacle == HitObstacle.FromTop) || (this.JumpCount == 1)))
                 {
-                    this.HasJumped = true;
-                    base.CalculatedVerticalForce = (base.VerticalMovementForce * -1);
-                    this.CalculatedVerticalForce += this.GravitationalForce;
+                    base.movementAppliedTo = MovementAppliedTo.Up;
+
+                    base.hitObstacle = HitObstacle.None;
+
+                    if (base.HasJumped == false)
+                    {
+                        base.HasJumped = true;
+                    }
+
+                    if (base.JumpInProgress == false)
+                    {
+                        base.JumpInProgress = true;
+                    }
                 }
             }
-            else if ((currentKeyboardState.IsKeyUp(Keys.A)) && (currentKeyboardState.IsKeyUp(Keys.D)))
+            else if (gravityDirection == GravityDirection.Up)
+            {
+                if (((currentKeyboardState.IsKeyDown(Keys.Space)) && (previousKeyboardState.IsKeyUp(Keys.Space))) &&
+                    ((this.hitObstacle == HitObstacle.FromTop) || (this.JumpCount == 1)))
+                {
+                    base.movementAppliedTo = MovementAppliedTo.Down;
+
+                    base.hitObstacle = HitObstacle.None;
+
+                    if (base.HasJumped == false)
+                    {
+                        base.HasJumped = true;
+                    }
+
+                    if (base.JumpInProgress == false)
+                    {
+                        base.JumpInProgress = true;
+                    }
+                }
+            }
+
+            if ((currentKeyboardState.IsKeyUp(Keys.A)) && (currentKeyboardState.IsKeyUp(Keys.D)) &&
+                (base.Falling == false) && (base.HasJumped == false) && (base.JumpInProgress == false))
             {
                 base.movementAppliedTo = MovementAppliedTo.None;
             }
 
-            if ((base.CalculatedHorizontalForce >= -5) && (movementAppliedTo == MovementAppliedTo.Left))
-            {
-                base.CalculatedHorizontalForce -= 5;
-            }
-            else if ((base.CalculatedHorizontalForce <= 5) && (movementAppliedTo == MovementAppliedTo.Right))
-            {
-                base.CalculatedHorizontalForce += 5;
-            }
-            else if (((base.CalculatedHorizontalForce > 0) || (base.CalculatedHorizontalForce < 0)) && (movementAppliedTo == MovementAppliedTo.None))
-            {
-                base.CalculatedHorizontalForce = 0;
-            }
-
-            base.CalculateForces();
+            base.CalculateGravity();
+            base.CalculateMovement();
 
             returnValue = new Vector2(
-                this.Rectangle.X + base.CalculatedHorizontalForce,
-                this.Rectangle.Y + VerticalAcceleration
+                this.Rectangle.X + base.AVelocity,
+                this.Rectangle.Y + base.GVelocity
             );
 
             return returnValue;
@@ -148,7 +174,7 @@ namespace Game1
             }
             else
             {
-                Die();
+                TakeLife();
             }
         }
 
