@@ -121,10 +121,6 @@ namespace Game1
         /// <param name="width">Width of object</param>
         /// <param name="height">Height of object</param>
         /// <param name="addGravity">Does this object require immediate gravity implementation</param>
-        /// <param name="appliedMoveForce">The force that is used to calculate horizontal movement</param>
-        /// <param name="appliedVerticalMovementForce">The force that is used to calculate vertical movement.  This
-        ///                 is the jump strength in case of characters</param>
-        /// <param name="appliedGravitationalAcceleration">This is the unit used for gravitational acceleration</param>
         /// <param name="appliedObjectMass">This is the mass that should be applied to the object</param>
         public GameObject(Texture2D spriteTexture, int x, int y, int width, int height,
                           bool addGravity, float appliedObjectMass)
@@ -280,58 +276,49 @@ namespace Game1
         {
             bool returnValue = false;
 
-            // Does this object's rectangle intersect with the passed in object's rectangle
-            if (this.Rectangle.Intersects(passedGameObject.Rectangle))
+            if (this.Rectangle.Intersects(passedGameObject.Rectangle))                      // Does this object's rectangle intersect with the passed in object's rectangle
             {
                 returnValue = true;
-
-                // New X and Y values in case there is an intersection
-                float newX;
+                                
+                float newX;                                                                 // New X and Y values in case there is an intersection
                 float newY;
 
-                // If the lower border of this object has a larger Y coordinate than the upper border
-                //  of the passed in object, and the two are not in line (lower borders are not the same)
-                if ((this.Rectangle.Bottom > passedGameObject.Rectangle.Top) && 
-                    (this.Rectangle.Bottom != passedGameObject.Rectangle.Bottom))
+                if ((this.Rectangle.Bottom > passedGameObject.Rectangle.Top) &&             // If the lower border of this object has a larger Y coordinate than the upper border
+                    (this.Rectangle.Bottom != passedGameObject.Rectangle.Bottom))           //  of the passed in object, and the two are not in line (lower borders are not the same)
                 {
-                    // If this object is of type Character and the passed in object is of type Platform
-                        // *** Each continuation of the BaseType keyword goes up one additional level in the derived classes
+                                                                                            // If this object is of type Character and the passed in object is of type Platform
+                                                                                            // *** Each continuation of the BaseType keyword goes up one additional level in the derived classes
                     if (((this.GetType().BaseType == typeof(Character)) || (this.GetType().BaseType.BaseType == typeof(Character))) && 
                         (passedGameObject.GetType() == typeof(Platform)))
                     {
                         this.hitObstacle = HitObstacle.FromTop;
                         this.JumpInProgress = false;
 
-                        // Define new X and Y coordinates and create a new rectangle
-                        newX = this.Rectangle.X;
+                        newX = this.Rectangle.X;                                            // Define new X and Y coordinates and create a new rectangle
                         newY = passedGameObject.Rectangle.Y - this.Rectangle.Height + 1;
 
                         if (newX != this.Rectangle.X || newY != this.Rectangle.Y)
                         {
                             CreateRectangle(new Vector2(newX, newY));
                         }
-                    }
-                    // If both this object as well as the passed in object are of type Character
-                        // *** Each continuation of the BaseType keyword goes up one additional level in the derived classes
-                    else if ((      
-                                (this.GetType().BaseType == typeof(Character)) &&
+                    }   
+                    else if ((                                                              // If both this object as well as the passed in object are of type Character
+                                (this.GetType().BaseType == typeof(Character)) &&           // *** Each continuation of the BaseType keyword goes up one additional level in the derived classes
                                 (passedGameObject.GetType().BaseType.BaseType == typeof(Character))
                             ) || (
                                 (this.GetType().BaseType.BaseType == typeof(Character)) &&
                                 (passedGameObject.GetType().BaseType == typeof(Character))
                             ))
-                    {
-                        // Indicate that this object was hit by an NPC coming from the top
-                        this.hitNPC = HitNPC.FromTop;
+                    {                        
+                        this.hitNPC = HitNPC.FromTop;                                       // Indicate that this object was hit by an NPC coming from the top
 
-                        // If the player was hit by and NPC and it is not a friendly NPC, subtract one life.
+                                                                                            // If the player was hit by and NPC and it is not a friendly NPC, subtract one life.
                         if ((this.GetType() == typeof(Player)) && (passedGameObject.GetType() != typeof(Friendly)))
                         {
                             this.Lives--;
                         }                        
                     }
-                    // If both this object as well as the passed in object are of type Environment
-                    else if ((this.GetType().BaseType == typeof(Environment)) &&
+                    else if ((this.GetType().BaseType == typeof(Environment)) &&            // If both this object as well as the passed in object are of type Environment
                             (passedGameObject.GetType().BaseType == typeof(Environment)))
                     {
                         hitObstacle = HitObstacle.None;
@@ -341,21 +328,18 @@ namespace Game1
                         this.hitObstacle = HitObstacle.FromTop;
                     }
                 }
-                // If the upper border of this object has a larger Y coordinate than the lower border
-                //  of the passed in object, and the two are not in line (lower borders are not the same)
-                else if ((this.Rectangle.Top < passedGameObject.Rectangle.Bottom) &&
-                        (this.Rectangle.Bottom != passedGameObject.Rectangle.Bottom))
+                else if ((this.Rectangle.Top < passedGameObject.Rectangle.Bottom) &&        // If the upper border of this object has a larger Y coordinate than the lower border
+                        (this.Rectangle.Bottom != passedGameObject.Rectangle.Bottom))       //  of the passed in object, and the two are not in line (lower borders are not the same)
                 {
-                    // If this object is of type Character and the passed in object is of type Platform
-                    // *** Each continuation of the BaseType keyword goes up one additional level in the derived classes
+                                                                                            // If this object is of type Character and the passed in object is of type Platform
+                                                                                            // *** Each continuation of the BaseType keyword goes up one additional level in the derived classes
                     if (((this.GetType().BaseType == typeof(Character)) || (this.GetType().BaseType.BaseType == typeof(Character))) &&
                         (passedGameObject.GetType() == typeof(Platform)))
                     {
                         this.hitObstacle = HitObstacle.FromBottom;
                         this.JumpInProgress = false;
 
-                        // Define new X and Y coordinates and create a new rectangle
-                        newX = this.Rectangle.X;
+                        newX = this.Rectangle.X;                                            // Define new X and Y coordinates and create a new rectangle
                         newY = passedGameObject.Rectangle.Y + passedGameObject.Rectangle.Height - 1;
 
                         if (newX != this.Rectangle.X || newY != this.Rectangle.Y)
@@ -363,25 +347,22 @@ namespace Game1
                             CreateRectangle(new Vector2(newX, newY));
                         }
                     }
-                    // If this object is of type Character and the passed in object is of type Platform
-                    // *** Each continuation of the BaseType keyword goes up one additional level in the derived classes
-                    else if
-                       (
+                    else if                                                                 // If this object is of type Character and the passed in object is of type Platform
+                       (                                                                    // *** Each continuation of the BaseType keyword goes up one additional level in the derived classes
                            ((this.GetType().BaseType == typeof(Character)) && (passedGameObject.GetType().BaseType.BaseType == typeof(Character))) ||
                            ((this.GetType().BaseType.BaseType == typeof(Character)) && (passedGameObject.GetType().BaseType == typeof(Character)))
                        )
-                    {
-                        // Indicate that this object was hit by an NPC coming from the bottom
-                        this.hitNPC = HitNPC.FromBottom;
+                    {                        
+                        this.hitNPC = HitNPC.FromBottom;                                    // Indicate that this object was hit by an NPC coming from the bottom
 
-                        // If the player was hit by and NPC and it is not a friendly NPC, subtract one life.
+                                                                                            // If the player was hit by and NPC and it is not a friendly NPC, subtract one life.
                         if ((this.GetType() == typeof(Player)) && (passedGameObject.GetType() != typeof(Friendly)))
                         {
                             this.Lives--;
                         }
                     }
-                    // If both this object as well as the passed in object are of type Environment
-                    else if ((this.GetType().BaseType == typeof(Environment)) && (passedGameObject.GetType().BaseType == typeof(Environment)))
+                    else if ((this.GetType().BaseType == typeof(Environment)) &&            // If both this object as well as the passed in object are of type Environment
+                            (passedGameObject.GetType().BaseType == typeof(Environment)))
                     {
                         hitObstacle = HitObstacle.None;
                     }
@@ -392,8 +373,8 @@ namespace Game1
                 }
                 else if ((this.Rectangle.Left < passedGameObject.Rectangle.Right) && (this.Rectangle.Right != passedGameObject.Rectangle.Right))                  
                 {
-                    // If this object is of type Character and the passed in object is of type Platform
-                    // *** Each continuation of the BaseType keyword goes up one additional level in the derived classes
+                                                                                            // If this object is of type Character and the passed in object is of type Platform
+                                                                                            // *** Each continuation of the BaseType keyword goes up one additional level in the derived classes
                     if (((this.GetType().BaseType == typeof(Character)) || (this.GetType().BaseType.BaseType == typeof(Character))) &&
                         (passedGameObject.GetType() == typeof(Platform)))
                     {
@@ -402,32 +383,28 @@ namespace Game1
 
                         newX = passedGameObject.Rectangle.X + passedGameObject.Rectangle.Width - 1;
                         newY = this.Rectangle.Y;
-
-                        // Define new X and Y coordinates and create a new rectangle
-                        if (newX != this.Rectangle.X || newY != this.Rectangle.Y)
+                        
+                        if (newX != this.Rectangle.X || newY != this.Rectangle.Y)           // Define new X and Y coordinates and create a new rectangle
                         {
                             CreateRectangle(new Vector2(newX, newY));
                         }
                     }
-                    // If this object is of type Character and the passed in object is of type Platform
-                    // *** Each continuation of the BaseType keyword goes up one additional level in the derived classes
-                    else if
-                       (
+                    else if                                                                 // If this object is of type Character and the passed in object is of type Platform
+                       (                                                                    // *** Each continuation of the BaseType keyword goes up one additional level in the derived classes
                            ((this.GetType().BaseType == typeof(Character)) && (passedGameObject.GetType().BaseType.BaseType == typeof(Character))) ||
                            ((this.GetType().BaseType.BaseType == typeof(Character)) && (passedGameObject.GetType().BaseType == typeof(Character)))
                        )
-                    {
-                        // Indicate that this object was hit by an NPC coming from the right
-                        this.hitNPC = HitNPC.FromRight;
+                    {                        
+                        this.hitNPC = HitNPC.FromRight;                                     // Indicate that this object was hit by an NPC coming from the right
 
-                        // If the player was hit by and NPC and it is not a friendly NPC, subtract one life.
+                                                                                            // If the player was hit by and NPC and it is not a friendly NPC, subtract one life.
                         if ((this.GetType() == typeof(Player)) && (passedGameObject.GetType() != typeof(Friendly)))
                         {
                             this.Lives--;
                         }
                     }
-                    // If both this object as well as the passed in object are of type Environment
-                    else if ((this.GetType().BaseType == typeof(Environment)) && (passedGameObject.GetType().BaseType == typeof(Environment)))
+                    else if ((this.GetType().BaseType == typeof(Environment)) &&            // If both this object as well as the passed in object are of type Environment
+                            (passedGameObject.GetType().BaseType == typeof(Environment)))
                     {
                         hitObstacle = HitObstacle.None;
                     }
@@ -438,16 +415,15 @@ namespace Game1
                 }
                 else if ((this.Rectangle.Right > passedGameObject.Rectangle.Left) && (this.Rectangle.Left != passedGameObject.Rectangle.Left))
                 {
-                    // If this object is of type Character and the passed in object is of type Platform
-                    // *** Each continuation of the BaseType keyword goes up one additional level in the derived classes
+                                                                                            // If this object is of type Character and the passed in object is of type Platform
+                                                                                            // *** Each continuation of the BaseType keyword goes up one additional level in the derived classes
                     if (((this.GetType().BaseType == typeof(Character)) || (this.GetType().BaseType.BaseType == typeof(Character))) &&
                         (passedGameObject.GetType() == typeof(Platform)))
                     {
                         this.hitObstacle = HitObstacle.FromLeft;
                         this.JumpInProgress = false;
-
-                        // Define new X and Y coordinates and create a new rectangle
-                        newX = passedGameObject.Rectangle.X - this.Rectangle.Width + 1;
+                                                
+                        newX = passedGameObject.Rectangle.X - this.Rectangle.Width + 1;     // Define new X and Y coordinates and create a new rectangle
                         newY = this.Rectangle.Y;
 
                         if (newX != this.Rectangle.X || newY != this.Rectangle.Y)
@@ -455,25 +431,22 @@ namespace Game1
                             CreateRectangle(new Vector2(newX, newY));
                         }
                     }
-                    // If this object is of type Character and the passed in object is of type Platform
-                    // *** Each continuation of the BaseType keyword goes up one additional level in the derived classes
-                    else if
-                       (
+                    else if                                                                 // If this object is of type Character and the passed in object is of type Platform
+                       (                                                                    // *** Each continuation of the BaseType keyword goes up one additional level in the derived classes
                            ((this.GetType().BaseType == typeof(Character)) && (passedGameObject.GetType().BaseType.BaseType == typeof(Character))) ||
                            ((this.GetType().BaseType.BaseType == typeof(Character)) && (passedGameObject.GetType().BaseType == typeof(Character)))
                        )
-                    {
-                        // Indicate that this object was hit by an NPC coming from the left
-                        this.hitNPC = HitNPC.FromLeft;
+                    {                        
+                        this.hitNPC = HitNPC.FromLeft;                                      // Indicate that this object was hit by an NPC coming from the left
 
-                        // If the player was hit by and NPC and it is not a friendly NPC, subtract one life.
+                                                                                            // If the player was hit by and NPC and it is not a friendly NPC, subtract one life.
                         if ((this.GetType() == typeof(Player)) && (passedGameObject.GetType() != typeof(Friendly)))
                         {
                             this.Lives--;
                         }
-                    }
-                    // If both this object as well as the passed in object are of type Environment
-                    else if ((this.GetType().BaseType == typeof(Environment)) && (passedGameObject.GetType().BaseType == typeof(Environment)))
+                    }                    
+                    else if ((this.GetType().BaseType == typeof(Environment)) &&            // If both this object as well as the passed in object are of type Environment
+                            (passedGameObject.GetType().BaseType == typeof(Environment)))
                     {
                         hitObstacle = HitObstacle.None;
                     }
@@ -491,24 +464,20 @@ namespace Game1
         /// Calculates the amount of force to apply for the object during each iteration of the game loop
         /// </summary>
         public virtual void CalculateGravity()
-        {
-            // If the object requires gravity to be implemented
-            if (this.ApplyGravity)
-            {
-                // Based on which direction the gravity is implemented in
-                switch (gravityDirection)
+        {            
+            if (this.ApplyGravity)                                                          // If the object requires gravity to be implemented
+            {                
+                switch (gravityDirection)                                                   // Based on which direction the gravity is implemented in
                 {
-                    case GravityDirection.Up:
-                        // If this object is hit from the bottom and it is not an environment object
-                        if ((hitObstacle == HitObstacle.FromBottom) && (this.GetType().BaseType != typeof(Environment)))
-                        {
-                            // Set gravitational velocity to 0
-                            this.GravitationalVelocity = 0;
+                    case GravityDirection.Up:                        
+                        if ((hitObstacle == HitObstacle.FromBottom) &&                      // If this object is hit from the bottom and it is not an environment object
+                            (this.GetType().BaseType != typeof(Environment)))
+                        {                            
+                            this.GravitationalVelocity = 0;                                 // Set gravitational velocity to 0
                         }
                         else
-                        {
-                            // If it is not hit, or it is hit and is an environment object, apply appropriate gravity
-                            if (this.GravitationalVelocity > -5)
+                        {                            
+                            if (this.GravitationalVelocity > -5)                            // If it is not hit, or it is hit and is an environment object, apply appropriate gravity
                             {
                                 this.GravitationalVelocity -= this.Acceleration;
                             }
@@ -516,33 +485,29 @@ namespace Game1
 
                         break;
                     case GravityDirection.Down:
-                        // If this object is hit from the top and it is not an environment object
-                        if ((hitObstacle == HitObstacle.FromTop) && (this.GetType().BaseType != typeof(Environment)))
-                        {
-                            // Set gravitational velocity to 0
-                            this.GravitationalVelocity = 0;
+                        if ((hitObstacle == HitObstacle.FromTop) &&                         // If this object is hit from the top and it is not an environment object
+                            (this.GetType().BaseType != typeof(Environment)))
+                        {                            
+                            this.GravitationalVelocity = 0;                                 // Set gravitational velocity to 0
                         }
                         else
-                        {
-                            // If it is not hit, or it is hit and is an environment object, apply appropriate gravity
-                            if (this.GravitationalVelocity < 5)
+                        {   
+                            if (this.GravitationalVelocity < 5)                             // If it is not hit, or it is hit and is an environment object, apply appropriate gravity
                             {
                                 this.GravitationalVelocity += this.Acceleration;
                             }
                         }
 
                         break;
-                    case GravityDirection.Left:
-                        // If this object is hit from the right and it is not an environment object
-                        if ((hitObstacle == HitObstacle.FromRight) && (this.GetType().BaseType != typeof(Environment)))
-                        {
-                            // Set gravitational velocity to 0
-                            this.MovementVelocity = 0;
+                    case GravityDirection.Left:                        
+                        if ((hitObstacle == HitObstacle.FromRight) &&                       // If this object is hit from the right and it is not an environment object
+                            (this.GetType().BaseType != typeof(Environment)))
+                        {                            
+                            this.MovementVelocity = 0;                                      // Set gravitational velocity to 0
                         }
                         else
-                        {
-                            // If it is not hit, or it is hit and is an environment object, apply appropriate gravity
-                            if (this.MovementVelocity > -5)
+                        {                            
+                            if (this.MovementVelocity > -5)                                 // If it is not hit, or it is hit and is an environment object, apply appropriate gravity
                             {
                                 this.MovementVelocity -= this.Acceleration;
                             }
@@ -550,17 +515,15 @@ namespace Game1
 
                         break;
 
-                    case GravityDirection.Right:
-                        // If this object is hit from the left and it is not an environment object
-                        if ((hitObstacle == HitObstacle.FromLeft) && (this.GetType().BaseType != typeof(Environment)))
-                        {
-                            // Set gravitational velocity to 0
-                            this.MovementVelocity = 0;
+                    case GravityDirection.Right:                        
+                        if ((hitObstacle == HitObstacle.FromLeft) &&                        // If this object is hit from the left and it is not an environment object
+                            (this.GetType().BaseType != typeof(Environment)))
+                        {                            
+                            this.MovementVelocity = 0;                                      // Set gravitational velocity to 0
                         }
                         else
-                        {
-                            // If it is not hit, or it is hit and is an environment object, apply appropriate gravity
-                            if (this.MovementVelocity < 5)
+                        {                            
+                            if (this.MovementVelocity < 5)                                  // If it is not hit, or it is hit and is an environment object, apply appropriate gravity
                             {
                                 this.MovementVelocity += this.Acceleration;
                             }

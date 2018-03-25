@@ -114,7 +114,7 @@ namespace Game1
                         
             platformSprites = Content.Load<Texture2D>("TestPlatform");                      // Load a platform
             platform.Add(new Platform(platformSprites, 0, 200, 500, 50));                   // Creates three platforms in the game window
-            platform.Add(new Platform(platformSprites, 400, 400, 500, 50));
+            platform.Add(new Platform(platformSprites, 400, 450, 500, 50));
             platform.Add(new Platform(platformSprites, 900, 400, 500, 50));
             platform.Add(new Platform(platformSprites, 0, 600, 500, 50));
 
@@ -132,7 +132,7 @@ namespace Game1
 
             platform[2].ApplyGravity = false;
             platform[2].gravityDirection = GravityDirection.Down;
-            platform[2].gravityOnProximityFrom = GravityOnProximityFrom.Top;
+            platform[2].gravityOnProximityFrom = GravityOnProximityFrom.Left;
             platform[2].platformMovement = PlatformMovement.OneDirection;
 
             enemy.Add(new Enemy(playerSprites, 100, 50, 50, 50));                           // Load enemy sprite

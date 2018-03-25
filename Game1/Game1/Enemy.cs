@@ -27,12 +27,29 @@ namespace Game1
 {
     class Enemy : NPC
     {
-
+        /// <summary>
+        /// Default constructor.  Creates a GameObject with default values.
+        /// </summary>
+        /// <param name="spriteTexture">Texture2D image for object</param>
+        /// <param name="x">Starting X coordinate of object</param>
+        /// <param name="y">Starting Y coordinate of object</param>
+        /// <param name="width">Width of object</param>
+        /// <param name="height">Height of object</param>
         public Enemy(Texture2D spriteTexture, int x, int y, int width, int height) : base(spriteTexture, x, y, width, height)
         {
             base.IsAlive = true;
         }
 
+        /// <summary>
+        /// This is a secondary constructor for the GameObject.
+        /// </summary>
+        /// <param name="spriteTexture">Texture2D image for object</param>
+        /// <param name="x">Starting X coordinate of object</param>
+        /// <param name="y">Starting Y coordinate of object</param>
+        /// <param name="width">Width of object</param>
+        /// <param name="height">Height of object</param>
+        /// <param name="addGravity">Does this object require immediate gravity implementation</param>
+        /// <param name="appliedObjectMass">This is the mass that should be applied to the object</param>
         public Enemy(Texture2D spriteTexture, int x, int y, int width, int height,
                           bool addGravity, float appliedObjectMass) :
                 base(spriteTexture, x, y, width, height, addGravity, appliedObjectMass)
@@ -84,6 +101,10 @@ namespace Game1
             }
         }
 
+        /// <summary>
+        /// Draw an enemy
+        /// </summary>
+        /// <param name="spriteBatch">Spritebatch image</param>
         public override void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(                                                   // Draw the sprite from the spriteBatch
