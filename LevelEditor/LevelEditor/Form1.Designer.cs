@@ -108,7 +108,7 @@
             this.btnNothing.Name = "btnNothing";
             this.btnNothing.Size = new System.Drawing.Size(86, 64);
             this.btnNothing.TabIndex = 5;
-            this.btnNothing.Text = "nothing";
+            this.btnNothing.Text = "Empty";
             this.btnNothing.UseVisualStyleBackColor = true;
             this.btnNothing.Click += new System.EventHandler(this.btnNothing_Click);
             // 

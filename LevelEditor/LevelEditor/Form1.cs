@@ -9,18 +9,23 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
 
+/* Project: Platformer Level Editor
+ * Programmer: Miranda Auriemma
+ * Last Edited: 3/26/18
+ */
+
 namespace LevelEditor
 {
     public partial class Form1 : Form
-    {            
+    {
         //list of lists of PictureBoxs, functionally like 2d arrays.
         //this is being done so that the PictureBoxs can be read from to save the map into a text file
-        List<List<PictureBox>> listofBtnRows = new List<List<PictureBox>>() ;
+        List<List<PictureBox>> listofBtnRows = new List<List<PictureBox>>();
 
         //enum for the tile thats being placed  
         enum TilePlacingState
         {
-            wood,                        
+            wood,
             stone,
             water,
             grass,
@@ -31,7 +36,7 @@ namespace LevelEditor
         //width and height of the level in tiles
         int levelWidth;
         int levelHeight;
-        
+
         public Form1()
         {
             InitializeComponent();
@@ -48,7 +53,7 @@ namespace LevelEditor
             {
                 //add a new "row" of PictureBoxs to the list
                 listofBtnRows.Add(new List<PictureBox>());
-                
+
                 for (int x = 0; x < levelWidth; x++)
                 {
                     PictureBox pcb = new PictureBox();
@@ -59,7 +64,7 @@ namespace LevelEditor
                     pcb.Padding = new Padding(3, 3, 3, 3);
                     //there has to be a "placeholder" image that is just plain white, that combined with the padding makes the grid visible
                     pcb.Image = LevelEditor.Properties.Resources.blank;
-                    
+
                     //need to tell the form that the PictureBoxes EXIST so it can actually put them in
                     this.Controls.Add(pcb);
 
@@ -67,7 +72,7 @@ namespace LevelEditor
                     //pcb.MouseDown += PictureBoxHandler;
                     pcb.MouseDown += PictureBoxMouseDownHandler;
                     //pcb.MouseEnter += PictureBoxMouseDownHandler;
-                    
+
                     //add the PictureBox to the "row" in the list
                     listofBtnRows[y].Add(pcb);
                 }
@@ -75,7 +80,7 @@ namespace LevelEditor
 
             void PictureBoxMouseDownHandler(object sender, EventArgs e)//event handler for PictureBox click 
             {
-                
+
                 PictureBox b = (PictureBox)sender;//cast sender to PictureBox object
                 //if(mouse) { }
 
@@ -112,11 +117,11 @@ namespace LevelEditor
 
                         break;
                 }
-                
+
             }
 
         }
-        
+
 
         private void btnWood_Click(object sender, EventArgs e)
         {
@@ -148,9 +153,9 @@ namespace LevelEditor
             lblPlacing.Text = "Placing: Nothing";
         }
 
-        
 
-        private void tsiNew_Click(object sender, EventArgs e)        
+
+        private void tsiNew_Click(object sender, EventArgs e)
         {
             foreach (List<PictureBox> rows in listofBtnRows)
             {
@@ -164,13 +169,14 @@ namespace LevelEditor
 
         private void tsiSave_Click(object sender, EventArgs e)
         {
-            SaveWindow saveWindow = new SaveWindow(this);
-            saveWindow.ShowDialog();
+            SaveLevel saveLevel = new SaveLevel(this);
+            saveLevel.ShowDialog();
         }
 
         private void tsiLoad_Click(object sender, EventArgs e)
         {
-            //StreamReader openLevel = new StreamReader()
+            LoadLevel loadLevel = new LoadLevel(this);
+            loadLevel.ShowDialog();
         }
 
         public void Save(string fileName)//save the file
@@ -192,7 +198,28 @@ namespace LevelEditor
 
             level.Close();
         }
-         //public void Open
-        
+        public void Open(string fileName)
+        {
+            try
+            {
+                StreamReader openLevel = new StreamReader(fileName);
+                string level = openLevel.ToString();
+                //foreach ()
+                {
+                    //foreach (PictureBox pcb in rows)
+                    //{
+                    //    //resets each image to the "placeholder"
+                    //    pcb.Image = LevelEditor.Properties.Resources.blank;
+                    //}
+                }
+            }
+            catch(System.IO.FileNotFoundException)
+            {
+                MessageBox.Show("The file you are trying to open no longer exists or has been moved.");
+            }
+
+
+        }
+
     }
 }
