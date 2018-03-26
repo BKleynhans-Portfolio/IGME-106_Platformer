@@ -56,20 +56,18 @@ namespace LevelEditor
                     pcb.Location = new Point(25 * x, 200 + 25 * y);
                     pcb.Name = "n"; //initialize to n, meaning nothing in the cell
                     pcb.BackColor = Color.Gray;
-                    pcb.Image = LevelEditor.Properties.Resources.blank;
                     pcb.Padding = new Padding(3, 3, 3, 3);
-                    //pcb.Padding = 1;
-
-                    //btn.Text = "smol PictureBox";
-
-                    //need to tell the form that the PictureBoxs EXIST so it can actually put them in
+                    //there has to be a "placeholder" image that is just plain white, that combined with the padding makes the grid visible
+                    pcb.Image = LevelEditor.Properties.Resources.blank;
+                    
+                    //need to tell the form that the PictureBoxes EXIST so it can actually put them in
                     this.Controls.Add(pcb);
 
                     //this hooks up the PictureBox click to the event handler
                     //pcb.MouseDown += PictureBoxHandler;
                     pcb.MouseDown += PictureBoxMouseDownHandler;
-                    pcb.MouseEnter += PictureBoxMouseDownHandler;
-
+                    //pcb.MouseEnter += PictureBoxMouseDownHandler;
+                    
                     //add the PictureBox to the "row" in the list
                     listofBtnRows[y].Add(pcb);
                 }
@@ -152,9 +150,16 @@ namespace LevelEditor
 
         
 
-        private void tsiNew_Click(object sender, EventArgs e)
+        private void tsiNew_Click(object sender, EventArgs e)        
         {
-
+            foreach (List<PictureBox> rows in listofBtnRows)
+            {
+                foreach (PictureBox pcb in rows)
+                {
+                    //resets each image to the "placeholder"
+                    pcb.Image = LevelEditor.Properties.Resources.blank;
+                }
+            }
         }
 
         private void tsiSave_Click(object sender, EventArgs e)
@@ -165,24 +170,29 @@ namespace LevelEditor
 
         private void tsiLoad_Click(object sender, EventArgs e)
         {
-            
+            //StreamReader openLevel = new StreamReader()
         }
 
-        public void Save(string fileName)
+        public void Save(string fileName)//save the file
         {
             string row;
-            StreamWriter level = new StreamWriter("level.txt");
+            StreamWriter level = new StreamWriter(fileName + ".txt");
 
+            //loop though each row list and write the names of the picture boxes into the text file
             foreach (List<PictureBox> rows in listofBtnRows)
             {
+                //reset row
                 row = "";
-                foreach (PictureBox btn in rows)
+                foreach (PictureBox pcb in rows)
                 {
-                    row += btn.Name;
+                    row += pcb.Name;
                 }
                 level.WriteLine(row);
             }
+
             level.Close();
         }
+         //public void Open
+        
     }
 }
