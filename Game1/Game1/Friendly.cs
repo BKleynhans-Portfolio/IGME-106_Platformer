@@ -34,10 +34,8 @@ namespace Game1
         }
 
         public Friendly(Texture2D spriteTexture, int x, int y, int width, int height,
-                          bool addGravity, float appliedMoveForce, float appliedVerticalMovementForce,
-                          float appliedGravitationalAcceleration, float appliedObjectMass) :
-                base(spriteTexture, x, y, width, height, addGravity, appliedMoveForce, appliedVerticalMovementForce,
-                    appliedGravitationalAcceleration, appliedObjectMass)
+                          bool addGravity, float appliedObjectMass) :
+                base(spriteTexture, x, y, width, height, addGravity, appliedObjectMass)
         {
             base.IsAlive = true;
         }
@@ -49,19 +47,10 @@ namespace Game1
 
         protected override void Update(GameTime gameTime)
         {
-            if ((this.Rectangle.Y + this.Rectangle.Height) > screenHeight)
+            if ((this.Rectangle.Y + this.Rectangle.Height) > SCREENHEIGHT)
             {
                 this.IsAlive = false;
             }
-        }
-
-        public override void Draw(SpriteBatch spriteBatch)
-        {
-            spriteBatch.Draw(                                                   // Draw the sprite from the spriteBatch
-                base.ObjectTexture,
-                base.Rectangle,
-                Color.White
-            );
         }
     }
 }

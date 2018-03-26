@@ -36,14 +36,5 @@ namespace Game1
         {
             throw new NotImplementedException();
         }
-
-        public override void Draw(SpriteBatch spriteBatch)
-        {
-            spriteBatch.Draw(                                                   // Draw the sprite from the spriteBatch
-                base.ObjectTexture,
-                base.Rectangle,
-                Color.White
-            );
-        }
     }
 }

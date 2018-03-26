@@ -19,7 +19,7 @@ using Microsoft.Xna.Framework.Input;
 ///                       
 ///                       
 /// Last Modified By    : Benjamin Kleynhans
-/// Last Modified Date  : March 22, 2018
+/// Last Modified Date  : March 25, 2018
 /// Filename            : Player.cs
 /// </summary>
 
@@ -27,30 +27,61 @@ namespace Game1
 {
     class Player : Character
     {
+        private int jumpCount;
+
+        /// <summary>
+        /// Default constructor.  Creates a GameObject with default values.
+        /// </summary>
+        /// <param name="spriteTexture">Texture2D image for object</param>
+        /// <param name="x">Starting X coordinate of object</param>
+        /// <param name="y">Starting Y coordinate of object</param>
+        /// <param name="width">Width of object</param>
+        /// <param name="height">Height of object</param>
         public Player(Texture2D spriteTexture, int x, int y, int width, int height) : base(spriteTexture, x, y, width, height)
         {
             base.IsAlive = true;
-            base.JumpsAllowed = 2;
-            base.JumpCount = 0;
         }
 
+        /// <summary>
+        /// This is a secondary constructor for the GameObject.
+        /// </summary>
+        /// <param name="spriteTexture">Texture2D image for object</param>
+        /// <param name="x">Starting X coordinate of object</param>
+        /// <param name="y">Starting Y coordinate of object</param>
+        /// <param name="width">Width of object</param>
+        /// <param name="height">Height of object</param>
+        /// <param name="addGravity">Does this object require immediate gravity implementation</param>
+        /// <param name="appliedObjectMass">This is the mass that should be applied to the object</param>
         public Player(Texture2D spriteTexture, int x, int y, int width, int height,
-                          bool addGravity, float appliedMoveForce, float appliedVerticalMovementForce,
-                          float appliedGravitationalAcceleration, float appliedObjectMass) :
-                base(spriteTexture, x, y, width, height, addGravity, appliedMoveForce, appliedVerticalMovementForce,
-                    appliedGravitationalAcceleration, appliedObjectMass)
+                          bool addGravity, float appliedObjectMass) :
+                base(spriteTexture, x, y, width, height, addGravity, appliedObjectMass)
         {
             base.IsAlive = true;
-            base.JumpsAllowed = 2;
-            base.JumpCount = 0;
+        }
+
+        public int JumpCount
+        {
+            get { return this.jumpCount; }
+            set { this.jumpCount = value; }
+        }
+
+        protected void TakeLife()
+        {
+            Console.WriteLine("You lost a life, " + base.Lives + " lives left");
+
+
+            base.CreateRectangle(new Vector2(50, 50));
+            this.IsAlive = true;
+
+            //if (base.Lives == 0)
+            //{
+            //    //Die();
+            //}
         }
 
         protected override void Die()
         {
             Console.WriteLine("Player Died");
-
-            base.CreateRectangle(new Vector2(50, 50));
-            this.IsAlive = true;
         }
 
         public override Vector2 ApplyMovement()
@@ -65,43 +96,61 @@ namespace Game1
             {
                 base.movementAppliedTo = MovementAppliedTo.Right;
             }
-            else if (((currentKeyboardState.IsKeyDown(Keys.Space)) && (previousKeyboardState.IsKeyUp(Keys.Space))) &&
-                    ((this.hitObstacle == HitObstacle.Bottom) || (this.JumpCount == 1)))
+
+            if (gravityDirection == GravityDirection.Down)
             {
-                base.movementAppliedTo = MovementAppliedTo.Up;
-
-                this.hitObstacle = HitObstacle.None;
-
-                if (this.HasJumped == false)
+                if (((currentKeyboardState.IsKeyDown(Keys.Space)) && (previousKeyboardState.IsKeyUp(Keys.Space))) &&
+                    ((this.hitObstacle == HitObstacle.FromTop) || (this.JumpCount == 1)))
                 {
-                    this.HasJumped = true;
-                    base.CalculatedVerticalForce = (base.VerticalMovementForce * -1);
-                    this.CalculatedVerticalForce += this.GravitationalForce;
+                    base.movementAppliedTo = MovementAppliedTo.Up;
+
+                    base.hitObstacle = HitObstacle.None;
+
+                    if (base.HasJumped == false)
+                    {
+                        base.HasJumped = true;
+                    }
+
+                    if (base.JumpInProgress == false)
+                    {
+                        base.JumpInProgress = true;
+                    }
+
                 }
             }
-            else if ((currentKeyboardState.IsKeyUp(Keys.A)) && (currentKeyboardState.IsKeyUp(Keys.D)))
+            else if (gravityDirection == GravityDirection.Up)
+            {
+                if (((currentKeyboardState.IsKeyDown(Keys.Space)) && (previousKeyboardState.IsKeyUp(Keys.Space))) &&
+                    ((this.hitObstacle == HitObstacle.FromTop) || (this.JumpCount == 1)))
+                {
+                    base.movementAppliedTo = MovementAppliedTo.Down;
+
+                    base.hitObstacle = HitObstacle.None;
+
+                    if (base.HasJumped == false)
+                    {
+                        base.HasJumped = true;
+                    }
+
+                    if (base.JumpInProgress == false)
+                    {
+                        base.JumpInProgress = true;
+                    }
+                }
+            }
+
+            if ((currentKeyboardState.IsKeyUp(Keys.A)) && (currentKeyboardState.IsKeyUp(Keys.D)) &&
+                (base.Falling == false) && (base.HasJumped == false) && (base.JumpInProgress == false))
             {
                 base.movementAppliedTo = MovementAppliedTo.None;
             }
 
-            if ((base.CalculatedHorizontalForce >= -5) && (movementAppliedTo == MovementAppliedTo.Left))
-            {
-                base.CalculatedHorizontalForce -= 5;
-            }
-            else if ((base.CalculatedHorizontalForce <= 5) && (movementAppliedTo == MovementAppliedTo.Right))
-            {
-                base.CalculatedHorizontalForce += 5;
-            }
-            else if (((base.CalculatedHorizontalForce > 0) || (base.CalculatedHorizontalForce < 0)) && (movementAppliedTo == MovementAppliedTo.None))
-            {
-                base.CalculatedHorizontalForce = 0;
-            }
-
-            base.CalculateForces();
+            base.CalculateGravity();
+            base.CalculateMovement();
 
             returnValue = new Vector2(
-                this.Rectangle.X + base.CalculatedHorizontalForce,
-                this.Rectangle.Y + VerticalAcceleration
+                this.Rectangle.X + base.MovementVelocity,
+                this.Rectangle.Y + base.GravitationalVelocity
             );
 
             return returnValue;
@@ -109,7 +158,7 @@ namespace Game1
 
         protected override void Update(GameTime gameTime)
         {
-            if ((this.Rectangle.Y + this.Rectangle.Height) > screenHeight)
+            if ((this.Rectangle.Y + this.Rectangle.Height) > SCREENHEIGHT)
             {
                 this.IsAlive = false;
             }
@@ -122,9 +171,12 @@ namespace Game1
 
                     if ((!stillIntersecting) && (this.HasJumped == false))
                     {
-                        base.Falling = true;
-                        base.hitObstacle = HitObstacle.None;
-                                                
+                        if (base.intersectedBy[i].GetType() == typeof(Platform))
+                        {
+                            base.Falling = true;
+                            base.hitObstacle = HitObstacle.None;
+                        }
+
                         base.intersectedBy.Remove(intersectedBy[i]);
                     }
                     else if ((!stillIntersecting) & (this.HasJumped == true))
@@ -139,17 +191,8 @@ namespace Game1
             }
             else
             {
-                Die();
+                TakeLife();
             }
-        }
-
-        public override void Draw(SpriteBatch spriteBatch)
-        {
-            spriteBatch.Draw(                                                   // Draw the sprite from the spriteBatch
-                base.ObjectTexture,
-                base.Rectangle,
-                Color.White
-            );
         }
     }
 }
