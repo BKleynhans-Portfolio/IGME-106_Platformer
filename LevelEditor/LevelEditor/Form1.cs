@@ -13,9 +13,9 @@ namespace LevelEditor
 {
     public partial class Form1 : Form
     {            
-        //list of lists of buttons, functionally like 2d arrays.
-        //this is being done so that the buttons can be read from to save the map into a text file
-        List<List<Button>> listofBtnRows = new List<List<Button>>() ;
+        //list of lists of PictureBoxs, functionally like 2d arrays.
+        //this is being done so that the PictureBoxs can be read from to save the map into a text file
+        List<List<PictureBox>> listofBtnRows = new List<List<PictureBox>>() ;
 
         //enum for the tile thats being placed  
         enum TilePlacingState
@@ -36,45 +36,51 @@ namespace LevelEditor
         {
             InitializeComponent();
 
-            listofBtnRows = new List<List<Button>>();
+            listofBtnRows = new List<List<PictureBox>>();
             tpState = new TilePlacingState();
             levelWidth = 48;
             levelHeight = 9;
 
-            //create buttons for map and add to list in a loop
+            //create PictureBoxs for map and add to list in a loop
             //i am using x and y here instead of i and j because i will be using these attributes 
-            //  for button placement as well, and it makes it a little bit clearer for both math and list placement
+            //  for PictureBox placement as well, and it makes it a little bit clearer for both math and list placement
             for (int y = 0; y < levelHeight; y++)
             {
-                //add a new "row" of buttons to the list
-                listofBtnRows.Add(new List<Button>());
-
-
-
-
-
+                //add a new "row" of PictureBoxs to the list
+                listofBtnRows.Add(new List<PictureBox>());
+                
                 for (int x = 0; x < levelWidth; x++)
                 {
-                    Button btn = new Button();
-                    btn.Size = new Size(25, 25);
-                    btn.Location = new Point(25 * x, 100 + 25 * y);
-                    btn.Name = "n"; //initialize to n, meaning nothing in the cell
-                    //btn.Text = "smol button";
+                    PictureBox pcb = new PictureBox();
+                    pcb.Size = new Size(25, 25);
+                    pcb.Location = new Point(25 * x, 200 + 25 * y);
+                    pcb.Name = "n"; //initialize to n, meaning nothing in the cell
+                    pcb.BackColor = Color.Gray;
+                    pcb.Image = LevelEditor.Properties.Resources.blank;
+                    pcb.Padding = new Padding(3, 3, 3, 3);
+                    //pcb.Padding = 1;
 
-                    //need to tell the form that the buttons EXIST so it can actually put them in
-                    this.Controls.Add(btn);
+                    //btn.Text = "smol PictureBox";
 
-                    //this hooks up the button click to the event handler
-                    btn.MouseClick += ButtonClickHandler;
+                    //need to tell the form that the PictureBoxs EXIST so it can actually put them in
+                    this.Controls.Add(pcb);
 
-                    //add the button to the "row" in the list
-                    listofBtnRows[y].Add(btn);
+                    //this hooks up the PictureBox click to the event handler
+                    //pcb.MouseDown += PictureBoxHandler;
+                    pcb.MouseDown += PictureBoxMouseDownHandler;
+                    pcb.MouseEnter += PictureBoxMouseDownHandler;
+
+                    //add the PictureBox to the "row" in the list
+                    listofBtnRows[y].Add(pcb);
                 }
             }
 
-            void ButtonClickHandler(object sender, EventArgs e)//event handler for button click 
+            void PictureBoxMouseDownHandler(object sender, EventArgs e)//event handler for PictureBox click 
             {
-                Button b = (Button)sender;//cast sender to button object
+                
+                PictureBox b = (PictureBox)sender;//cast sender to PictureBox object
+                //if(mouse) { }
+
 
                 switch (tpState)
                 {
@@ -102,7 +108,7 @@ namespace LevelEditor
                         break;
 
                     case TilePlacingState.nothing:
-                        b.Image = null;
+                        b.Image = LevelEditor.Properties.Resources.blank;
                         b.Name = "n";
 
 
@@ -112,6 +118,7 @@ namespace LevelEditor
             }
 
         }
+        
 
         private void btnWood_Click(object sender, EventArgs e)
         {
@@ -143,15 +150,33 @@ namespace LevelEditor
             lblPlacing.Text = "Placing: Nothing";
         }
 
-        private void btnSave_Click(object sender, EventArgs e)
+        
+
+        private void tsiNew_Click(object sender, EventArgs e)
         {
-            string row = "";
+
+        }
+
+        private void tsiSave_Click(object sender, EventArgs e)
+        {
+            SaveWindow saveWindow = new SaveWindow(this);
+            saveWindow.ShowDialog();
+        }
+
+        private void tsiLoad_Click(object sender, EventArgs e)
+        {
+            
+        }
+
+        public void Save(string fileName)
+        {
+            string row;
             StreamWriter level = new StreamWriter("level.txt");
 
-            foreach (List<Button> rows in listofBtnRows)
+            foreach (List<PictureBox> rows in listofBtnRows)
             {
                 row = "";
-                foreach ( Button btn in rows)
+                foreach (PictureBox btn in rows)
                 {
                     row += btn.Name;
                 }
