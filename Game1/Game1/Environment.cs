@@ -137,6 +137,16 @@ namespace Game1
             {
                 bool stillIntersecting = this.Intersects(intersectedBy[i]);
 
+                //if ((intersectedBy[i].GetType() == typeof(Player)) && (this.ApplyGravity == true) && 
+                //    ((base.gravityDirection == GravityDirection.Left) || (base.gravityDirection == GravityDirection.Right)))
+                //{
+                //    intersectedBy[i].Rectangle = new Rectangle(
+                //        (int)((base.MovementVelocity + intersectedBy[i].Rectangle.X) - 1),
+                //        this.Rectangle.Y - intersectedBy[i].Rectangle.Height,
+                //        intersectedBy[i].Rectangle.Width,
+                //        intersectedBy[i].Rectangle.Height);
+                //}
+
                 if (!stillIntersecting)
                 {   
                     base.hitObstacle = HitObstacle.None;
@@ -196,7 +206,7 @@ namespace Game1
                     case PlatformMovement.ToAndFroRightFirst:
                         if ((
                                 (base.gravityDirection == GravityDirection.Right) && 
-                                (this.Rectangle.X > (this.InitialXPlacement + this.ObjectXMoveDistance))
+                                (this.Rectangle.X >= (this.InitialXPlacement + this.ObjectXMoveDistance))
                             ) || (
                                 (base.gravityDirection == GravityDirection.Left) && 
                                 (this.Rectangle.X <= this.InitialXPlacement)
@@ -209,7 +219,7 @@ namespace Game1
                     case PlatformMovement.ToAndFroLeftFirst:
                         if ((
                                 (base.gravityDirection == GravityDirection.Left) &&
-                                (this.Rectangle.X < (this.InitialXPlacement - this.ObjectXMoveDistance))
+                                (this.Rectangle.X <= (this.InitialXPlacement - this.ObjectXMoveDistance))
                             ) || (
                                 (base.gravityDirection == GravityDirection.Right) &&
                                 (this.Rectangle.X >= this.InitialXPlacement)
@@ -222,7 +232,7 @@ namespace Game1
                     case PlatformMovement.ToAndFroDownFirst:
                         if ((
                                 (base.gravityDirection == GravityDirection.Down) &&
-                                (this.Rectangle.Y > (this.InitialYPlacement + this.ObjectYMoveDistance))
+                                (this.Rectangle.Y >= (this.InitialYPlacement + this.ObjectYMoveDistance))
                             ) || (
                                 (base.gravityDirection == GravityDirection.Up) &&
                                 (this.Rectangle.Y <= this.InitialYPlacement)
@@ -235,13 +245,10 @@ namespace Game1
                     case PlatformMovement.ToAndFroUpFirst:
                         if ((
                                 (base.gravityDirection == GravityDirection.Up) &&
-                                (this.Rectangle.Y < (this.InitialYPlacement + this.ObjectYMoveDistance))
+                                (this.Rectangle.Y <= (this.InitialYPlacement - this.ObjectYMoveDistance))
                             ) || (
                                 (base.gravityDirection == GravityDirection.Down) &&
                                 (this.Rectangle.Y >= this.InitialYPlacement)
-                            ) || (
-                                (base.hitObstacle == HitObstacle.FromTop) ||
-                                (base.hitObstacle == HitObstacle.FromBottom)
                             ))
                         {
                             SwitchDirections();

@@ -124,7 +124,7 @@ namespace Game1
                         }           
                         else if (!HasJumped)                                                // If this object did not hit another object on its top and is not
                         {                                                                   // busy with a jump action                            
-                            this.GravitationalVelocity += this.Acceleration;                // Continue to implement gravity
+                            this.GravitationalVelocity += this.GlobalAcceleration;                // Continue to implement gravity
                         }
 
                         break;                    
@@ -133,7 +133,7 @@ namespace Game1
 
                         break;
                     case GravityDirection.Right:                                            // If gravity needs to be applied in a right direction
-                        //If we have time
+                        // If we have time
 
                         break;
                 }
@@ -168,16 +168,16 @@ namespace Game1
                 }
                 else if ((HasJumped) && (GravitationalVelocity > -5))
                 {
-                    this.GravitationalVelocity -= this.Acceleration;
+                    this.GravitationalVelocity -= this.GlobalAcceleration;
                 }
                 else if ((HasJumped) && (GravitationalVelocity <= -5))
                 {
-                    this.GravitationalVelocity += this.Acceleration;
+                    this.GravitationalVelocity += this.GlobalAcceleration;
                     HasJumped = false;
                 }
                 else if ((!HasJumped) && (JumpInProgress) && (GravitationalVelocity <= -5))
                 {
-                    this.GravitationalVelocity += this.Acceleration;
+                    this.GravitationalVelocity += this.GlobalAcceleration;
                 }
             }
         }
