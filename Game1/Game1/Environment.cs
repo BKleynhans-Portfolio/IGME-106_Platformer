@@ -48,8 +48,6 @@ namespace Game1
     {
         public GravityOnProximityFrom gravityOnProximityFrom = GravityOnProximityFrom.None;
         public PlatformMovement platformMovement = PlatformMovement.OneDirection;
-
-        public abstract override void Draw(SpriteBatch spriteBatch);
                 
         private float objectXMoveDistance;
         private float objectYMoveDistance;

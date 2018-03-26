@@ -64,7 +64,7 @@ namespace Game1
 
         protected override void Update(GameTime gameTime)
         {
-            if ((this.Rectangle.Y + this.Rectangle.Height) > screenHeight)
+            if ((this.Rectangle.Y + this.Rectangle.Height) > SCREENHEIGHT)
             {
                 this.IsAlive = false;
             }
@@ -99,19 +99,6 @@ namespace Game1
             {
                 Die();
             }
-        }
-
-        /// <summary>
-        /// Draw an enemy
-        /// </summary>
-        /// <param name="spriteBatch">Spritebatch image</param>
-        public override void Draw(SpriteBatch spriteBatch)
-        {
-            spriteBatch.Draw(                                                   // Draw the sprite from the spriteBatch
-                base.ObjectTexture,
-                base.Rectangle,
-                Color.White
-            );
         }
     }
 }

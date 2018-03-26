@@ -67,11 +67,12 @@ namespace Game1
         public HitObstacle hitObstacle = HitObstacle.None;
         public HitNPC hitNPC = HitNPC.None;
 
-        public abstract void Draw(SpriteBatch spriteBatch);
+        //public abstract void Draw(SpriteBatch spriteBatch);
         protected abstract override void Update(GameTime gameTime);
-
+        
         private Texture2D objectTexture;                                                    // Texture and rectangle
         private Rectangle rectangle;
+        private SpriteEffects spriteEffect;
 
         private float acceleration;                                                         // Acceleration to apply to element during each iteration
         private float gravitationalVelocity;                                                // Gravitational velocity for vertical movement
@@ -107,9 +108,10 @@ namespace Game1
             this.ApplyGravity = false;
 
             this.ObjectMass = 50;
-
+            
             this.Acceleration = 0.25f;
             this.Lives = 3;
+            this.spriteEffect = SpriteEffects.None;
         }
 
         /// <summary>
@@ -168,6 +170,12 @@ namespace Game1
         {
             get { return this.rectangle; }
             set { this.rectangle = value; }
+        }
+
+        public SpriteEffects SpriteEffect
+        {
+            get { return this.spriteEffect; }
+            set { this.spriteEffect = value; }
         }
 
         /// <summary>
@@ -532,6 +540,24 @@ namespace Game1
                         break;
                 }
             }
+        }
+
+        /// <summary>
+        /// Draw the sprite
+        /// </summary>
+        /// <param name="spriteBatch">Spritebatch Image</param>
+        public void Draw(SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(
+                this.ObjectTexture,
+                this.Rectangle,
+                null,
+                Color.White,
+                0f,
+                Vector2.Zero,
+                spriteEffect,
+                0
+            );
         }
     }
 }

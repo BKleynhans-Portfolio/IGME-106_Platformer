@@ -27,7 +27,6 @@ namespace Game1
 {
     abstract class Menu : Screen
     {
-        public abstract override void Draw(SpriteBatch spriteBatch);
         protected abstract override void Update(GameTime gameTime);
 
         public Menu(Texture2D texture2D, int x, int y, int width, int height) : base(texture2D, x, y, width, height)

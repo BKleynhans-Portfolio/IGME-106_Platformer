@@ -56,18 +56,5 @@ namespace Game1
         {
 
         }
-
-        /// <summary>
-        /// Draw a platform
-        /// </summary>
-        /// <param name="spriteBatch">Spritebatch image</param>
-        public override void Draw(SpriteBatch spriteBatch)
-        {
-            spriteBatch.Draw(                                                   // Draw the sprite from the spriteBatch
-                base.ObjectTexture,
-                base.Rectangle,
-                Color.White
-            );
-        }
     }
 }

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Audio;
 
 /// <summary>
 /// IGME-106 - Game Development and Algorithmic Problem Solving
@@ -66,8 +67,8 @@ namespace Game1
         public static double timeCounter;
 
         // Window properties
-        public const int screenWidth = 1600;
-        public const int screenHeight = 900;
+        public const int SCREENWIDTH = 1600;
+        public const int SCREENHEIGHT = 900;
 
         public Game1()
         {
@@ -83,8 +84,8 @@ namespace Game1
         /// </summary>
         protected override void Initialize()
         {
-            graphics.PreferredBackBufferWidth = screenWidth;                                // Set desired width of window
-            graphics.PreferredBackBufferHeight = screenHeight;                              // Set desired height of window            
+            graphics.PreferredBackBufferWidth = SCREENWIDTH;                                // Set desired width of window
+            graphics.PreferredBackBufferHeight = SCREENHEIGHT;                              // Set desired height of window            
             graphics.ApplyChanges();
 
             Window.Position = new Point(                                        // Center the game view on the screen
@@ -106,14 +107,15 @@ namespace Game1
         protected override void LoadContent()
         {                                                                                            
             spriteBatch = new SpriteBatch(GraphicsDevice);                                  // Create a new SpriteBatch, which can be used to draw textures.
-                        
+
             playerSprites = Content.Load<Texture2D>("TestImage");                           // Load player sprite
             player = new Player(playerSprites, 50, 50, 50, 50);
             player.ApplyGravity = true;
             //player.gravityDirection = GravityDirection.Right;
+            
                         
             platformSprites = Content.Load<Texture2D>("TestPlatform");                      // Load a platform
-            platform.Add(new Platform(platformSprites, 0, 200, 500, 50));                   // Creates three platforms in the game window
+            platform.Add(new Platform(platformSprites, 0, 0, SCREENWIDTH, 10));             // Ceiling platform
             platform.Add(new Platform(platformSprites, 400, 450, 500, 50));
             platform.Add(new Platform(platformSprites, 900, 400, 500, 50));
             platform.Add(new Platform(platformSprites, 0, 600, 500, 50));
@@ -129,6 +131,7 @@ namespace Game1
             platform[1].platformMovement = PlatformMovement.ToAndFroRightFirst;
             //platform[1].platformMovement = PlatformMovement.ToAndFroLeftFirst;
             //platform[1].platformMovement = PlatformMovement.ToAndFroDownFirst;
+            platform[1].SpriteEffect = SpriteEffects.FlipVertically;
 
             platform[2].ApplyGravity = false;
             platform[2].gravityDirection = GravityDirection.Down;

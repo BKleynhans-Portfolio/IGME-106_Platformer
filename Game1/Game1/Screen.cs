@@ -27,7 +27,6 @@ namespace Game1
 {
     abstract class Screen : GameObject
     {
-        public abstract override void Draw(SpriteBatch spriteBatch);
         protected abstract override void Update(GameTime gameTime);
 
         /// <summary>
