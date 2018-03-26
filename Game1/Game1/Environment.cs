@@ -137,16 +137,6 @@ namespace Game1
             {
                 bool stillIntersecting = this.Intersects(intersectedBy[i]);
 
-                //if ((intersectedBy[i].GetType() == typeof(Player)) && (this.ApplyGravity == true) && 
-                //    ((base.gravityDirection == GravityDirection.Left) || (base.gravityDirection == GravityDirection.Right)))
-                //{
-                //    intersectedBy[i].Rectangle = new Rectangle(
-                //        (int)((base.MovementVelocity + intersectedBy[i].Rectangle.X) - 1),
-                //        this.Rectangle.Y - intersectedBy[i].Rectangle.Height,
-                //        intersectedBy[i].Rectangle.Width,
-                //        intersectedBy[i].Rectangle.Height);
-                //}
-
                 if (!stillIntersecting)
                 {   
                     base.hitObstacle = HitObstacle.None;

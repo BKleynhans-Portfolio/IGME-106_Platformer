@@ -219,7 +219,7 @@ namespace Game1
             //platform[1].platformMovement = PlatformMovement.ToAndFroLeftFirst;
             //platform[1].platformMovement = PlatformMovement.ToAndFroDownFirst;
 
-            platforms.Add(new Platform(platformSprites, 100, 200, 200, 50));
+            platforms.Add(new Platform(platformSprites, 90, 200, 210, 50));
             
             platforms.Add(new Platform(platformSprites, 400, 200, 100, 50));
             platforms[3].ApplyGravity = true;
@@ -236,7 +236,7 @@ namespace Game1
 
         private void LoadEnemies()
         {
-            enemies.Add(new Enemy(playerSprites, 100, 50, 50, 50));                           // Load enemy sprite
+            enemies.Add(new Enemy(playerSprites, 200, 50, 50, 50));                           // Load enemy sprite
             enemies[0].ApplyGravity = true;
         }
     }

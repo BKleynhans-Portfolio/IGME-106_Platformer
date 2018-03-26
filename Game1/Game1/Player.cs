@@ -72,6 +72,11 @@ namespace Game1
 
             base.CreateRectangle(new Vector2(50, 50));
             this.IsAlive = true;
+            base.Falling = true;
+            base.JumpInProgress = false;
+            base.HasJumped = false;
+            base.GravitationalVelocity = 0f;
+            base.MovementVelocity = 0f;
 
             //if (base.Lives == 0)
             //{
