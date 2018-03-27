@@ -27,7 +27,7 @@ namespace Game1
 {
     class Player : Character
     {
-        private int jumpCount;
+        private int jumpCount;        
 
         /// <summary>
         /// Default constructor.  Creates a GameObject with default values.
@@ -40,6 +40,7 @@ namespace Game1
         public Player(Texture2D spriteTexture, int x, int y, int width, int height) : base(spriteTexture, x, y, width, height)
         {
             base.IsAlive = true;
+            base.WasAlive = true;
         }
 
         /// <summary>
@@ -57,6 +58,7 @@ namespace Game1
                 base(spriteTexture, x, y, width, height, addGravity, appliedObjectMass)
         {
             base.IsAlive = true;
+            base.WasAlive = true;
         }
 
         public int JumpCount
@@ -69,7 +71,10 @@ namespace Game1
         {
             Console.WriteLine("You lost a life, " + base.Lives + " lives left");
 
+            base.Lives--;
 
+            this.WasAlive = true;
+            base.TookLife = true;
             base.CreateRectangle(new Vector2(50, 50));
             this.IsAlive = true;
             base.Falling = true;
@@ -78,15 +83,16 @@ namespace Game1
             base.GravitationalVelocity = 0f;
             base.MovementVelocity = 0f;
 
-            //if (base.Lives == 0)
-            //{
-            //    //Die();
-            //}
+            if (base.Lives <= 0)
+            {
+                Die();
+            }
         }
 
         protected override void Die()
         {
             Console.WriteLine("Player Died");
+            gameState = GameState.Title;
         }
 
         public override Vector2 ApplyMovement()
@@ -165,7 +171,11 @@ namespace Game1
         {
             if ((this.Rectangle.Y + this.Rectangle.Height) > SCREENHEIGHT)
             {
-                this.IsAlive = false;
+                if (base.WasAlive == true)
+                {
+                    base.IsAlive = false;
+                    base.WasAlive = false;
+                }
             }
 
             if (this.IsAlive)

@@ -32,6 +32,7 @@ namespace Game1
         protected abstract void Die();
 
         private bool isAlive;
+        private bool wasAlive;
         private bool hasJumped;
 
         /// <summary>
@@ -73,6 +74,12 @@ namespace Game1
         {
             get { return this.isAlive; }
             set { this.isAlive = value; }
+        }
+
+        public bool WasAlive
+        {
+            get { return this.wasAlive; }
+            set { this.wasAlive = value; }
         }
 
         /// <summary>

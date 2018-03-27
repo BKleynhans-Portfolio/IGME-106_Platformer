@@ -25,7 +25,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Game1
 {
-    class GameOver : Menu
+    public class GameOver : Menu
     {
         public GameOver(Texture2D texture2D, int x, int y, int width, int height) : base(texture2D, x, y, width, height)
         {

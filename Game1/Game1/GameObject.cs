@@ -88,8 +88,9 @@ namespace Game1
 
         private bool falling;                                                               // Is the object falling?
         private bool jumpInProgress;                                                        // Is the object in a jump process?
-
+        
         private int lives;
+        private bool tookLife;
 
         /// <summary>
         /// Default constructor.  Creates a GameObject with default values.
@@ -188,6 +189,12 @@ namespace Game1
         {
             get { return this.lives; }
             set { this.lives = value; }
+        }
+
+        public bool TookLife
+        {
+            get { return this.tookLife; }
+            set { this.tookLife = value; }
         }
         
         /// <summary>
@@ -338,7 +345,10 @@ namespace Game1
                                                                                             // If the player was hit by and NPC and it is not a friendly NPC, subtract one life.
                         if ((this.GetType() == typeof(Player)) && (passedGameObject.GetType() != typeof(Friendly)))
                         {
-                            this.Lives--;
+                            //if (!this.TookLife)
+                            //{
+                            //    this.Lives--;
+                            //}
                         }                        
                     }
                     else if (                                                               // If both this object as well as the passed in object are of type Environment
@@ -402,7 +412,10 @@ namespace Game1
                                                                                             // If the player was hit by and NPC and it is not a friendly NPC, subtract one life.
                         if ((this.GetType() == typeof(Player)) && (passedGameObject.GetType() != typeof(Friendly)))
                         {
-                            this.Lives--;
+                            //if (!this.TookLife)
+                            //{
+                            //    this.Lives--;
+                            //}
                         }
                     }
                     else if ((this.GetType().BaseType == typeof(Environment)) &&            // If both this object as well as the passed in object are of type Environment
@@ -468,7 +481,11 @@ namespace Game1
                                                                                             // If the player was hit by and NPC and it is not a friendly NPC, subtract one life.
                         if ((this.GetType() == typeof(Player)) && (passedGameObject.GetType() != typeof(Friendly)))
                         {
-                            this.Lives--;
+                            //if (!this.TookLife)
+                            //{
+                            //    this.Lives--;
+                            //}
+                            
                         }
                     }
                     else if ((this.GetType().BaseType == typeof(Environment)) &&            // If both this object as well as the passed in object are of type Environment
@@ -533,8 +550,11 @@ namespace Game1
 
                                                                                             // If the player was hit by and NPC and it is not a friendly NPC, subtract one life.
                         if ((this.GetType() == typeof(Player)) && (passedGameObject.GetType() != typeof(Friendly)))
-                        {                            
-                            this.Lives--;
+                        {
+                            //if (!this.TookLife)
+                            //{
+                            //    this.Lives--;
+                            //}                            
                         }
                     }                    
                     else if ((this.GetType().BaseType == typeof(Environment)) &&            // If both this object as well as the passed in object are of type Environment
