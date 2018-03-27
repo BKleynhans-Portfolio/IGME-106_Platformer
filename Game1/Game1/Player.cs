@@ -40,7 +40,6 @@ namespace Game1
         public Player(Texture2D spriteTexture, int x, int y, int width, int height) : base(spriteTexture, x, y, width, height)
         {
             base.IsAlive = true;
-            base.WasAlive = true;
         }
 
         /// <summary>
@@ -58,7 +57,6 @@ namespace Game1
                 base(spriteTexture, x, y, width, height, addGravity, appliedObjectMass)
         {
             base.IsAlive = true;
-            base.WasAlive = true;
         }
 
         public int JumpCount
@@ -143,11 +141,7 @@ namespace Game1
         {
             if ((this.Rectangle.Y + this.Rectangle.Height) > SCREENHEIGHT)
             {
-                if (base.WasAlive == true)
-                {
-                    base.IsAlive = false;
-                    base.WasAlive = false;
-                }
+                base.IsAlive = false;                
             }
 
             if (this.IsAlive)

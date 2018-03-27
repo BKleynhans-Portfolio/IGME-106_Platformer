@@ -29,8 +29,10 @@ namespace Game1
     {
         protected abstract override void Update(GameTime gameTime);
         
+        private int lives;
+
+        private bool tookLife;
         private bool isAlive;
-        private bool wasAlive;
         private bool hasJumped;
 
         /// <summary>
@@ -45,6 +47,9 @@ namespace Game1
         {
             this.HasJumped = false;
             base.JumpInProgress = false;
+
+
+                this.Lives = 3; ;
         }
 
         /// <summary>
@@ -63,6 +68,8 @@ namespace Game1
         {
             this.HasJumped = false;
             base.JumpInProgress = false;
+
+            this.Lives = 3;
         }
 
         /// <summary>
@@ -74,12 +81,6 @@ namespace Game1
             set { this.isAlive = value; }
         }
 
-        public bool WasAlive
-        {
-            get { return this.wasAlive; }
-            set { this.wasAlive = value; }
-        }
-
         /// <summary>
         /// Properties for variable keeps track of whether the player has jumped (not current jump status)
         /// </summary>
@@ -87,6 +88,21 @@ namespace Game1
         {
             get { return this.hasJumped; }
             set { this.hasJumped = value; }
+        }
+
+        /// <summary>
+        /// Number of lives the player has left
+        /// </summary>
+        public int Lives
+        {
+            get { return this.lives; }
+            set { this.lives = value; }
+        }
+
+        public bool TookLife
+        {
+            get { return this.tookLife; }
+            set { this.tookLife = value; }
         }
 
         /// <summary>
@@ -238,10 +254,6 @@ namespace Game1
                             }
                         }
                     }
-                    //else
-                    //{
-                    //    this.hitObstacle = HitObstacle.FromTop;
-                    //}
                 }
                 else if ((// From Bottom
                             (this.Rectangle.Top < passedGameObject.Rectangle.Bottom) &&     // If the upper border of this object has a smaller Y coordinate than the lower border
@@ -279,10 +291,6 @@ namespace Game1
                             }
                         }
                     }
-                    //else
-                    //{
-                    //    this.hitObstacle = HitObstacle.FromBottom;
-                    //}
                 }
                 else if ((// From Right
                             (this.Rectangle.Left < passedGameObject.Rectangle.Right) &&     // If the left border of this object has a smaller X coordinate than the right border
@@ -324,10 +332,6 @@ namespace Game1
                             }
                         }
                     }
-                    //else
-                    //{
-                    //    this.hitObstacle = HitObstacle.FromRight;
-                    //}
                 }
                 else if ((// From Left
                             (this.Rectangle.Right > passedGameObject.Rectangle.Left) &&     // If the left border of this object has a smaller X coordinate than the right border
@@ -369,10 +373,6 @@ namespace Game1
                             }
                         }
                     }
-                    //else
-                    //{
-                    //    this.hitObstacle = HitObstacle.FromLeft;
-                    //}
                 }
             }
 
@@ -381,12 +381,11 @@ namespace Game1
 
         protected void TakeLife()
         {
-            Console.WriteLine("You lost a life, " + base.Lives + " lives left");
+            Console.WriteLine("You lost a life, " + this.Lives + " lives left");
 
-            base.Lives--;
-
-            this.WasAlive = true;
-            base.TookLife = true;
+            this.Lives--;
+            
+            this.TookLife = true;
             base.CreateRectangle(new Vector2(50, 50));
             this.IsAlive = true;
             base.Falling = true;
@@ -395,7 +394,7 @@ namespace Game1
             base.GravitationalVelocity = 0f;
             base.MovementVelocity = 0f;
 
-            if (base.Lives <= 0)
+            if (this.Lives <= 0)
             {
                 Die();
             }

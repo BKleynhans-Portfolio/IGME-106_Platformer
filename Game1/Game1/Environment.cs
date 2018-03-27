@@ -142,8 +142,7 @@ namespace Game1
                     base.hitObstacle = HitObstacle.None;
                                         
                     base.intersectedBy.Remove(intersectedBy[i]);
-                }
-                
+                }                
             }
 
             switch (hitObstacle) {
@@ -300,10 +299,6 @@ namespace Game1
                     {
                         hitObstacle = HitObstacle.FromBottom;
                     }
-                    //else
-                    //{
-                    //    this.hitObstacle = HitObstacle.FromTop;
-                    //}
                 }
                 else if ((// From Bottom
                             (this.Rectangle.Top < passedGameObject.Rectangle.Bottom) &&     // If the upper border of this object has a smaller Y coordinate than the lower border
@@ -323,10 +318,6 @@ namespace Game1
                     {
                         hitObstacle = HitObstacle.FromTop;
                     }
-                    //else
-                    //{
-                    //    this.hitObstacle = HitObstacle.FromBottom;
-                    //}
                 }
                 else if ((// From Right
                             (this.Rectangle.Left < passedGameObject.Rectangle.Right) &&     // If the left border of this object has a smaller X coordinate than the right border
@@ -345,10 +336,6 @@ namespace Game1
                     {
                         hitObstacle = HitObstacle.FromLeft;
                     }
-                    //else
-                    //{
-                    //    this.hitObstacle = HitObstacle.FromRight;
-                    //}
                 }
                 else if ((// From Left
                             (this.Rectangle.Right > passedGameObject.Rectangle.Left) &&     // If the left border of this object has a smaller X coordinate than the right border
@@ -367,10 +354,6 @@ namespace Game1
                     {
                         hitObstacle = HitObstacle.FromRight;
                     }
-                    //else
-                    //{
-                    //    this.hitObstacle = HitObstacle.FromLeft;
-                    //}
                 }
             }
 
