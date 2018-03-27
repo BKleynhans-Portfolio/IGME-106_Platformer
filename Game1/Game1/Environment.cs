@@ -270,5 +270,111 @@ namespace Game1
                 base.gravityDirection = GravityDirection.Left;
             }
         }
+
+        ///summary>
+        /// Determines whether the object that is passed in, intersects the current object
+        /// </summary>
+        /// <param name="passedGameObject">object to be tested for intersection against this object</param>
+        /// <returns>true if it intersects and false if it does not</returns>
+        public override bool Intersects(GameObject passedGameObject)
+        {
+            bool returnValue = false;
+
+            if (this.Rectangle.Intersects(passedGameObject.Rectangle))                      // Does this object's rectangle intersect with the passed in object's rectangle
+            {
+                returnValue = true;
+
+                if ((// From Top
+                        (this.Rectangle.Bottom > passedGameObject.Rectangle.Top) &&         // If the lower border of this object has a larger Y coordinate than the upper border
+                        (this.Rectangle.Bottom < (passedGameObject.Rectangle.Top + 10))     // of the passed in object but a lower Y coordinate than the passed in objects
+                    ) && (                                                                  // Y coordinate + 10
+                        (this.Rectangle.Bottom != passedGameObject.Rectangle.Bottom)
+                    ))
+                {
+                    if (passedGameObject.GetType().BaseType == typeof(Environment))
+                    {
+                        hitObstacle = HitObstacle.None;
+                    }
+                    else if ((passedGameObject.GetType().BaseType == typeof(Character)) ||
+                            (passedGameObject.GetType().BaseType.BaseType == typeof(Character)))
+                    {
+                        hitObstacle = HitObstacle.FromBottom;
+                    }
+                    //else
+                    //{
+                    //    this.hitObstacle = HitObstacle.FromTop;
+                    //}
+                }
+                else if ((// From Bottom
+                            (this.Rectangle.Top < passedGameObject.Rectangle.Bottom) &&     // If the upper border of this object has a smaller Y coordinate than the lower border
+                            (this.Rectangle.Top > (passedGameObject.Rectangle.Bottom - 10)) // of the passed in object but a higher Y coordinate than the passed in objects
+                        ) && (                                                              // Y coordinate - 10
+                            (this.Rectangle.Bottom != passedGameObject.Rectangle.Bottom)
+                        ))
+                {
+                    // If this object is of type Character and the passed in object is of type Platform
+                    // *** Each continuation of the BaseType keyword goes up one additional level in the derived classes                    
+                    if(passedGameObject.GetType().BaseType == typeof(Environment))
+                    {
+                        hitObstacle = HitObstacle.None;
+                    }
+                    else if ((passedGameObject.GetType().BaseType == typeof(Character)) ||
+                                (passedGameObject.GetType().BaseType.BaseType == typeof(Character)))
+                    {
+                        hitObstacle = HitObstacle.FromTop;
+                    }
+                    //else
+                    //{
+                    //    this.hitObstacle = HitObstacle.FromBottom;
+                    //}
+                }
+                else if ((// From Right
+                            (this.Rectangle.Left < passedGameObject.Rectangle.Right) &&     // If the left border of this object has a smaller X coordinate than the right border
+                            (this.Rectangle.Left > (passedGameObject.Rectangle.Right - 10)) // of the passed in object but a higher X coordinate than the passed in objects
+                        ) && (                                                              // X coordinate - 10
+                            (this.Rectangle.Right != passedGameObject.Rectangle.Right)
+                        ))
+                {                                                                           // If this object is of type Character and the passed in object is of type Platform
+                                                                                            // *** Each continuation of the BaseType keyword goes up one additional level in the derived classes
+                    if (passedGameObject.GetType().BaseType == typeof(Environment))
+                    {
+                        hitObstacle = HitObstacle.None;
+                    }
+                    else if ((passedGameObject.GetType().BaseType == typeof(Character)) ||
+                               (passedGameObject.GetType().BaseType.BaseType == typeof(Character)))
+                    {
+                        hitObstacle = HitObstacle.FromLeft;
+                    }
+                    //else
+                    //{
+                    //    this.hitObstacle = HitObstacle.FromRight;
+                    //}
+                }
+                else if ((// From Left
+                            (this.Rectangle.Right > passedGameObject.Rectangle.Left) &&     // If the left border of this object has a smaller X coordinate than the right border
+                            (this.Rectangle.Right < (passedGameObject.Rectangle.Left + 10)) // of the passed in object but a higher X coordinate than the passed in objects
+                        ) && (                                                              // X coordinate - 10
+                            (this.Rectangle.Right != passedGameObject.Rectangle.Right)
+                        ))
+                {                    
+                    if (passedGameObject.GetType().BaseType == typeof(Environment))
+                    {
+                        hitObstacle = HitObstacle.None;
+                    }
+                    else if (
+                               (passedGameObject.GetType().BaseType == typeof(Character)) ||
+                               (passedGameObject.GetType().BaseType.BaseType == typeof(Character)))
+                    {
+                        hitObstacle = HitObstacle.FromRight;
+                    }
+                    //else
+                    //{
+                    //    this.hitObstacle = HitObstacle.FromLeft;
+                    //}
+                }
+            }
+
+            return returnValue;
+        }
     }
 }

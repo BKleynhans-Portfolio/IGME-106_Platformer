@@ -67,34 +67,6 @@ namespace Game1
             set { this.jumpCount = value; }
         }
 
-        protected void TakeLife()
-        {
-            Console.WriteLine("You lost a life, " + base.Lives + " lives left");
-
-            base.Lives--;
-
-            this.WasAlive = true;
-            base.TookLife = true;
-            base.CreateRectangle(new Vector2(50, 50));
-            this.IsAlive = true;
-            base.Falling = true;
-            base.JumpInProgress = false;
-            base.HasJumped = false;
-            base.GravitationalVelocity = 0f;
-            base.MovementVelocity = 0f;
-
-            if (base.Lives <= 0)
-            {
-                Die();
-            }
-        }
-
-        protected override void Die()
-        {
-            Console.WriteLine("Player Died");
-            gameState = GameState.Title;
-        }
-
         public override Vector2 ApplyMovement()
         {
             Vector2 returnValue;
