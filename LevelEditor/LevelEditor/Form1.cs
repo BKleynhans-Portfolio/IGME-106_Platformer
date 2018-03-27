@@ -20,7 +20,7 @@ namespace LevelEditor
     {
         //list of lists of PictureBoxs, functionally like 2d arrays.
         //this is being done so that the PictureBoxs can be read from to save the map into a text file
-        List<List<PictureBox>> listofBtnRows = new List<List<PictureBox>>();
+        List<List<PictureBox>> listofPcbRows = new List<List<PictureBox>>();
 
         //enum for the tile thats being placed  
         enum TilePlacingState
@@ -41,7 +41,7 @@ namespace LevelEditor
         {
             InitializeComponent();
 
-            listofBtnRows = new List<List<PictureBox>>();
+            listofPcbRows = new List<List<PictureBox>>();
             tpState = new TilePlacingState();
             levelWidth = 48;
             levelHeight = 9;
@@ -52,7 +52,7 @@ namespace LevelEditor
             for (int y = 0; y < levelHeight; y++)
             {
                 //add a new "row" of PictureBoxs to the list
-                listofBtnRows.Add(new List<PictureBox>());
+                listofPcbRows.Add(new List<PictureBox>());
 
                 for (int x = 0; x < levelWidth; x++)
                 {
@@ -74,7 +74,7 @@ namespace LevelEditor
                     //pcb.MouseEnter += PictureBoxMouseDownHandler;
 
                     //add the PictureBox to the "row" in the list
-                    listofBtnRows[y].Add(pcb);
+                    listofPcbRows[y].Add(pcb);
                 }
             }
 
@@ -157,7 +157,7 @@ namespace LevelEditor
 
         private void tsiNew_Click(object sender, EventArgs e)
         {
-            foreach (List<PictureBox> rows in listofBtnRows)
+            foreach (List<PictureBox> rows in listofPcbRows)
             {
                 foreach (PictureBox pcb in rows)
                 {
@@ -169,8 +169,38 @@ namespace LevelEditor
 
         private void tsiSave_Click(object sender, EventArgs e)
         {
-            SaveLevel saveLevel = new SaveLevel(this);
-            saveLevel.ShowDialog();
+            //SaveLevel saveLevel = new SaveLevel(this);
+            //saveLevel.ShowDialog();
+
+            //string row;
+            StreamWriter myStream;
+            myStream = new StreamWriter("thing.txt");
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+
+            saveFileDialog1.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
+            saveFileDialog1.FilterIndex = 2;
+            saveFileDialog1.RestoreDirectory = true;
+            string row;
+            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                //if ((myStream = saveFileDialog1.OpenFile()) != null)
+                //{
+                    // Code to write the stream goes here.
+                    foreach (List<PictureBox> rows in listofPcbRows)
+                    {
+                        //reset row
+                        row = "";
+                        foreach (PictureBox pcb in rows)
+                        {
+                            row += pcb.Name;
+                        }
+
+                        myStream.WriteLine(row);
+                    }
+
+                    myStream.Close();
+                //}
+            }
         }
 
         private void tsiLoad_Click(object sender, EventArgs e)
@@ -185,7 +215,7 @@ namespace LevelEditor
             StreamWriter level = new StreamWriter(fileName + ".txt");
 
             //loop though each row list and write the names of the picture boxes into the text file
-            foreach (List<PictureBox> rows in listofBtnRows)
+            foreach (List<PictureBox> rows in listofPcbRows)
             {
                 //reset row
                 row = "";
@@ -198,12 +228,32 @@ namespace LevelEditor
 
             level.Close();
         }
-        public void Open(string fileName)
+        public void Open(string fileName)//open files
         {
             try
             {
-                StreamReader openLevel = new StreamReader(fileName);
-                string level = openLevel.ToString();
+                StreamReader openedLevel = new StreamReader(fileName);
+                int loopCount;
+                for (int i = 1; i < levelHeight; i++)
+                {
+                    string level = openedLevel.ReadLine();
+                    loopCount = 0;
+                    foreach(char tile in level)
+                    {
+                        switch (tile)
+                        {
+                            case 'w':
+                                //listofPcbRows[i].;
+                                break;
+                        }
+                        loopCount++;
+                    }
+                }
+                //MessageBox.Show(level);
+
+                //level = openedLevel.ReadLine();
+
+                //MessageBox.Show(level);
                 //foreach ()
                 {
                     //foreach (PictureBox pcb in rows)
@@ -213,13 +263,20 @@ namespace LevelEditor
                     //}
                 }
             }
-            catch(System.IO.FileNotFoundException)
+            catch (System.IO.FileNotFoundException)
             {
                 MessageBox.Show("The file you are trying to open no longer exists or has been moved.");
             }
 
 
         }
+
+        public void InterperetText(StreamReader openedLevel)//convert the text into the level tiles in the pic boxes
+        {
+            
+        }
+
+        
 
     }
 }
