@@ -25,7 +25,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Game1
 {
-    abstract class Screen : GameObject
+    public abstract class Screen : GameObject
     {
         protected abstract override void Update(GameTime gameTime);
 

@@ -66,7 +66,11 @@ namespace Game1
         {
             if ((this.Rectangle.Y + this.Rectangle.Height) > SCREENHEIGHT)
             {
-                this.IsAlive = false;
+                if (base.WasAlive == true)
+                {
+                    base.IsAlive = false;
+                    base.WasAlive = false;
+                }
             }
 
             if (this.IsAlive)

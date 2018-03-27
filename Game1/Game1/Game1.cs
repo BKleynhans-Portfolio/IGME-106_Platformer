@@ -26,19 +26,25 @@ using Microsoft.Xna.Framework.Audio;
 
 namespace Game1
 {
+    public enum GameState
+    {
+        Title,
+        Options,
+        InGame,
+        GameOver,
+        Pause
+    }
     /// <summary>
     /// This is the main type for your game.
     /// </summary>
     public class Game1 : Game
     {
+        protected static GameState gameState = GameState.Title;
+
         // Define graphics devices
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-
-        Texture2D playerSprites;                                                            // Create variable to contain player spritesheet
-        Texture2D enemySprites;
-        Texture2D platformSprites;
-
+                
         // Define input devices
         public static KeyboardState currentKeyboardState;
         public static KeyboardState previousKeyboardState;
@@ -46,8 +52,16 @@ namespace Game1
         // Define gametime parameter for gravity implementation
         public static GameTime oldGameTime = new GameTime();
 
+        // Dictionary of general menu sprites
+        public static Dictionary<string, Texture2D> menuElements = new Dictionary<string, Texture2D>();
+
         // List of all GameObjects
-        List<GameObject> gameObject = new List<GameObject>();
+        public static List<GameObject> gameObject = new List<GameObject>();
+
+        // Create menu screens objects and parameters
+        public static List<Title> titleElements = new List<Title>();
+        public static List<Option> optionElements = new List<Option>();
+        public static List<GameOver> gameOverElements = new List<GameOver>();
 
         // Create player object and parameters
         Player player;
@@ -59,7 +73,7 @@ namespace Game1
         List<Platform> platforms = new List<Platform>();
 
         // List of objects currently being intersected
-        public List<GameObject> intersectedBy = new List<GameObject>();
+        protected List<GameObject> intersectedBy = new List<GameObject>();
 
         // Animation variables        
         public static double fps;
@@ -108,23 +122,19 @@ namespace Game1
         {                                                                                            
             spriteBatch = new SpriteBatch(GraphicsDevice);                                  // Create a new SpriteBatch, which can be used to draw textures.            
 
-            playerSprites = Content.Load<Texture2D>("TestImage");                           // Load player sprite
-            platformSprites = Content.Load<Texture2D>("Platform");                      // Load a platform
+            LoadPlayerElements();
+            LoadFloorElements();
+            LoadEnemyElements();
+            LoadMenuElements();
+                                                                                            // All objects need to be added to the gameObject list
+            gameObject.Add(player);                                                         // Add player to gameObject
 
-            player = new Player(playerSprites, 50, 50, 50, 50);
-            player.ApplyGravity = true;
-
-            LoadFloors();
-            LoadEnemies();
-
-            gameObject.Add(player);                                                         // All objects need to be added to the gameObject list
-
-            foreach (Enemy enemy in enemies)
+            foreach (Enemy enemy in enemies)                                                // Add enemies to gameObject
             {
                 gameObject.Add(enemy);
             }
 
-            foreach (Platform platform in platforms)
+            foreach (Platform platform in platforms)                                        // Add platforms to gameObject
             {
                 gameObject.Add(platform);
             }
@@ -156,29 +166,49 @@ namespace Game1
             previousKeyboardState = currentKeyboardState;                                   // Get comparitive keyboard states
             currentKeyboardState = Keyboard.GetState();
 
-            for (int i = 0; i < (gameObject.Count - 1); i++)                                // Cycle through gameObject list and test
-            {                                                                               // all created objects for intersection
-                for (int j = i + 1; j < gameObject.Count; j++)
-                {
-                    if (gameObject[i].Intersects(gameObject[j]))
-                    {
-                        if (!gameObject[i].intersectedBy.Contains(gameObject[j]))           // If there is an intersection, create
-                        {                                                                   // references in the objects to each other
-                            gameObject[i].intersectedBy.Add(gameObject[j]);
-                        }
+            switch (gameState)
+            {
+                case GameState.Title:
+                    for (int i = 0; i < titleElements.Count; i++) {
+                        titleElements[i].Update(gameTime);
+                    }
 
-                        if (!gameObject[j].intersectedBy.Contains(gameObject[i]))
+                    break;
+                case GameState.Options:
+                    break;
+                case GameState.InGame:
+                    for (int i = 0; i < (gameObject.Count - 1); i++)                                // Cycle through gameObject list and test
+                    {                                                                               // all created objects for intersection
+                        for (int j = i + 1; j < gameObject.Count; j++)
                         {
-                            gameObject[j].intersectedBy.Add(gameObject[i]);
+                            if (gameObject[i].Intersects(gameObject[j]))
+                            {
+                                if (!gameObject[i].intersectedBy.Contains(gameObject[j]))           // If there is an intersection, create
+                                {                                                                   // references in the objects to each other
+                                    gameObject[i].intersectedBy.Add(gameObject[j]);
+                                }
+
+                                if (!gameObject[j].intersectedBy.Contains(gameObject[i]))
+                                {
+                                    gameObject[j].intersectedBy.Add(gameObject[i]);
+                                }
+                            }
                         }
                     }
-                }
+
+                    for (int i = 0; i < gameObject.Count; i++)                                      // Update all the objects in the game
+                    {
+                        gameObject[i].Update(gameTime);
+                    }
+
+                    break;
+                case GameState.Pause:
+                    break;
+                case GameState.GameOver:
+                    break;
             }
 
-            for (int i = 0; i < gameObject.Count; i++)                                      // Update all the objects in the game
-            {                
-                gameObject[i].Update(gameTime);
-            }
+            
 
             base.Update(gameTime);
         }
@@ -193,51 +223,194 @@ namespace Game1
 
             spriteBatch.Begin();
 
-            for (int i = 0; i < gameObject.Count; i++)                                      // Draw all the objects in the game
+            switch (gameState)
             {
-                gameObject[i].Draw(spriteBatch);
+                case GameState.Title:
+                    for (int i = 0; i < titleElements.Count; i++)
+                    {
+                        titleElements[i].Draw(spriteBatch);
+                    }
+
+                    break;
+                case GameState.Options:
+                    break;
+                case GameState.InGame:
+                    for (int i = 0; i < gameObject.Count; i++)                                      // Draw all the objects in the game
+                    {
+                        gameObject[i].Draw(spriteBatch);
+                    }
+
+                    break;
+                case GameState.Pause:
+                    break;
+                case GameState.GameOver:
+                    break;
             }
+            
 
             spriteBatch.End();
 
             base.Draw(gameTime);
         }
 
-        private void LoadFloors()
+        private void LoadPlayerElements()
         {
-            platforms.Add(new Platform(platformSprites, 0, -20, SCREENWIDTH, 50));          // Ceiling platform
+            player = new Player(
+                            spriteTexture: Content.Load<Texture2D>("TestImage"),
+                            x: 50,
+                            y: 50,
+                            width: 50,
+                            height: 50
+                         );
+
+            player.ApplyGravity = true;
+
+            
+        }
+
+        private void LoadFloorElements()
+        {   
+            platforms.Add(                                                                  // Ceiling platform
+                new Platform(
+                    spriteTexture: Content.Load<Texture2D>("Platform"),
+                    x: 0,
+                    y: -20,
+                    width: SCREENWIDTH,
+                    height: 50
+                )
+            );
+
             //platform[0].ApplyGravity = true;                                              // MOST OF THESE ARE FOR TESTING PURPOSES
             //platform[0].gravityDirection = GravityDirection.Right;                        // YOU CAN UNCOMMENT TO SEE WHAT HAPPENS
             //platform[0].gravityOnProximityFrom = GravityOnProximityFrom.Top;
 
-            platforms.Add(new Platform(platformSprites, 0, 100, 100, 100));
-            //platforms[1].ApplyGravity = false;                                               // State that the second platform should not have gravity
+            platforms.Add(new Platform(Content.Load<Texture2D>("Platform"), 0, 100, 100, 100));
+            //platforms[1].ApplyGravity = false;                                            // State that the second platform should not have gravity
             //platform[1].gravityDirection = GravityDirection.Down;                         // during instantiation because gravity will be implemented
-            //platforms[1].gravityDirection = GravityDirection.Right;                          // to the right if the object receives a proximity warning
-            //platforms[1].gravityOnProximityFrom = GravityOnProximityFrom.Top;                // from above and then moves back and forth
+            //platforms[1].gravityDirection = GravityDirection.Right;                       // to the right if the object receives a proximity warning
+            //platforms[1].gravityOnProximityFrom = GravityOnProximityFrom.Top;             // from above and then moves back and forth
             //platforms[1].platformMovement = PlatformMovement.ToAndFroRightFirst;
             //platform[1].platformMovement = PlatformMovement.ToAndFroLeftFirst;
             //platform[1].platformMovement = PlatformMovement.ToAndFroDownFirst;
 
-            platforms.Add(new Platform(platformSprites, 90, 200, 210, 50));
+            platforms.Add(new Platform(Content.Load<Texture2D>("Platform"), 90, 200, 210, 50));
             
-            platforms.Add(new Platform(platformSprites, 400, 200, 100, 50));
+            platforms.Add(new Platform(Content.Load<Texture2D>("Platform"), 400, 200, 100, 50));
             platforms[3].ApplyGravity = true;
             platforms[3].platformMovement = PlatformMovement.ToAndFroUpFirst;
             platforms[3].ObjectYMoveDistance = 50;
 
-            platforms.Add(new Platform(platformSprites, 500, 100, 200, 50));
+            platforms.Add(new Platform(Content.Load<Texture2D>("Platform"), 500, 100, 200, 50));
             platforms[4].ApplyGravity = false;
             platforms[4].gravityOnProximityFrom = GravityOnProximityFrom.Top;
             platforms[4].platformMovement = PlatformMovement.ToAndFroRightFirst;            
             platforms[4].ObjectXMoveDistance = 400;
+
+            //platforms.Add(new Platform(platformSprites, (SCREENWIDTH / 2) - 400, (SCREENHEIGHT / 2) - 400, 800, 800));        // Size of the menus
             
         }
 
-        private void LoadEnemies()
+        private void LoadEnemyElements()
         {
-            enemies.Add(new Enemy(playerSprites, 200, 50, 50, 50));                           // Load enemy sprite
+            enemies.Add(
+                new Enemy(
+                    Content.Load<Texture2D>("Enemy"),
+                    200,
+                    50,
+                    50,
+                    50
+                )
+            );
+
             enemies[0].ApplyGravity = true;
+        }
+
+        private void LoadMenuElements()
+        {
+            menuElements.Add("MenuBackground", Content.Load<Texture2D>("MenuBackground"));            
+            menuElements.Add("Title", Content.Load<Texture2D>("Title\\Title"));
+            menuElements.Add("SelectionFrame", Content.Load<Texture2D>("Title\\SelectionFrame"));
+            menuElements.Add("LoadGame", Content.Load<Texture2D>("Title\\LoadGame"));
+            menuElements.Add("NewGame", Content.Load<Texture2D>("Title\\NewGame"));               
+            menuElements.Add("Options", Content.Load<Texture2D>("Title\\Options"));
+
+            titleElements.Add(
+                new Title(
+                    menuItem: "MenuBackground",
+                    spriteTexture: menuElements["MenuBackground"],
+                    x: ((SCREENWIDTH / 2) - 400),
+                    y: ((SCREENHEIGHT / 2) - 400),
+                    width: 800,
+                    height: 800,
+                    addGravity: false,
+                    appliedObjectMass: 0
+                )
+            );
+
+            titleElements.Add(
+                new Title(
+                    menuItem: "Title",
+                    spriteTexture: menuElements["Title"],
+                    x: ((SCREENWIDTH / 2) - 300),
+                    y: ((SCREENHEIGHT / 2) - 400),
+                    width: 600,
+                    height: 300,
+                    addGravity: false,
+                    appliedObjectMass: 0
+                )
+            );
+
+            titleElements.Add(
+                new Title(
+                    menuItem: "LoadGame",
+                    spriteTexture: menuElements["LoadGame"],
+                    x: ((SCREENWIDTH / 2) - 200),
+                    y: ((SCREENHEIGHT / 2) - 100),
+                    width: 400,
+                    height: 100,
+                    addGravity: false,
+                    appliedObjectMass: 0
+                )
+            );
+
+            titleElements.Add(
+                new Title(
+                    menuItem: "NewGame",
+                    spriteTexture: menuElements["NewGame"],
+                    x: ((SCREENWIDTH / 2) - 200),
+                    y: (SCREENHEIGHT / 2) + 50,
+                    width: 400,
+                    height:100,
+                    addGravity: false,
+                    appliedObjectMass: 0
+                )
+            );
+
+            titleElements.Add(
+                new Title(
+                    menuItem: "Options",
+                    spriteTexture: menuElements["Options"],
+                    x: ((SCREENWIDTH / 2) - 200),
+                    y: ((SCREENHEIGHT / 2) + 200),
+                    width: 400,
+                    height: 100,
+                    addGravity: false,
+                    appliedObjectMass: 0
+                )
+            );
+
+            titleElements.Add(
+                new Title(
+                    menuItem: "SelectionFrame",
+                    spriteTexture: menuElements["SelectionFrame"],
+                    x: ((SCREENWIDTH / 2) - 200),
+                    y: ((SCREENHEIGHT / 2) - 100),
+                    width: 400,
+                    height: 100,
+                    addGravity: false,
+                    appliedObjectMass: 0
+                )
+            );
         }
     }
 }
