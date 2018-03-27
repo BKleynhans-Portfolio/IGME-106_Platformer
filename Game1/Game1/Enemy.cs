@@ -59,7 +59,7 @@ namespace Game1
 
         protected override void Die()
         {
-
+            // I have died
         }
 
         protected override void Update(GameTime gameTime)
