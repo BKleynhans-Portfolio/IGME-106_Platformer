@@ -533,7 +533,7 @@ namespace Game1
 
                                                                                             // If the player was hit by and NPC and it is not a friendly NPC, subtract one life.
                         if ((this.GetType() == typeof(Player)) && (passedGameObject.GetType() != typeof(Friendly)))
-                        {
+                        {                            
                             this.Lives--;
                         }
                     }                    
