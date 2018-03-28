@@ -44,13 +44,19 @@ namespace Game1
         // Define graphics devices
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-                
+
         // Define input devices
         public static KeyboardState currentKeyboardState;
         public static KeyboardState previousKeyboardState;
 
-        // Define gametime parameter for gravity implementation
-        public static GameTime oldGameTime = new GameTime();
+        // Dictionary of player sprites
+        public static Dictionary<string, Texture2D> playerElements = new Dictionary<string, Texture2D>();
+
+        // Dictionary of enemy sprites
+        public static Dictionary<string, Texture2D> enemyElements = new Dictionary<string, Texture2D>();
+
+        // Dictionary of platform sprites
+        public static Dictionary<string, Texture2D> platformElements = new Dictionary<string, Texture2D>();
 
         // Dictionary of general menu sprites
         public static Dictionary<string, Texture2D> menuElements = new Dictionary<string, Texture2D>();
@@ -255,8 +261,10 @@ namespace Game1
 
         private void LoadPlayerElements()
         {
+            playerElements.Add("PlayerCharacter", Content.Load<Texture2D>("TestImage"));
+
             player = new Player(
-                            spriteTexture: Content.Load<Texture2D>("TestImage"),
+                            playerElements["PlayerCharacter"],
                             x: 50,
                             y: 50,
                             width: 50,
@@ -269,38 +277,31 @@ namespace Game1
         }
 
         private void LoadFloorElements()
-        {   
-            platforms.Add(                                                                  // Ceiling platform
-                new Platform(
-                    spriteTexture: Content.Load<Texture2D>("Platform"),
-                    x: 0,
-                    y: -20,
-                    width: SCREENWIDTH,
-                    height: 50
-                )
-            );
+        {
+            platformElements.Add("FlatPlatform", Content.Load<Texture2D>("Platform"));
 
-            //platform[0].ApplyGravity = true;                                              // MOST OF THESE ARE FOR TESTING PURPOSES
-            //platform[0].gravityDirection = GravityDirection.Right;                        // YOU CAN UNCOMMENT TO SEE WHAT HAPPENS
-            //platform[0].gravityOnProximityFrom = GravityOnProximityFrom.Top;
+            platforms.Add(new Platform(platformElements["FlatPlatform"], 0, -20, SCREENWIDTH, 50));         // Ceiling platform
+            //platforms[0].ApplyGravity = true;                                              // MOST OF THESE ARE FOR TESTING PURPOSES
+            //platforms[0].gravityDirection = GravityDirection.Right;                        // YOU CAN UNCOMMENT TO SEE WHAT HAPPENS
+            //platforms[0].gravityOnProximityFrom = GravityOnProximityFrom.Top;
 
-            platforms.Add(new Platform(Content.Load<Texture2D>("Platform"), 0, 100, 100, 100));
+            platforms.Add(new Platform(platformElements["FlatPlatform"], 0, 100, 100, 100));
             //platforms[1].ApplyGravity = false;                                            // State that the second platform should not have gravity
-            //platform[1].gravityDirection = GravityDirection.Down;                         // during instantiation because gravity will be implemented
+            //platforms[1].gravityDirection = GravityDirection.Down;                         // during instantiation because gravity will be implemented
             //platforms[1].gravityDirection = GravityDirection.Right;                       // to the right if the object receives a proximity warning
             //platforms[1].gravityOnProximityFrom = GravityOnProximityFrom.Top;             // from above and then moves back and forth
             //platforms[1].platformMovement = PlatformMovement.ToAndFroRightFirst;
-            //platform[1].platformMovement = PlatformMovement.ToAndFroLeftFirst;
-            //platform[1].platformMovement = PlatformMovement.ToAndFroDownFirst;
+            //platforms[1].platformMovement = PlatformMovement.ToAndFroLeftFirst;
+            //platforms[1].platformMovement = PlatformMovement.ToAndFroDownFirst;
 
-            platforms.Add(new Platform(Content.Load<Texture2D>("Platform"), 90, 200, 210, 50));
+            platforms.Add(new Platform(platformElements["FlatPlatform"], 90, 200, 210, 50));
             
-            platforms.Add(new Platform(Content.Load<Texture2D>("Platform"), 400, 200, 100, 50));
+            platforms.Add(new Platform(platformElements["FlatPlatform"], 400, 200, 100, 50));
             platforms[3].ApplyGravity = true;
             platforms[3].platformMovement = PlatformMovement.ToAndFroUpFirst;
             platforms[3].ObjectYMoveDistance = 50;
 
-            platforms.Add(new Platform(Content.Load<Texture2D>("Platform"), 500, 100, 200, 50));
+            platforms.Add(new Platform(platformElements["FlatPlatform"], 500, 100, 200, 50));
             platforms[4].ApplyGravity = false;
             platforms[4].gravityOnProximityFrom = GravityOnProximityFrom.Top;
             platforms[4].platformMovement = PlatformMovement.ToAndFroRightFirst;            
@@ -312,16 +313,9 @@ namespace Game1
 
         private void LoadEnemyElements()
         {
-            enemies.Add(
-                new Enemy(
-                    Content.Load<Texture2D>("Enemy"),
-                    200,
-                    50,
-                    50,
-                    50
-                )
-            );
+            enemyElements.Add("GeneralEnemy", Content.Load<Texture2D>("TestEnemySprite"));
 
+            enemies.Add(new Enemy(enemyElements["GeneralEnemy"], 200, 50, 50, 50));
             enemies[0].ApplyGravity = true;
         }
 

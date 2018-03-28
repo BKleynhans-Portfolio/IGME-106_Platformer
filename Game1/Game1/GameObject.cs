@@ -292,7 +292,8 @@ namespace Game1
                         }
                         else
                         {
-                            if (this.GetType().BaseType == typeof(Environment))
+                            if ((this.GetType().BaseType == typeof(Environment)) &&
+                                (this.GravitationalVelocity > -5))
                             {
                                 this.GravitationalVelocity -= this.EnvironmentAcceleration;
                             }
@@ -311,7 +312,8 @@ namespace Game1
                         }
                         else
                         {
-                            if (this.GetType().BaseType == typeof(Environment))
+                            if ((this.GetType().BaseType == typeof(Environment)) &&
+                                (this.GravitationalVelocity < 5))
                             {
                                 this.GravitationalVelocity += this.EnvironmentAcceleration;       
                             }
@@ -330,7 +332,8 @@ namespace Game1
                         }
                         else
                         {
-                            if (this.GetType().BaseType == typeof(Environment))
+                            if ((this.GetType().BaseType == typeof(Environment)) &&
+                                (this.MovementVelocity > -5))
                             {
                                 this.MovementVelocity -= this.EnvironmentAcceleration;       
                             }
@@ -350,7 +353,8 @@ namespace Game1
                         }
                         else
                         {
-                            if (this.GetType().BaseType == typeof(Environment))
+                            if ((this.GetType().BaseType == typeof(Environment)) &&
+                                (this.MovementVelocity < 5))
                             {
                                 this.MovementVelocity += this.EnvironmentAcceleration;                                              
                             } 
