@@ -39,7 +39,7 @@
             this.tsiSave = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiLoad = new System.Windows.Forms.ToolStripMenuItem();
             this.label1 = new System.Windows.Forms.Label();
-            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.ofdOpenLevel = new System.Windows.Forms.OpenFileDialog();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -154,10 +154,6 @@
             this.label1.TabIndex = 8;
             this.label1.Text = "Click on a tile to begin placing that tile in the level";
             // 
-            // openFileDialog1
-            // 
-            this.openFileDialog1.FileName = "openFileDialog1";
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -193,7 +189,7 @@
         private System.Windows.Forms.ToolStripMenuItem tsiSave;
         private System.Windows.Forms.ToolStripMenuItem tsiLoad;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.OpenFileDialog openFileDialog1;
+        private System.Windows.Forms.OpenFileDialog ofdOpenLevel;
     }
 }
 

@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
+//using static System.Security.Permissions.FileIOPermission;
 
 /* Project: Platformer Level Editor
  * Programmer: Miranda Auriemma
@@ -152,8 +153,7 @@ namespace LevelEditor
             tpState = TilePlacingState.nothing;
             lblPlacing.Text = "Placing: Nothing";
         }
-
-
+        
 
         private void tsiNew_Click(object sender, EventArgs e)
         {
@@ -173,16 +173,16 @@ namespace LevelEditor
             //saveLevel.ShowDialog();
 
             //string row;
-            StreamWriter myStream;
-            myStream = new StreamWriter("thing.txt");
-            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+            SaveFileDialog sfdSaveLevel = new SaveFileDialog();
 
-            saveFileDialog1.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
-            saveFileDialog1.FilterIndex = 2;
-            saveFileDialog1.RestoreDirectory = true;
+            sfdSaveLevel.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
+            sfdSaveLevel.FilterIndex = 2;
+            sfdSaveLevel.RestoreDirectory = true;
             string row;
-            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            if (sfdSaveLevel.ShowDialog() == DialogResult.OK)
             {
+                StreamWriter swSaveLevel = new StreamWriter(sfdSaveLevel.FileName);
+
                 //if ((myStream = saveFileDialog1.OpenFile()) != null)
                 //{
                     // Code to write the stream goes here.
@@ -195,39 +195,109 @@ namespace LevelEditor
                             row += pcb.Name;
                         }
 
-                        myStream.WriteLine(row);
+                        swSaveLevel.WriteLine(row);
                     }
 
-                    myStream.Close();
+                    swSaveLevel.Close();
                 //}
             }
         }
 
         private void tsiLoad_Click(object sender, EventArgs e)
         {
-            LoadLevel loadLevel = new LoadLevel(this);
-            loadLevel.ShowDialog();
-        }
+            //LoadLevel loadLevel = new LoadLevel(this);
+            //loadLevel.ShowDialog();
+            //StreamReader srReadFile = null;
+            //srReadFile = new StreamReader(ofdOpenLevel.FileName);
 
-        public void Save(string fileName)//save the file
-        {
-            string row;
-            StreamWriter level = new StreamWriter(fileName + ".txt");
+            int loopCounter;
 
-            //loop though each row list and write the names of the picture boxes into the text file
-            foreach (List<PictureBox> rows in listofPcbRows)
+            ofdOpenLevel.InitialDirectory = "c:\\";
+            ofdOpenLevel.Filter = "txt files (*.txt)|*.txt";
+            ofdOpenLevel.FilterIndex = 2;
+            ofdOpenLevel.RestoreDirectory = true;
+
+            if (ofdOpenLevel.ShowDialog() == DialogResult.OK)
             {
-                //reset row
-                row = "";
-                foreach (PictureBox pcb in rows)
+                try
                 {
-                    row += pcb.Name;
-                }
-                level.WriteLine(row);
-            }
+                    StreamReader srReadFile = new StreamReader(ofdOpenLevel.FileName);
 
-            level.Close();
+                    //if ((srReadFile = ofdOpenLevel.OpenFile()) != null)
+                    //{
+                    using (srReadFile)
+                    {
+                        //Insert code to read the stream here.
+                        
+                        foreach (List<PictureBox> rows in listofPcbRows)
+                        {
+                            string row = srReadFile.ReadLine();
+
+                            loopCounter = 0;
+                            foreach (PictureBox pcb in rows)
+                            {
+                                //resets each image to the "placeholder"
+                                char tile = row[loopCounter];
+                                pcb.Name = tile.ToString();
+                                
+                                switch (tile)
+                                {
+                                    case 'w':
+                                        pcb.Image = LevelEditor.Properties.Resources.woodtexture;
+                                        break;
+
+                                    case 's':
+                                        pcb.Image = LevelEditor.Properties.Resources.stonetexture;
+
+                                        break;
+                                    case 'a':
+                                        pcb.Image = LevelEditor.Properties.Resources.watertexture;
+
+                                        break;
+                                    case 'g':
+                                        pcb.Image = LevelEditor.Properties.Resources.grasstexture;
+
+                                        break;
+                                    case 'n':
+                                        pcb.Image = LevelEditor.Properties.Resources.blank;
+
+                                        break;
+                                    default:
+                                        break;
+
+                                }
+
+                            }
+                        }
+                    }
+                    //}
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error: Could not read file from disk. Original error: " + ex.Message);
+                }
+            }
         }
+
+        //public void Save(string fileName)//save the file
+        //{
+        //    string row;
+        //    StreamWriter level = new StreamWriter(fileName + ".txt");
+
+        //    //loop though each row list and write the names of the picture boxes into the text file
+        //    foreach (List<PictureBox> rows in listofPcbRows)
+        //    {
+        //        //reset row
+        //        row = "";
+        //        foreach (PictureBox pcb in rows)
+        //        {
+        //            row += pcb.Name;
+        //        }
+        //        level.WriteLine(row);
+        //    }
+
+        //    level.Close();
+        //}
         public void Open(string fileName)//open files
         {
             try
@@ -255,13 +325,13 @@ namespace LevelEditor
 
                 //MessageBox.Show(level);
                 //foreach ()
-                {
-                    //foreach (PictureBox pcb in rows)
-                    //{
-                    //    //resets each image to the "placeholder"
-                    //    pcb.Image = LevelEditor.Properties.Resources.blank;
-                    //}
-                }
+                //{
+                //    //foreach (PictureBox pcb in rows)
+                //    //{
+                //    //    //resets each image to the "placeholder"
+                //    //    pcb.Image = LevelEditor.Properties.Resources.blank;
+                //    //}
+                //}
             }
             catch (System.IO.FileNotFoundException)
             {
