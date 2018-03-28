@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -74,6 +75,7 @@ namespace Game1
         private Texture2D objectTexture;                                                    // Texture and rectangle
         private Rectangle rectangle;
         private SpriteEffects spriteEffect;
+        private bool visible;                                                               // Is this object visible in the scene
 
         private float globalGlobalAcceleration;                                             // Acceleration to apply to characters during each iteration
         private float environmentAcceleration;                                              // Acceleration to apply to platforms
@@ -103,6 +105,8 @@ namespace Game1
             this.ObjectTexture = spriteTexture;
             this.Rectangle = new Rectangle(x, y, width, height);
 
+            this.Visible = true;
+
             this.Falling = true;
 
             this.ApplyGravity = false;
@@ -129,6 +133,8 @@ namespace Game1
         {
             this.ObjectTexture = spriteTexture;
             this.Rectangle = new Rectangle(x, y, width, height);
+
+            this.Visible = true;
 
             this.ApplyGravity = addGravity;
 
@@ -180,7 +186,13 @@ namespace Game1
             get { return this.spriteEffect; }
             set { this.spriteEffect = value; }
         }
-        
+
+        public bool Visible
+        {
+            get { return this.visible; }
+            set { this.visible = value; }
+        }
+
         /// <summary>
         /// Is the object in a jump process
         /// </summary>
@@ -315,7 +327,7 @@ namespace Game1
                             if ((this.GetType().BaseType == typeof(Environment)) &&
                                 (this.GravitationalVelocity < 5))
                             {
-                                this.GravitationalVelocity += this.EnvironmentAcceleration;       
+                                this.GravitationalVelocity += this.EnvironmentAcceleration;
                             }
                             else if (this.GravitationalVelocity < 5)                             // If it is not hit, or it is hit and is an environment object, apply appropriate gravity
                             {
@@ -335,7 +347,7 @@ namespace Game1
                             if ((this.GetType().BaseType == typeof(Environment)) &&
                                 (this.MovementVelocity > -5))
                             {
-                                this.MovementVelocity -= this.EnvironmentAcceleration;       
+                                this.MovementVelocity -= this.EnvironmentAcceleration;                                
                             }
                             else if (this.MovementVelocity > -5)                                 // If it is not hit, or it is hit and is an environment object, apply appropriate gravity
                             {

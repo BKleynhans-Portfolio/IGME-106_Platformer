@@ -383,8 +383,25 @@ namespace Game1
         {
             Console.WriteLine("You lost a life, " + this.Lives + " lives left");
 
+            bool heartTaken = false;
+            int lifeCounter = Lives;
+
+            do
+            {
+                if (livesLeft[lifeCounter - 1].Visible)
+                {
+                    livesLeft[lifeCounter - 1].Visible = false;
+                    heartTaken = true;
+                }
+                else
+                {
+                    lifeCounter--;
+                }
+
+            } while (heartTaken == false || this.Lives <= 0);
+
             this.Lives--;
-            
+
             this.TookLife = true;
             base.CreateRectangle(new Vector2(50, 50));
             this.IsAlive = true;
@@ -394,6 +411,7 @@ namespace Game1
             base.GravitationalVelocity = 0f;
             base.MovementVelocity = 0f;
 
+            
             if (this.Lives <= 0)
             {
                 Die();
@@ -403,6 +421,14 @@ namespace Game1
         protected virtual void Die()
         {
             Console.WriteLine("Player Died");
+
+            foreach (GraphicElement graphicsElement in livesLeft)
+            {
+                graphicsElement.Visible = true;
+
+                Lives++;
+            }
+
             gameState = GameState.Title;
         }
     }

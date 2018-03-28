@@ -44,7 +44,7 @@ namespace Game1
         ToAndFroRightFirst
     }
 
-    abstract class Environment : Screen
+    public abstract class Environment : Screen
     {
         public GravityOnProximityFrom gravityOnProximityFrom = GravityOnProximityFrom.None;
         public PlatformMovement platformMovement = PlatformMovement.OneDirection;

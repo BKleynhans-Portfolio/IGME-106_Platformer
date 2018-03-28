@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -27,7 +27,7 @@ namespace Game1
 {
     class Player : Character
     {
-        private int jumpCount;        
+        private int jumpCount;
 
         /// <summary>
         /// Default constructor.  Creates a GameObject with default values.
@@ -156,6 +156,11 @@ namespace Game1
                         {
                             base.Falling = true;
                             base.hitObstacle = HitObstacle.None;
+                        }
+
+                        if (base.intersectedBy[i].GetType() == typeof(Enemy))
+                        {
+                            base.TookLife = false;
                         }
 
                         base.intersectedBy.Remove(intersectedBy[i]);
