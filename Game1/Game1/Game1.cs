@@ -197,8 +197,6 @@ namespace Game1
                          );
 
             player.ApplyGravity = true;
-
-
         }
 
         private void LoadFloorElements()
@@ -294,6 +292,20 @@ namespace Game1
             enemies[0].ApplyGravity = true;
             enemies[0].objectMovement = ObjectMovement.ToAndFroRightFirst;
             enemies[0].ObjectXMoveDistance = 50;
+
+            enemies.Add(
+                new Enemy(
+                    spriteTexture: enemyElements["GeneralEnemy"],
+                    x: 700,
+                    y: 100,
+                    width: 50,
+                    height: 50
+                )
+            );
+
+            enemies[1].ApplyGravity = true;
+            enemies[1].objectMovement = ObjectMovement.ToAndFroRightFirst;
+            enemies[1].ObjectXMoveDistance = 50;
         }
 
         private void LoadGeneralElements()
