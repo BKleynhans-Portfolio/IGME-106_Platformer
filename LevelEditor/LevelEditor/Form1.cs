@@ -72,7 +72,7 @@ namespace LevelEditor
                     //this hooks up the PictureBox click to the event handler
                     //pcb.MouseDown += PictureBoxHandler;
                     pcb.MouseDown += PictureBoxMouseDownHandler;
-                    //pcb.MouseEnter += PictureBoxMouseDownHandler;
+                    pcb.MouseEnter += PictureBoxMouseDownHandler;
 
                     //add the PictureBox to the "row" in the list
                     listofPcbRows[y].Add(pcb);
@@ -175,7 +175,7 @@ namespace LevelEditor
             //string row;
             SaveFileDialog sfdSaveLevel = new SaveFileDialog();
 
-            sfdSaveLevel.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
+            sfdSaveLevel.Filter = "txt files (*.txt)|*.txt";
             sfdSaveLevel.FilterIndex = 2;
             sfdSaveLevel.RestoreDirectory = true;
             string row;
@@ -212,7 +212,7 @@ namespace LevelEditor
 
             int loopCounter;
 
-            ofdOpenLevel.InitialDirectory = "c:\\";
+            ofdOpenLevel.InitialDirectory = "Z:\\gdaps2\\_teamProject\\LevelEditor\\LevelEditor\\bin\\Debug";
             ofdOpenLevel.Filter = "txt files (*.txt)|*.txt";
             ofdOpenLevel.FilterIndex = 2;
             ofdOpenLevel.RestoreDirectory = true;
@@ -266,7 +266,7 @@ namespace LevelEditor
                                         break;
 
                                 }
-
+                                loopCounter++;
                             }
                         }
                     }
