@@ -25,35 +25,8 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Game1
 {
-    public enum GravityOnProximityFrom
-    {
-        Left,
-        Right,
-        Top,
-        Bottom,
-        Center,
-        None
-    }
-
-    public enum PlatformMovement
-    {
-        OneDirection,
-        ToAndFroUpFirst,
-        ToAndFroDownFirst,
-        ToAndFroLeftFirst,
-        ToAndFroRightFirst
-    }
-
     public abstract class Environment : Screen
     {
-        public GravityOnProximityFrom gravityOnProximityFrom = GravityOnProximityFrom.None;
-        public PlatformMovement platformMovement = PlatformMovement.OneDirection;
-                
-        private float objectXMoveDistance;
-        private float objectYMoveDistance;
-        private float initialXPlacement;
-        private float initialYPlacement;
-
         /// <summary>
         /// Default constructor.  Creates a GameObject with default values.
         /// </summary>
@@ -64,12 +37,8 @@ namespace Game1
         /// <param name="height">Height of object</param>
         public Environment(Texture2D spriteTexture, int x, int y, int width, int height) : base(spriteTexture, x, y, width, height)
         {
-            this.InitialXPlacement = x;
-            this.InitialYPlacement = y;
-
             this.ObjectXMoveDistance = 50;
-            this.ObjectYMoveDistance = 50;
-            
+            this.ObjectYMoveDistance = 50;            
         }
 
         /// <summary>
@@ -86,35 +55,8 @@ namespace Game1
                           bool addGravity, float appliedObjectMass) :
                 base(spriteTexture, x, y, width, height, addGravity, appliedObjectMass)
         {
-            this.InitialXPlacement = x;
-            this.InitialYPlacement = y;
-
             this.ObjectXMoveDistance = 50;
             this.ObjectYMoveDistance = 50;
-        }
-
-        public float ObjectXMoveDistance
-        {
-            get { return this.objectXMoveDistance; }
-            set { this.objectXMoveDistance = value; }
-        }
-
-        public float ObjectYMoveDistance
-        {
-            get { return this.objectYMoveDistance; }
-            set { this.objectYMoveDistance = value; }
-        }
-
-        public float InitialXPlacement
-        {
-            get { return this.initialXPlacement; }
-            private set { this.initialXPlacement = value; }
-        }
-
-        public float InitialYPlacement
-        {
-            get { return this.initialYPlacement; }
-            private set { this.initialYPlacement = value; }
         }
 
         public virtual Vector2 ApplyMovement()
@@ -145,129 +87,9 @@ namespace Game1
                 }                
             }
 
-            switch (hitObstacle) {
-                case HitObstacle.FromLeft:
-                    if (gravityOnProximityFrom == GravityOnProximityFrom.Left)
-                        base.ApplyGravity = true;
-
-                    break;
-                case HitObstacle.FromTop:
-                    if (gravityOnProximityFrom == GravityOnProximityFrom.Top)
-                        base.ApplyGravity = true;
-
-                    break;
-                case HitObstacle.FromRight:
-                    if (gravityOnProximityFrom == GravityOnProximityFrom.Right)
-                        base.ApplyGravity = true;
-
-                    break;
-                case HitObstacle.FromBottom:
-                    if (gravityOnProximityFrom == GravityOnProximityFrom.Bottom)
-                        base.ApplyGravity = true;
-
-                    break;
-            }
-
-            if (base.ApplyGravity == true)
-            {
-                switch (platformMovement)
-                {   
-                    case PlatformMovement.ToAndFroUpFirst:
-                        base.gravityDirection = GravityDirection.Up;
-
-                        break;
-                    case PlatformMovement.ToAndFroDownFirst:
-                        base.gravityDirection = GravityDirection.Down;
-
-                        break;
-                    case PlatformMovement.ToAndFroLeftFirst:
-                        base.gravityDirection = GravityDirection.Left;
-
-                        break;
-                    case PlatformMovement.ToAndFroRightFirst:
-                        base.gravityDirection = GravityDirection.Right;
-
-                        break;
-                }
-
-                switch (platformMovement)
-                {
-                    case PlatformMovement.ToAndFroRightFirst:
-                        if ((
-                                (base.gravityDirection == GravityDirection.Right) && 
-                                (this.Rectangle.X >= (this.InitialXPlacement + this.ObjectXMoveDistance))
-                            ) || (
-                                (base.gravityDirection == GravityDirection.Left) && 
-                                (this.Rectangle.X <= this.InitialXPlacement)
-                            ))
-                        {
-                            SwitchDirections();
-                        }
-
-                        break;
-                    case PlatformMovement.ToAndFroLeftFirst:
-                        if ((
-                                (base.gravityDirection == GravityDirection.Left) &&
-                                (this.Rectangle.X <= (this.InitialXPlacement - this.ObjectXMoveDistance))
-                            ) || (
-                                (base.gravityDirection == GravityDirection.Right) &&
-                                (this.Rectangle.X >= this.InitialXPlacement)
-                            ))
-                        {
-                            SwitchDirections();
-                        }
-
-                        break;
-                    case PlatformMovement.ToAndFroDownFirst:
-                        if ((
-                                (base.gravityDirection == GravityDirection.Down) &&
-                                (this.Rectangle.Y >= (this.InitialYPlacement + this.ObjectYMoveDistance))
-                            ) || (
-                                (base.gravityDirection == GravityDirection.Up) &&
-                                (this.Rectangle.Y <= this.InitialYPlacement)
-                            ))
-                        {
-                            SwitchDirections();
-                        }
-
-                        break;
-                    case PlatformMovement.ToAndFroUpFirst:
-                        if ((
-                                (base.gravityDirection == GravityDirection.Up) &&
-                                (this.Rectangle.Y <= (this.InitialYPlacement - this.ObjectYMoveDistance))
-                            ) || (
-                                (base.gravityDirection == GravityDirection.Down) &&
-                                (this.Rectangle.Y >= this.InitialYPlacement)
-                            ))
-                        {
-                            SwitchDirections();
-                        }
-
-                        break;
-                }   
-            }
-        
+            UpdateMovementParameters();
+            
             CreateRectangle(ApplyMovement());
-        }
-
-        private void SwitchDirections()
-        {
-            if (base.gravityDirection == GravityDirection.Down)
-            {
-                base.gravityDirection = GravityDirection.Up;
-            }
-            else if (base.gravityDirection == GravityDirection.Up)
-            {
-                base.gravityDirection = GravityDirection.Down;
-            }
-            else if (base.gravityDirection == GravityDirection.Left)
-            {
-                base.gravityDirection = GravityDirection.Right;
-            }
-            else if (base.gravityDirection == GravityDirection.Right)
-            {
-                base.gravityDirection = GravityDirection.Left;
-            }
         }
 
         ///summary>

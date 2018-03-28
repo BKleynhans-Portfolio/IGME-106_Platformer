@@ -25,10 +25,12 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Game1
 {
-    abstract class Character : GameObject
+    public abstract class Character : GameObject
     {
         protected abstract override void Update(GameTime gameTime);
-        
+
+        private float platformAcceleration;
+
         private int lives;
 
         private bool tookLife;
@@ -71,6 +73,14 @@ namespace Game1
 
             this.Lives = 3;
         }
+
+
+        public float PlatformAcceleration
+        {
+            get { return this.platformAcceleration; }
+            set { this.platformAcceleration = value; }
+        }
+
 
         /// <summary>
         /// Properties for variable which indicates whether the character is alive or not
@@ -168,17 +178,17 @@ namespace Game1
         {
             if (movementAppliedTo == MovementAppliedTo.None)
             {
-                this.MovementVelocity = 0;
+                this.MovementVelocity = this.PlatformAcceleration;
             }
 
             if ((movementAppliedTo == MovementAppliedTo.Left) && (hitObstacle != HitObstacle.FromLeft))
             {
-                this.MovementVelocity = -DefaultHorizonalVelocity;
+                this.MovementVelocity = -DefaultHorizonalVelocity + this.PlatformAcceleration;
             }
 
             if ((movementAppliedTo == MovementAppliedTo.Right) && (hitObstacle != HitObstacle.FromRight))
             {
-                this.MovementVelocity = DefaultHorizonalVelocity;
+                this.MovementVelocity = DefaultHorizonalVelocity + this.PlatformAcceleration;
             }
 
             if ((movementAppliedTo == MovementAppliedTo.Up) && (hitObstacle != HitObstacle.FromTop))
@@ -230,8 +240,9 @@ namespace Game1
                     {
                         this.hitObstacle = HitObstacle.FromTop;
                         this.JumpInProgress = false;
+                        this.PlatformAcceleration = passedGameObject.MovementVelocity;
 
-                        newX = this.Rectangle.X;                                            // Define new X and Y coordinates and create a new rectangle
+                        newX = this.Rectangle.X;                                     // Define new X and Y coordinates and create a new rectangle                        
                         newY = passedGameObject.Rectangle.Y - this.Rectangle.Height + 1;
 
                         if (newX != this.Rectangle.X || newY != this.Rectangle.Y)
@@ -403,7 +414,7 @@ namespace Game1
             this.Lives--;
 
             this.TookLife = true;
-            base.CreateRectangle(new Vector2(50, 50));
+            //base.CreateRectangle(new Vector2(50, 50));
             this.IsAlive = true;
             base.Falling = true;
             base.JumpInProgress = false;
@@ -428,6 +439,8 @@ namespace Game1
 
                 Lives++;
             }
+
+            base.CreateRectangle(new Vector2(50, 50));
 
             gameState = GameState.Title;
         }

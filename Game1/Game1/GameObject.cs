@@ -61,12 +61,38 @@ namespace Game1
         None
     }
 
+    public enum GravityOnProximityFrom
+    {
+        Left,
+        Right,
+        Top,
+        Bottom,
+        Center,
+        None
+    }
+
+    public enum ObjectMovement
+    {
+        OneDirection,
+        ToAndFroUpFirst,
+        ToAndFroDownFirst,
+        ToAndFroLeftFirst,
+        ToAndFroRightFirst
+    }
+
     public abstract class GameObject : Game1
     {
         public GravityDirection gravityDirection = GravityDirection.Down;
         public MovementAppliedTo movementAppliedTo = MovementAppliedTo.None;
         public HitObstacle hitObstacle = HitObstacle.None;
         public HitNPC hitNPC = HitNPC.None;
+        public GravityOnProximityFrom gravityOnProximityFrom = GravityOnProximityFrom.None;
+        public ObjectMovement objectMovement = ObjectMovement.OneDirection;
+
+        private float objectXMoveDistance;
+        private float objectYMoveDistance;
+        private float initialXPlacement;
+        private float initialYPlacement;
 
         //public abstract void Draw(SpriteBatch spriteBatch);
         public abstract bool Intersects(GameObject passedGameObject);
@@ -116,6 +142,9 @@ namespace Game1
             this.GlobalAcceleration = 0.25f;
             this.EnvironmentAcceleration = 0.05f;
             this.spriteEffect = SpriteEffects.None;
+
+            this.InitialXPlacement = x;
+            this.InitialYPlacement = y;
         }
 
         /// <summary>
@@ -141,7 +170,10 @@ namespace Game1
             this.ObjectMass = appliedObjectMass;
 
             this.GlobalAcceleration = 0.25f;
-            this.EnvironmentAcceleration = 0.05f;            
+            this.EnvironmentAcceleration = 0.05f;
+
+            this.InitialXPlacement = x;
+            this.InitialYPlacement = y;
         }
 
         /// <summary>
@@ -264,6 +296,30 @@ namespace Game1
             set { this.applyGravity = value; }
         }
 
+        public float ObjectXMoveDistance
+        {
+            get { return this.objectXMoveDistance; }
+            set { this.objectXMoveDistance = value; }
+        }
+
+        public float ObjectYMoveDistance
+        {
+            get { return this.objectYMoveDistance; }
+            set { this.objectYMoveDistance = value; }
+        }
+
+        public float InitialXPlacement
+        {
+            get { return this.initialXPlacement; }
+            private set { this.initialXPlacement = value; }
+        }
+
+        public float InitialYPlacement
+        {
+            get { return this.initialYPlacement; }
+            private set { this.initialYPlacement = value; }
+        }
+
         /// <summary>
         /// Method used to recreate the rectangle containing the location and dimensions of the object.
         /// This is required because the rectangle is a struct datatype and we cannot change the values
@@ -378,6 +434,132 @@ namespace Game1
 
                         break;
                 }
+            }
+        }
+        
+        public void UpdateMovementParameters()
+        {
+            switch (hitObstacle)
+            {
+                case HitObstacle.FromLeft:
+                    if (gravityOnProximityFrom == GravityOnProximityFrom.Left)
+                        this.ApplyGravity = true;
+
+                    break;
+                case HitObstacle.FromTop:
+                    if (gravityOnProximityFrom == GravityOnProximityFrom.Top)
+                        this.ApplyGravity = true;
+
+                    break;
+                case HitObstacle.FromRight:
+                    if (gravityOnProximityFrom == GravityOnProximityFrom.Right)
+                        this.ApplyGravity = true;
+
+                    break;
+                case HitObstacle.FromBottom:
+                    if (gravityOnProximityFrom == GravityOnProximityFrom.Bottom)
+                        this.ApplyGravity = true;
+
+                    break;
+            }
+
+            if (this.ApplyGravity == true)
+            {
+                switch (objectMovement)
+                {
+                    case ObjectMovement.ToAndFroUpFirst:
+                        this.gravityDirection = GravityDirection.Up;
+
+                        break;
+                    case ObjectMovement.ToAndFroDownFirst:
+                        this.gravityDirection = GravityDirection.Down;
+
+                        break;
+                    case ObjectMovement.ToAndFroLeftFirst:
+                        this.gravityDirection = GravityDirection.Left;
+
+                        break;
+                    case ObjectMovement.ToAndFroRightFirst:
+                        this.gravityDirection = GravityDirection.Right;
+
+                        break;
+                }
+
+                switch (objectMovement)
+                {
+                    case ObjectMovement.ToAndFroRightFirst:
+                        if ((
+                                (this.gravityDirection == GravityDirection.Right) &&
+                                (this.Rectangle.X >= (this.InitialXPlacement + this.ObjectXMoveDistance))
+                            ) || (
+                                (this.gravityDirection == GravityDirection.Left) &&
+                                (this.Rectangle.X <= this.InitialXPlacement)
+                            ))
+                        {
+                            SwitchDirections();
+                        }
+
+                        break;
+                    case ObjectMovement.ToAndFroLeftFirst:
+                        if ((
+                                (this.gravityDirection == GravityDirection.Left) &&
+                                (this.Rectangle.X <= (this.InitialXPlacement - this.ObjectXMoveDistance))
+                            ) || (
+                                (this.gravityDirection == GravityDirection.Right) &&
+                                (this.Rectangle.X >= this.InitialXPlacement)
+                            ))
+                        {
+                            SwitchDirections();
+                        }
+
+                        break;
+                    case ObjectMovement.ToAndFroDownFirst:
+                        if ((
+                                (this.gravityDirection == GravityDirection.Down) &&
+                                (this.Rectangle.Y >= (this.InitialYPlacement + this.ObjectYMoveDistance))
+                            ) || (
+                                (this.gravityDirection == GravityDirection.Up) &&
+                                (this.Rectangle.Y <= this.InitialYPlacement)
+                            ))
+                        {
+                            SwitchDirections();
+                        }
+
+                        break;
+                    case ObjectMovement.ToAndFroUpFirst:
+                        if ((
+                                (this.gravityDirection == GravityDirection.Up) &&
+                                (this.Rectangle.Y <= (this.InitialYPlacement - this.ObjectYMoveDistance))
+                            ) || (
+                                (this.gravityDirection == GravityDirection.Down) &&
+                                (this.Rectangle.Y >= this.InitialYPlacement)
+                            ))
+                        {
+                            SwitchDirections();
+                        }
+
+                        break;
+                }
+            }
+        }
+
+        private void SwitchDirections()
+        {
+            if (this.gravityDirection == GravityDirection.Down)
+            {
+                this.gravityDirection = GravityDirection.Up;
+            }
+            else if (this.gravityDirection == GravityDirection.Up)
+            {
+                this.gravityDirection = GravityDirection.Down;
+            }
+            else if (this.gravityDirection == GravityDirection.Left)
+            {
+                this.gravityDirection = GravityDirection.Right;
+            }
+            else if (this.gravityDirection == GravityDirection.Right)
+            {
+                this.gravityDirection = GravityDirection.Left;
             }
         }
 
