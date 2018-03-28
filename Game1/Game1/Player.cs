@@ -141,7 +141,11 @@ namespace Game1
         {
             if ((this.Rectangle.Y + this.Rectangle.Height) > SCREENHEIGHT)
             {
-                TakeLife();
+                base.TakeLife();
+
+                CreateRectangle(new Vector2(50, 50));
+                base.MovementVelocity = 0f;
+                base.GravitationalVelocity = 0f;
             }
 
             if (this.IsAlive)
@@ -177,7 +181,7 @@ namespace Game1
             }
             else
             {
-                TakeLife();
+                base.TakeLife();
             }
         }
     }
