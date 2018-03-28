@@ -413,13 +413,11 @@ namespace Game1
 
             this.Lives--;
 
-            this.TookLife = true;
-            //base.CreateRectangle(new Vector2(50, 50));
+            this.TookLife = true;            
             this.IsAlive = true;
             base.Falling = true;
             base.JumpInProgress = false;
             this.HasJumped = false;
-            base.GravitationalVelocity = 0f;
             base.MovementVelocity = 0f;
 
             
