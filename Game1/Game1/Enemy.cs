@@ -62,43 +62,43 @@ namespace Game1
             // I have died
         }
 
-        protected override void Update(GameTime gameTime)
-        {
-            if ((this.Rectangle.Y + this.Rectangle.Height) > SCREENHEIGHT)
-            {
-                base.IsAlive = false;
-            }
+        //protected override void Update(GameTime gameTime)
+        //{
+        //    if ((this.Rectangle.Y + this.Rectangle.Height) > SCREENHEIGHT)
+        //    {
+        //        base.IsAlive = false;
+        //    }
 
-            if (this.IsAlive)
-            {
-                for (int i = 0; i < base.intersectedBy.Count; i++)
-                {
-                    bool stillIntersecting = this.Intersects(intersectedBy[i]);
+        //    if (this.IsAlive)
+        //    {
+        //        for (int i = 0; i < base.intersectedBy.Count; i++)
+        //        {
+        //            bool stillIntersecting = this.Intersects(intersectedBy[i]);
 
-                    if ((!stillIntersecting) && (this.HasJumped == false))
-                    {
-                        if (base.intersectedBy[i].GetType() == typeof(Platform))
-                        {
-                            base.Falling = true;
-                            base.hitObstacle = HitObstacle.None;
-                        }
+        //            if ((!stillIntersecting) && (this.HasJumped == false))
+        //            {
+        //                if (base.intersectedBy[i].GetType() == typeof(Platform))
+        //                {
+        //                    base.Falling = true;
+        //                    base.hitObstacle = HitObstacle.None;
+        //                }
 
-                        base.intersectedBy.Remove(intersectedBy[i]);
-                    }
-                    else if ((!stillIntersecting) & (this.HasJumped == true))
-                    {
-                        base.hitObstacle = HitObstacle.None;
+        //                base.intersectedBy.Remove(intersectedBy[i]);
+        //            }
+        //            else if ((!stillIntersecting) & (this.HasJumped == true))
+        //            {
+        //                base.hitObstacle = HitObstacle.None;
 
-                        base.intersectedBy.Remove(intersectedBy[i]);
-                    }
-                }
+        //                base.intersectedBy.Remove(intersectedBy[i]);
+        //            }
+        //        }
 
-                CreateRectangle(ApplyMovement());
-            }
-            else
-            {
-                Die();
-            }
-        }        
+        //        CreateRectangle(ApplyMovement());
+        //    }
+        //    else
+        //    {
+        //        Die();
+        //    }
+        //}        
     }
 }

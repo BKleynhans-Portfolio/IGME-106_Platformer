@@ -197,21 +197,21 @@ namespace Game1
             //platforms[1].gravityDirection = GravityDirection.Down;                         // during instantiation because gravity will be implemented
             //platforms[1].gravityDirection = GravityDirection.Right;                       // to the right if the object receives a proximity warning
             //platforms[1].gravityOnProximityFrom = GravityOnProximityFrom.Top;             // from above and then moves back and forth
-            //platforms[1].platformMovement = PlatformMovement.ToAndFroRightFirst;
-            //platforms[1].platformMovement = PlatformMovement.ToAndFroLeftFirst;
-            //platforms[1].platformMovement = PlatformMovement.ToAndFroDownFirst;
+            //platforms[1].objectMovement = ObjectMovement.ToAndFroRightFirst;
+            //platforms[1].objectMovement = ObjectMovement.ToAndFroLeftFirst;
+            //platforms[1].objectMovement = ObjectMovement.ToAndFroDownFirst;
 
             platforms.Add(new Platform(platformElements["FlatPlatform"], 90, 200, 210, 50));
 
             platforms.Add(new Platform(platformElements["FlatPlatform"], 400, 200, 100, 50));
             platforms[3].ApplyGravity = true;
-            platforms[3].platformMovement = PlatformMovement.ToAndFroUpFirst;
+            platforms[3].objectMovement = ObjectMovement.ToAndFroUpFirst;
             platforms[3].ObjectYMoveDistance = 50;
 
             platforms.Add(new Platform(platformElements["FlatPlatform"], 500, 100, 200, 50));
             platforms[4].ApplyGravity = false;
             platforms[4].gravityOnProximityFrom = GravityOnProximityFrom.Top;
-            platforms[4].platformMovement = PlatformMovement.ToAndFroRightFirst;
+            platforms[4].objectMovement = ObjectMovement.ToAndFroRightFirst;
             platforms[4].ObjectXMoveDistance = 400;
 
             //platforms.Add(new Platform(platformSprites, (SCREENWIDTH / 2) - 400, (SCREENHEIGHT / 2) - 400, 800, 800));        // Size of the menus
@@ -224,6 +224,8 @@ namespace Game1
 
             enemies.Add(new Enemy(enemyElements["GeneralEnemy"], 200, 50, 50, 50));
             enemies[0].ApplyGravity = true;
+            enemies[0].objectMovement = ObjectMovement.ToAndFroRightFirst;
+            enemies[0].ObjectXMoveDistance = 50;
         }
 
         private void LoadGeneralElements()

@@ -25,34 +25,34 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Game1
 {
-    public enum GravityOnProximityFrom
-    {
-        Left,
-        Right,
-        Top,
-        Bottom,
-        Center,
-        None
-    }
+    //public enum GravityOnProximityFrom
+    //{
+    //    Left,
+    //    Right,
+    //    Top,
+    //    Bottom,
+    //    Center,
+    //    None
+    //}
 
-    public enum PlatformMovement
-    {
-        OneDirection,
-        ToAndFroUpFirst,
-        ToAndFroDownFirst,
-        ToAndFroLeftFirst,
-        ToAndFroRightFirst
-    }
+    //public enum ObjectMovement
+    //{
+    //    OneDirection,
+    //    ToAndFroUpFirst,
+    //    ToAndFroDownFirst,
+    //    ToAndFroLeftFirst,
+    //    ToAndFroRightFirst
+    //}
 
     public abstract class Environment : Screen
     {
-        public GravityOnProximityFrom gravityOnProximityFrom = GravityOnProximityFrom.None;
-        public PlatformMovement platformMovement = PlatformMovement.OneDirection;
-                
-        private float objectXMoveDistance;
-        private float objectYMoveDistance;
-        private float initialXPlacement;
-        private float initialYPlacement;
+        //public GravityOnProximityFrom gravityOnProximityFrom = GravityOnProximityFrom.None;
+        //public ObjectMovement objectMovement = ObjectMovement.OneDirection;
+
+        //private float objectXMoveDistance;
+        //private float objectYMoveDistance;
+        //private float initialXPlacement;
+        //private float initialYPlacement;
 
         /// <summary>
         /// Default constructor.  Creates a GameObject with default values.
@@ -64,8 +64,8 @@ namespace Game1
         /// <param name="height">Height of object</param>
         public Environment(Texture2D spriteTexture, int x, int y, int width, int height) : base(spriteTexture, x, y, width, height)
         {
-            this.InitialXPlacement = x;
-            this.InitialYPlacement = y;
+            //this.InitialXPlacement = x;
+            //this.InitialYPlacement = y;
 
             this.ObjectXMoveDistance = 50;
             this.ObjectYMoveDistance = 50;
@@ -86,36 +86,36 @@ namespace Game1
                           bool addGravity, float appliedObjectMass) :
                 base(spriteTexture, x, y, width, height, addGravity, appliedObjectMass)
         {
-            this.InitialXPlacement = x;
-            this.InitialYPlacement = y;
+            //this.InitialXPlacement = x;
+            //this.InitialYPlacement = y;
 
             this.ObjectXMoveDistance = 50;
             this.ObjectYMoveDistance = 50;
         }
 
-        public float ObjectXMoveDistance
-        {
-            get { return this.objectXMoveDistance; }
-            set { this.objectXMoveDistance = value; }
-        }
+        //public float ObjectXMoveDistance
+        //{
+        //    get { return this.objectXMoveDistance; }
+        //    set { this.objectXMoveDistance = value; }
+        //}
 
-        public float ObjectYMoveDistance
-        {
-            get { return this.objectYMoveDistance; }
-            set { this.objectYMoveDistance = value; }
-        }
+        //public float ObjectYMoveDistance
+        //{
+        //    get { return this.objectYMoveDistance; }
+        //    set { this.objectYMoveDistance = value; }
+        //}
 
-        public float InitialXPlacement
-        {
-            get { return this.initialXPlacement; }
-            private set { this.initialXPlacement = value; }
-        }
+        //public float InitialXPlacement
+        //{
+        //    get { return this.initialXPlacement; }
+        //    private set { this.initialXPlacement = value; }
+        //}
 
-        public float InitialYPlacement
-        {
-            get { return this.initialYPlacement; }
-            private set { this.initialYPlacement = value; }
-        }
+        //public float InitialYPlacement
+        //{
+        //    get { return this.initialYPlacement; }
+        //    private set { this.initialYPlacement = value; }
+        //}
 
         public virtual Vector2 ApplyMovement()
         {
@@ -145,130 +145,132 @@ namespace Game1
                 }                
             }
 
-            switch (hitObstacle) {
-                case HitObstacle.FromLeft:
-                    if (gravityOnProximityFrom == GravityOnProximityFrom.Left)
-                        base.ApplyGravity = true;
+            UpdateMovementParameters();
 
-                    break;
-                case HitObstacle.FromTop:
-                    if (gravityOnProximityFrom == GravityOnProximityFrom.Top)
-                        base.ApplyGravity = true;
+            //switch (hitObstacle) {
+            //    case HitObstacle.FromLeft:
+            //        if (gravityOnProximityFrom == GravityOnProximityFrom.Left)
+            //            base.ApplyGravity = true;
 
-                    break;
-                case HitObstacle.FromRight:
-                    if (gravityOnProximityFrom == GravityOnProximityFrom.Right)
-                        base.ApplyGravity = true;
+            //        break;
+            //    case HitObstacle.FromTop:
+            //        if (gravityOnProximityFrom == GravityOnProximityFrom.Top)
+            //            base.ApplyGravity = true;
 
-                    break;
-                case HitObstacle.FromBottom:
-                    if (gravityOnProximityFrom == GravityOnProximityFrom.Bottom)
-                        base.ApplyGravity = true;
+            //        break;
+            //    case HitObstacle.FromRight:
+            //        if (gravityOnProximityFrom == GravityOnProximityFrom.Right)
+            //            base.ApplyGravity = true;
 
-                    break;
-            }
+            //        break;
+            //    case HitObstacle.FromBottom:
+            //        if (gravityOnProximityFrom == GravityOnProximityFrom.Bottom)
+            //            base.ApplyGravity = true;
 
-            if (base.ApplyGravity == true)
-            {
-                switch (platformMovement)
-                {   
-                    case PlatformMovement.ToAndFroUpFirst:
-                        base.gravityDirection = GravityDirection.Up;
+            //        break;
+            //}
 
-                        break;
-                    case PlatformMovement.ToAndFroDownFirst:
-                        base.gravityDirection = GravityDirection.Down;
+            //if (base.ApplyGravity == true)
+            //{
+            //    switch (objectMovement)
+            //    {   
+            //        case ObjectMovement.ToAndFroUpFirst:
+            //            base.gravityDirection = GravityDirection.Up;
 
-                        break;
-                    case PlatformMovement.ToAndFroLeftFirst:
-                        base.gravityDirection = GravityDirection.Left;
+            //            break;
+            //        case ObjectMovement.ToAndFroDownFirst:
+            //            base.gravityDirection = GravityDirection.Down;
 
-                        break;
-                    case PlatformMovement.ToAndFroRightFirst:
-                        base.gravityDirection = GravityDirection.Right;
+            //            break;
+            //        case ObjectMovement.ToAndFroLeftFirst:
+            //            base.gravityDirection = GravityDirection.Left;
 
-                        break;
-                }
+            //            break;
+            //        case ObjectMovement.ToAndFroRightFirst:
+            //            base.gravityDirection = GravityDirection.Right;
 
-                switch (platformMovement)
-                {
-                    case PlatformMovement.ToAndFroRightFirst:
-                        if ((
-                                (base.gravityDirection == GravityDirection.Right) && 
-                                (this.Rectangle.X >= (this.InitialXPlacement + this.ObjectXMoveDistance))
-                            ) || (
-                                (base.gravityDirection == GravityDirection.Left) && 
-                                (this.Rectangle.X <= this.InitialXPlacement)
-                            ))
-                        {
-                            SwitchDirections();
-                        }
+            //            break;
+            //    }
 
-                        break;
-                    case PlatformMovement.ToAndFroLeftFirst:
-                        if ((
-                                (base.gravityDirection == GravityDirection.Left) &&
-                                (this.Rectangle.X <= (this.InitialXPlacement - this.ObjectXMoveDistance))
-                            ) || (
-                                (base.gravityDirection == GravityDirection.Right) &&
-                                (this.Rectangle.X >= this.InitialXPlacement)
-                            ))
-                        {
-                            SwitchDirections();
-                        }
+            //    switch (objectMovement)
+            //    {
+            //        case ObjectMovement.ToAndFroRightFirst:
+            //            if ((
+            //                    (base.gravityDirection == GravityDirection.Right) && 
+            //                    (this.Rectangle.X >= (this.InitialXPlacement + this.ObjectXMoveDistance))
+            //                ) || (
+            //                    (base.gravityDirection == GravityDirection.Left) && 
+            //                    (this.Rectangle.X <= this.InitialXPlacement)
+            //                ))
+            //            {
+            //                SwitchDirections();
+            //            }
 
-                        break;
-                    case PlatformMovement.ToAndFroDownFirst:
-                        if ((
-                                (base.gravityDirection == GravityDirection.Down) &&
-                                (this.Rectangle.Y >= (this.InitialYPlacement + this.ObjectYMoveDistance))
-                            ) || (
-                                (base.gravityDirection == GravityDirection.Up) &&
-                                (this.Rectangle.Y <= this.InitialYPlacement)
-                            ))
-                        {
-                            SwitchDirections();
-                        }
+            //            break;
+            //        case ObjectMovement.ToAndFroLeftFirst:
+            //            if ((
+            //                    (base.gravityDirection == GravityDirection.Left) &&
+            //                    (this.Rectangle.X <= (this.InitialXPlacement - this.ObjectXMoveDistance))
+            //                ) || (
+            //                    (base.gravityDirection == GravityDirection.Right) &&
+            //                    (this.Rectangle.X >= this.InitialXPlacement)
+            //                ))
+            //            {
+            //                SwitchDirections();
+            //            }
 
-                        break;
-                    case PlatformMovement.ToAndFroUpFirst:
-                        if ((
-                                (base.gravityDirection == GravityDirection.Up) &&
-                                (this.Rectangle.Y <= (this.InitialYPlacement - this.ObjectYMoveDistance))
-                            ) || (
-                                (base.gravityDirection == GravityDirection.Down) &&
-                                (this.Rectangle.Y >= this.InitialYPlacement)
-                            ))
-                        {
-                            SwitchDirections();
-                        }
+            //            break;
+            //        case ObjectMovement.ToAndFroDownFirst:
+            //            if ((
+            //                    (base.gravityDirection == GravityDirection.Down) &&
+            //                    (this.Rectangle.Y >= (this.InitialYPlacement + this.ObjectYMoveDistance))
+            //                ) || (
+            //                    (base.gravityDirection == GravityDirection.Up) &&
+            //                    (this.Rectangle.Y <= this.InitialYPlacement)
+            //                ))
+            //            {
+            //                SwitchDirections();
+            //            }
 
-                        break;
-                }   
-            }
-        
+            //            break;
+            //        case ObjectMovement.ToAndFroUpFirst:
+            //            if ((
+            //                    (base.gravityDirection == GravityDirection.Up) &&
+            //                    (this.Rectangle.Y <= (this.InitialYPlacement - this.ObjectYMoveDistance))
+            //                ) || (
+            //                    (base.gravityDirection == GravityDirection.Down) &&
+            //                    (this.Rectangle.Y >= this.InitialYPlacement)
+            //                ))
+            //            {
+            //                SwitchDirections();
+            //            }
+
+            //            break;
+            //    }   
+            //}
+
             CreateRectangle(ApplyMovement());
         }
 
-        private void SwitchDirections()
-        {
-            if (base.gravityDirection == GravityDirection.Down)
-            {
-                base.gravityDirection = GravityDirection.Up;
-            }
-            else if (base.gravityDirection == GravityDirection.Up)
-            {
-                base.gravityDirection = GravityDirection.Down;
-            }
-            else if (base.gravityDirection == GravityDirection.Left)
-            {
-                base.gravityDirection = GravityDirection.Right;
-            }
-            else if (base.gravityDirection == GravityDirection.Right)
-            {
-                base.gravityDirection = GravityDirection.Left;
-            }
-        }
+        //private void SwitchDirections()
+        //{
+        //    if (base.gravityDirection == GravityDirection.Down)
+        //    {
+        //        base.gravityDirection = GravityDirection.Up;
+        //    }
+        //    else if (base.gravityDirection == GravityDirection.Up)
+        //    {
+        //        base.gravityDirection = GravityDirection.Down;
+        //    }
+        //    else if (base.gravityDirection == GravityDirection.Left)
+        //    {
+        //        base.gravityDirection = GravityDirection.Right;
+        //    }
+        //    else if (base.gravityDirection == GravityDirection.Right)
+        //    {
+        //        base.gravityDirection = GravityDirection.Left;
+        //    }
+        //}
 
         ///summary>
         /// Determines whether the object that is passed in, intersects the current object
