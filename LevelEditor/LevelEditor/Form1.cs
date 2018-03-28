@@ -8,7 +8,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
-//using static System.Security.Permissions.FileIOPermission;
 
 /* Project: Platformer Level Editor
  * Programmer: Miranda Auriemma
@@ -47,9 +46,10 @@ namespace LevelEditor
             levelWidth = 48;
             levelHeight = 9;
 
-            //create PictureBoxs for map and add to list in a loop
-            //i am using x and y here instead of i and j because i will be using these attributes 
-            //  for PictureBox placement as well, and it makes it a little bit clearer for both math and list placement
+            //create PictureBoxes for map and add to list in a loop
+            /*(i am using x and y here instead of i and j because i will be using these attributes 
+              for PictureBox placement as well, and it makes it a little bit clearer for both math and list placement)
+            */
             for (int y = 0; y < levelHeight; y++)
             {
                 //add a new "row" of PictureBoxs to the list
@@ -169,10 +169,6 @@ namespace LevelEditor
 
         private void tsiSave_Click(object sender, EventArgs e)
         {
-            //SaveLevel saveLevel = new SaveLevel(this);
-            //saveLevel.ShowDialog();
-
-            //string row;
             SaveFileDialog sfdSaveLevel = new SaveFileDialog();
 
             sfdSaveLevel.Filter = "txt files (*.txt)|*.txt";
@@ -183,33 +179,26 @@ namespace LevelEditor
             {
                 StreamWriter swSaveLevel = new StreamWriter(sfdSaveLevel.FileName);
 
-                //if ((myStream = saveFileDialog1.OpenFile()) != null)
-                //{
-                    // Code to write the stream goes here.
-                    foreach (List<PictureBox> rows in listofPcbRows)
+                // Code to write the stream goes here.
+                foreach (List<PictureBox> rows in listofPcbRows)
+                {
+                    //reset row
+                    row = "";
+                    foreach (PictureBox pcb in rows)
                     {
-                        //reset row
-                        row = "";
-                        foreach (PictureBox pcb in rows)
-                        {
-                            row += pcb.Name;
-                        }
-
-                        swSaveLevel.WriteLine(row);
+                        row += pcb.Name;
                     }
 
-                    swSaveLevel.Close();
-                //}
+                    swSaveLevel.WriteLine(row);
+                }
+
+                swSaveLevel.Close();
             }
         }
 
         private void tsiLoad_Click(object sender, EventArgs e)
         {
-            //LoadLevel loadLevel = new LoadLevel(this);
-            //loadLevel.ShowDialog();
-            //StreamReader srReadFile = null;
-            //srReadFile = new StreamReader(ofdOpenLevel.FileName);
-
+           
             int loopCounter;
 
             ofdOpenLevel.InitialDirectory = "Z:\\gdaps2\\_teamProject\\LevelEditor\\LevelEditor\\bin\\Debug";
@@ -222,9 +211,7 @@ namespace LevelEditor
                 try
                 {
                     StreamReader srReadFile = new StreamReader(ofdOpenLevel.FileName);
-
-                    //if ((srReadFile = ofdOpenLevel.OpenFile()) != null)
-                    //{
+                                        
                     using (srReadFile)
                     {
                         //Insert code to read the stream here.
@@ -239,38 +226,11 @@ namespace LevelEditor
                                 //resets each image to the "placeholder"
                                 char tile = row[loopCounter];
                                 pcb.Name = tile.ToString();
-                                
-                                switch (tile)
-                                {
-                                    case 'w':
-                                        pcb.Image = LevelEditor.Properties.Resources.woodtexture;
-                                        break;
-
-                                    case 's':
-                                        pcb.Image = LevelEditor.Properties.Resources.stonetexture;
-
-                                        break;
-                                    case 'a':
-                                        pcb.Image = LevelEditor.Properties.Resources.watertexture;
-
-                                        break;
-                                    case 'g':
-                                        pcb.Image = LevelEditor.Properties.Resources.grasstexture;
-
-                                        break;
-                                    case 'n':
-                                        pcb.Image = LevelEditor.Properties.Resources.blank;
-
-                                        break;
-                                    default:
-                                        break;
-
-                                }
+                                InterperetText(pcb, tile);
                                 loopCounter++;
                             }
                         }
                     }
-                    //}
                 }
                 catch (Exception ex)
                 {
@@ -279,71 +239,36 @@ namespace LevelEditor
             }
         }
 
-        //public void Save(string fileName)//save the file
-        //{
-        //    string row;
-        //    StreamWriter level = new StreamWriter(fileName + ".txt");
 
-        //    //loop though each row list and write the names of the picture boxes into the text file
-        //    foreach (List<PictureBox> rows in listofPcbRows)
-        //    {
-        //        //reset row
-        //        row = "";
-        //        foreach (PictureBox pcb in rows)
-        //        {
-        //            row += pcb.Name;
-        //        }
-        //        level.WriteLine(row);
-        //    }
-
-        //    level.Close();
-        //}
-        public void Open(string fileName)//open files
+        //convert the text into the level tiles in the pic boxes
+        public void InterperetText(PictureBox pcb, char tile)
         {
-            try
+            switch (tile)
             {
-                StreamReader openedLevel = new StreamReader(fileName);
-                int loopCount;
-                for (int i = 1; i < levelHeight; i++)
-                {
-                    string level = openedLevel.ReadLine();
-                    loopCount = 0;
-                    foreach(char tile in level)
-                    {
-                        switch (tile)
-                        {
-                            case 'w':
-                                //listofPcbRows[i].;
-                                break;
-                        }
-                        loopCount++;
-                    }
-                }
-                //MessageBox.Show(level);
+                case 'w':
+                    pcb.Image = LevelEditor.Properties.Resources.woodtexture;
+                    break;
 
-                //level = openedLevel.ReadLine();
+                case 's':
+                    pcb.Image = LevelEditor.Properties.Resources.stonetexture;
 
-                //MessageBox.Show(level);
-                //foreach ()
-                //{
-                //    //foreach (PictureBox pcb in rows)
-                //    //{
-                //    //    //resets each image to the "placeholder"
-                //    //    pcb.Image = LevelEditor.Properties.Resources.blank;
-                //    //}
-                //}
+                    break;
+                case 'a':
+                    pcb.Image = LevelEditor.Properties.Resources.watertexture;
+
+                    break;
+                case 'g':
+                    pcb.Image = LevelEditor.Properties.Resources.grasstexture;
+
+                    break;
+                case 'n':
+                    pcb.Image = LevelEditor.Properties.Resources.blank;
+
+                    break;
+                default:
+                    break;
+
             }
-            catch (System.IO.FileNotFoundException)
-            {
-                MessageBox.Show("The file you are trying to open no longer exists or has been moved.");
-            }
-
-
-        }
-
-        public void InterperetText(StreamReader openedLevel)//convert the text into the level tiles in the pic boxes
-        {
-            
         }
 
         
