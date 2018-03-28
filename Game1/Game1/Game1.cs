@@ -273,7 +273,7 @@ namespace Game1
             platforms[4].ApplyGravity = false;
             platforms[4].gravityOnProximityFrom = GravityOnProximityFrom.Top;
             platforms[4].objectMovement = ObjectMovement.ToAndFroRightFirst;
-            platforms[4].ObjectXMoveDistance = 400;
+            platforms[4].ObjectXMoveDistance = 200;
 
             //platforms.Add(new Platform(platformSprites, (SCREENWIDTH / 2) - 400, (SCREENHEIGHT / 2) - 400, 800, 800));        // Size of the menus
 

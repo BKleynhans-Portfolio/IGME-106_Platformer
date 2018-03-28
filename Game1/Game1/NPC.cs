@@ -123,14 +123,6 @@ namespace Game1
 
     public abstract class NPC : Character
     {
-        //public GravityOnProximityFrom gravityOnProximityFrom = GravityOnProximityFrom.None;
-        //public ObjectMovement objectMovement = ObjectMovement.OneDirection;
-
-        //private float objectXMoveDistance;
-        //private float objectYMoveDistance;
-        //private float initialXPlacement;
-        //private float initialYPlacement;
-
         /// <summary>
         /// Default constructor.  Creates a GameObject with default values.
         /// </summary>
@@ -141,12 +133,8 @@ namespace Game1
         /// <param name="height">Height of object</param>
         public NPC(Texture2D spriteTexture, int x, int y, int width, int height) : base(spriteTexture, x, y, width, height)
         {
-            //this.InitialXPlacement = x;
-            //this.InitialYPlacement = y;
-
             this.ObjectXMoveDistance = 50;
             this.ObjectYMoveDistance = 50;
-
         }
 
         /// <summary>
@@ -163,36 +151,9 @@ namespace Game1
                           bool addGravity, float appliedObjectMass) :
                 base(spriteTexture, x, y, width, height, addGravity, appliedObjectMass)
         {
-            //this.InitialXPlacement = x;
-            //base.InitialYPlacement = y;
-
             this.ObjectXMoveDistance = 50;
             this.ObjectYMoveDistance = 50;
         }
-
-        //public float ObjectXMoveDistance
-        //{
-        //    get { return this.objectXMoveDistance; }
-        //    set { this.objectXMoveDistance = value; }
-        //}
-
-        //public float ObjectYMoveDistance
-        //{
-        //    get { return this.objectYMoveDistance; }
-        //    set { this.objectYMoveDistance = value; }
-        //}
-
-        //public float InitialXPlacement
-        //{
-        //    get { return this.initialXPlacement; }
-        //    private set { this.initialXPlacement = value; }
-        //}
-
-        //public float InitialYPlacement
-        //{
-        //    get { return this.initialYPlacement; }
-        //    private set { this.initialYPlacement = value; }
-        //}
 
         public override Vector2 ApplyMovement()
         {
@@ -226,26 +187,6 @@ namespace Game1
 
             CreateRectangle(ApplyMovement());
         }
-
-        //private void SwitchDirections()
-        //{
-        //    if (base.gravityDirection == GravityDirection.Down)
-        //    {
-        //        base.gravityDirection = GravityDirection.Up;
-        //    }
-        //    else if (base.gravityDirection == GravityDirection.Up)
-        //    {
-        //        base.gravityDirection = GravityDirection.Down;
-        //    }
-        //    else if (base.gravityDirection == GravityDirection.Left)
-        //    {
-        //        base.gravityDirection = GravityDirection.Right;
-        //    }
-        //    else if (base.gravityDirection == GravityDirection.Right)
-        //    {
-        //        base.gravityDirection = GravityDirection.Left;
-        //    }
-        //}
 
         ///summary>
         /// Determines whether the object that is passed in, intersects the current object
