@@ -436,25 +436,7 @@ namespace Game1
                 }
             }
         }
-
-        /// <summary>
-        /// Draw the sprite
-        /// </summary>
-        /// <param name="spriteBatch">Spritebatch Image</param>
-        public void Draw(SpriteBatch spriteBatch)
-        {
-            spriteBatch.Draw(
-                this.ObjectTexture,
-                this.Rectangle,
-                null,
-                Color.White,
-                0f,
-                Vector2.Zero,
-                spriteEffect,
-                0
-            );
-        }
-
+        
         public void UpdateMovementParameters()
         {
             switch (hitObstacle)
@@ -579,6 +561,24 @@ namespace Game1
             {
                 this.gravityDirection = GravityDirection.Left;
             }
+        }
+
+        /// <summary>
+        /// Draw the sprite
+        /// </summary>
+        /// <param name="spriteBatch">Spritebatch Image</param>
+        public void Draw(SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(
+                this.ObjectTexture,
+                this.Rectangle,
+                null,
+                Color.White,
+                0f,
+                Vector2.Zero,
+                spriteEffect,
+                0
+            );
         }
     }
 }

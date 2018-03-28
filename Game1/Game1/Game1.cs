@@ -114,6 +114,26 @@ namespace Game1
         /// </summary>
         protected override void Initialize()
         {
+            // Add player sprites
+            playerElements.Add("PlayerCharacter", Content.Load<Texture2D>("TestImage"));
+
+            // Add platform sprites
+            platformElements.Add("FlatPlatform", Content.Load<Texture2D>("Platform"));
+
+            // Add enemy sprites
+            enemyElements.Add("GeneralEnemy", Content.Load<Texture2D>("TestEnemySprite"));
+
+            // Add random other graphics sprites
+            graphicElements.Add("LifeIcon", Content.Load<Texture2D>("GeneralElements\\LifeIcon"));
+
+            // Add menu sprites
+            menuElements.Add("MenuBackground", Content.Load<Texture2D>("MenuBackground"));
+            menuElements.Add("Title", Content.Load<Texture2D>("Title\\Title"));
+            menuElements.Add("SelectionFrame", Content.Load<Texture2D>("Title\\SelectionFrame"));
+            menuElements.Add("LoadGame", Content.Load<Texture2D>("Title\\LoadGame"));
+            menuElements.Add("NewGame", Content.Load<Texture2D>("Title\\NewGame"));
+            menuElements.Add("Options", Content.Load<Texture2D>("Title\\Options"));
+
             graphics.PreferredBackBufferWidth = SCREENWIDTH;                                // Set desired width of window
             graphics.PreferredBackBufferHeight = SCREENHEIGHT;                              // Set desired height of window            
             graphics.ApplyChanges();
@@ -168,8 +188,6 @@ namespace Game1
 
         private void LoadPlayerElements()
         {
-            playerElements.Add("PlayerCharacter", Content.Load<Texture2D>("TestImage"));
-
             player = new Player(
                             playerElements["PlayerCharacter"],
                             x: 50,
@@ -185,14 +203,31 @@ namespace Game1
 
         private void LoadFloorElements()
         {
-            platformElements.Add("FlatPlatform", Content.Load<Texture2D>("Platform"));
+            platforms.Add(                                                                  // Ceiling platform
+                new Platform(
+                    spriteTexture: platformElements["FlatPlatform"],
+                    x: 200,
+                    y: 400,
+                    width: 200,
+                    height: 50
+                )
+            );
 
-            platforms.Add(new Platform(platformElements["FlatPlatform"], 200, 400, 200, 50));         // Ceiling platform
             //platforms[0].ApplyGravity = true;                                              // MOST OF THESE ARE FOR TESTING PURPOSES
             //platforms[0].gravityDirection = GravityDirection.Right;                        // YOU CAN UNCOMMENT TO SEE WHAT HAPPENS
             //platforms[0].gravityOnProximityFrom = GravityOnProximityFrom.Top;
 
-            platforms.Add(new Platform(platformElements["FlatPlatform"], 0, 100, 100, 100));
+
+            platforms.Add(
+                new Platform(
+                    spriteTexture: platformElements["FlatPlatform"],
+                    x: 0,
+                    y: 100,
+                    width: 100,
+                    height: 100
+                )
+            );
+
             //platforms[1].ApplyGravity = false;                                            // State that the second platform should not have gravity
             //platforms[1].gravityDirection = GravityDirection.Down;                         // during instantiation because gravity will be implemented
             //platforms[1].gravityDirection = GravityDirection.Right;                       // to the right if the object receives a proximity warning
@@ -201,14 +236,40 @@ namespace Game1
             //platforms[1].objectMovement = ObjectMovement.ToAndFroLeftFirst;
             //platforms[1].objectMovement = ObjectMovement.ToAndFroDownFirst;
 
-            platforms.Add(new Platform(platformElements["FlatPlatform"], 90, 200, 210, 50));
+            platforms.Add(
+                new Platform(
+                    spriteTexture: platformElements["FlatPlatform"],
+                    x: 90,
+                    y: 200,
+                    width: 210,
+                    height: 50
+                )
+            );
 
-            platforms.Add(new Platform(platformElements["FlatPlatform"], 400, 200, 100, 50));
+            platforms.Add(
+                new Platform(
+                    spriteTexture: platformElements["FlatPlatform"],
+                    x: 400,
+                    y: 200,
+                    width: 100,
+                    height: 50
+                )
+            );
+
             platforms[3].ApplyGravity = true;
             platforms[3].objectMovement = ObjectMovement.ToAndFroUpFirst;
             platforms[3].ObjectYMoveDistance = 50;
 
-            platforms.Add(new Platform(platformElements["FlatPlatform"], 500, 100, 200, 50));
+            platforms.Add(
+                new Platform(
+                    spriteTexture: platformElements["FlatPlatform"],
+                    x: 500,
+                    y: 100,
+                    width: 200,
+                    height: 50
+                )
+            );
+
             platforms[4].ApplyGravity = false;
             platforms[4].gravityOnProximityFrom = GravityOnProximityFrom.Top;
             platforms[4].objectMovement = ObjectMovement.ToAndFroRightFirst;
@@ -220,9 +281,16 @@ namespace Game1
 
         private void LoadEnemyElements()
         {
-            enemyElements.Add("GeneralEnemy", Content.Load<Texture2D>("TestEnemySprite"));
+            enemies.Add(
+                new Enemy(
+                    spriteTexture: enemyElements["GeneralEnemy"],
+                    x: 200,
+                    y: 50,
+                    width: 50,
+                    height: 50
+                )
+            );
 
-            enemies.Add(new Enemy(enemyElements["GeneralEnemy"], 200, 50, 50, 50));
             enemies[0].ApplyGravity = true;
             enemies[0].objectMovement = ObjectMovement.ToAndFroRightFirst;
             enemies[0].ObjectXMoveDistance = 50;
@@ -230,23 +298,43 @@ namespace Game1
 
         private void LoadGeneralElements()
         {
-            graphicElements.Add("LifeIcon", Content.Load<Texture2D>("GeneralElements\\LifeIcon"));
+            gameGraphics.Add(
+                new GraphicElement(
+                    elementName: "LifeIcon",
+                    spriteTexture: graphicElements["LifeIcon"],
+                    x: 10,
+                    y: 10,
+                    width: 20,
+                    height: 20
+                )
+            );
 
-            gameGraphics.Add(new GraphicElement("LifeIcon", graphicElements["LifeIcon"], 10, 10, 20, 20));
-            gameGraphics.Add(new GraphicElement("LifeIcon", graphicElements["LifeIcon"], 40, 10, 20, 20));
-            gameGraphics.Add(new GraphicElement("LifeIcon", graphicElements["LifeIcon"], 70, 10, 20, 20));
+            gameGraphics.Add(
+                new GraphicElement(
+                    elementName: "LifeIcon",
+                    spriteTexture: graphicElements["LifeIcon"],
+                    x: 40,
+                    y: 10,
+                    width: 20,
+                    height: 20
+                )
+            );
+
+            gameGraphics.Add(
+                new GraphicElement(
+                    elementName: "LifeIcon",
+                    spriteTexture: graphicElements["LifeIcon"],
+                    x: 70, 
+                    y: 10, 
+                    width: 20, 
+                    height: 20
+                )
+            );
 
         }
 
         private void LoadMenuElements()
         {
-            menuElements.Add("MenuBackground", Content.Load<Texture2D>("MenuBackground"));
-            menuElements.Add("Title", Content.Load<Texture2D>("Title\\Title"));
-            menuElements.Add("SelectionFrame", Content.Load<Texture2D>("Title\\SelectionFrame"));
-            menuElements.Add("LoadGame", Content.Load<Texture2D>("Title\\LoadGame"));
-            menuElements.Add("NewGame", Content.Load<Texture2D>("Title\\NewGame"));
-            menuElements.Add("Options", Content.Load<Texture2D>("Title\\Options"));
-
             titleElements.Add(
                 new Title(
                     menuItem: "MenuBackground",
