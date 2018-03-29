@@ -94,10 +94,17 @@ namespace Game1
         private float initialXPlacement;
         private float initialYPlacement;
 
-        //public abstract void Draw(SpriteBatch spriteBatch);
         public abstract bool Intersects(GameObject passedGameObject);
         protected abstract override void Update(GameTime gameTime);
-        
+
+        private int cyclesToThreshold;                                                      // The amount of times the game loop runs during on acceleration / deceleration
+        private int accelerationCoefficientStartingPoint = 0;
+        private int accelerationCoefficientEndingPoint = 0;
+        private bool accelerationCoefficientStartingXSet = false;
+        private bool accelerationCoefficientEndingXSet = false;
+        private bool calculateCoefficient = true;
+        private int accelerationCoefficient = 0;                                                    // Calculate pixels covered during acceleration
+
         private Texture2D objectTexture;                                                    // Texture and rectangle
         private Rectangle rectangle;
         private SpriteEffects spriteEffect;
@@ -117,8 +124,6 @@ namespace Game1
 
         private bool falling;                                                               // Is the object falling?
         private bool jumpInProgress;                                                        // Is the object in a jump process?
-
-        public float hasMoved;
 
         /// <summary>
         /// Default constructor.  Creates a GameObject with default values.
@@ -140,13 +145,18 @@ namespace Game1
             this.ApplyGravity = false;
 
             this.ObjectMass = 50;
-            
+
             this.GlobalAcceleration = 0.25f;
             this.EnvironmentalAcceleration = 0.05f;
             this.spriteEffect = SpriteEffects.None;
 
             this.InitialXPlacement = x;
             this.InitialYPlacement = y;
+
+            this.AccelerationCoefficientStartingPoint = 0;
+            this.AccelerationCoefficientEndingPoint = 0;
+            this.AccelerationCoefficientStartingXSet = false;
+            this.AccelerationCoefficientEndingXSet = false;
         }
 
         /// <summary>
@@ -176,6 +186,11 @@ namespace Game1
 
             this.InitialXPlacement = x;
             this.InitialYPlacement = y;
+
+            this.AccelerationCoefficientStartingPoint = 0;
+            this.AccelerationCoefficientEndingPoint = 0;
+            this.AccelerationCoefficientStartingXSet = false;
+            this.AccelerationCoefficientEndingXSet = false;
         }
 
         /// <summary>
@@ -219,6 +234,49 @@ namespace Game1
         {
             get { return this.spriteEffect; }
             set { this.spriteEffect = value; }
+        }
+
+        public int CyclesToThreshold
+        {
+            get { return this.cyclesToThreshold; }
+            set { this.cyclesToThreshold = value; }
+        }
+
+        public int AccelerationCoefficientStartingPoint
+        {
+            get { return accelerationCoefficientStartingPoint; }
+            set { this.accelerationCoefficientStartingPoint = value; }
+        }
+
+        public int AccelerationCoefficientEndingPoint
+        {
+            get { return this.accelerationCoefficientEndingPoint; }
+            set { this.accelerationCoefficientEndingPoint = value; }
+        }
+
+        public bool AccelerationCoefficientStartingXSet
+        {
+            get { return this.accelerationCoefficientStartingXSet; }
+            set { this.accelerationCoefficientStartingXSet = value; }
+        }
+
+        public bool AccelerationCoefficientEndingXSet
+        {
+            get { return this.accelerationCoefficientEndingXSet; }
+            set { this.accelerationCoefficientEndingXSet = value; }
+        }
+        
+
+        public bool CalculateCoefficient
+        {
+            get { return this.calculateCoefficient; }
+            set { this.calculateCoefficient = value; }
+        }
+
+        public int AccelerationCoefficient
+        {
+            get { return accelerationCoefficient; }
+            set { this.accelerationCoefficient = value; }
         }
 
         public bool Visible
@@ -342,7 +400,7 @@ namespace Game1
         /// <param name="vector2">New vector containing new X and Y coordinates</param>
         public void CreateRectangle(Vector2 vector2)
         {
-            this.Rectangle = new Rectangle((int)vector2.X, (int)vector2.Y, this.Rectangle.Width, this.Rectangle.Height);
+            this.Rectangle = new Rectangle((int)vector2.X, (int)vector2.Y, this.Rectangle.Width, this.Rectangle.Height);            
         }
 
         /// <summary>
@@ -385,7 +443,7 @@ namespace Game1
                             if ((this.GetType().BaseType == typeof(Environment)) &&
                                 (this.GravitationalVelocity < this.DefaultVerticalVelocity))
                             {
-                                this.GravitationalVelocity += this.EnvironmentalAcceleration;
+                                this.GravitationalVelocity += this.EnvironmentalAcceleration;                                
                             }
                             else if (this.GravitationalVelocity < this.DefaultVerticalVelocity)                             // If it is not hit, or it is hit and is an environment object, apply appropriate gravity
                             {
@@ -404,8 +462,14 @@ namespace Game1
                         {
                             if ((this.GetType().BaseType == typeof(Environment)) &&
                                 (this.MovementVelocity > -this.DefaultHorizonalVelocity))
-                            {
-                                this.MovementVelocity -= this.EnvironmentalAcceleration;                                
+                            {                                
+                                this.MovementVelocity -= this.EnvironmentalAcceleration;
+                                this.CyclesToThreshold++;
+
+                                if ((this.MovementVelocity > -0.02) && (this.MovementVelocity < 0.02))
+                                {
+                                    CyclesToThreshold = 0;
+                                }
                             }
                             else if (this.MovementVelocity > -this.DefaultHorizonalVelocity)                                 // If it is not hit, or it is hit and is an environment object, apply appropriate gravity
                             {
@@ -426,7 +490,13 @@ namespace Game1
                             if ((this.GetType().BaseType == typeof(Environment)) &&
                                 (this.MovementVelocity < this.DefaultHorizonalVelocity))
                             {
-                                this.MovementVelocity += this.EnvironmentalAcceleration;                                              
+                                this.MovementVelocity += this.EnvironmentalAcceleration;
+                                this.CyclesToThreshold++;
+
+                                if ((this.MovementVelocity > -0.02) && (this.MovementVelocity < 0.02))
+                                {
+                                    CyclesToThreshold = 0;
+                                }
                             } 
                             else if (this.MovementVelocity < this.DefaultHorizonalVelocity)                                  // If it is not hit, or it is hit and is an environment object, apply appropriate gravity
                             {
@@ -486,59 +556,117 @@ namespace Game1
 
                         break;
                 }
-                
+
+                if ((this.ToString().Equals("Game1.Platform") && (this.objectMovement == ObjectMovement.ToAndFroRightFirst)) && this.CalculateCoefficient == true)
+                {
+                    Console.ReadLine();
+                }
+
+                if (((this.MovementVelocity == 0) && (!this.AccelerationCoefficientStartingXSet)) && this.CalculateCoefficient == true)
+                {
+                    this.AccelerationCoefficientStartingPoint = this.Rectangle.X;
+
+                    this.AccelerationCoefficientStartingXSet = true;
+                }
+                else if (((this.MovementVelocity >= 4.98) && (this.MovementVelocity < 5.02)) && (!this.AccelerationCoefficientEndingXSet))
+                {
+                    this.AccelerationCoefficientEndingPoint = this.Rectangle.X;
+
+                    this.AccelerationCoefficientEndingXSet = true;
+                }
+
+                if (this.AccelerationCoefficientStartingXSet && this.AccelerationCoefficientEndingXSet)
+                {
+                    this.AccelerationCoefficient = Math.Abs(this.AccelerationCoefficientEndingPoint - this.AccelerationCoefficientStartingPoint);
+                    this.AccelerationCoefficient --;
+
+                    this.AccelerationCoefficientStartingXSet = false;
+                    this.AccelerationCoefficientEndingXSet = false;
+                    this.CalculateCoefficient = false;
+                }
+
                 switch (objectMovement)
                 {
                     case ObjectMovement.ToAndFroRightFirst:
-                        if ((
-                                (this.gravityDirection == GravityDirection.Right) &&
-                                (this.Rectangle.X >= (this.InitialXPlacement + this.ObjectXMoveDistance))
-                            ) || (
-                                (this.gravityDirection == GravityDirection.Left) &&
-                                (this.Rectangle.X <= this.InitialXPlacement)
-                            ))
+
+                        switch (gravityDirection)
                         {
-                            SwitchDirections();
-                            hasMoved = 0;
+                            case GravityDirection.Right:
+                                if ((this.Rectangle.X + this.AccelerationCoefficient) >= (this.InitialXPlacement + this.ObjectXMoveDistance))
+                                {
+                                    SwitchDirections();
+                                }
+
+                                break;
+                            case GravityDirection.Left:
+                                if (this.Rectangle.X - this.AccelerationCoefficient <= this.InitialXPlacement)
+                                {
+                                    SwitchDirections();
+                                }
+
+                                break;
                         }
 
                         break;
                     case ObjectMovement.ToAndFroLeftFirst:
-                        if ((
-                                (this.gravityDirection == GravityDirection.Left) &&
-                                (this.Rectangle.X <= (this.InitialXPlacement - this.ObjectXMoveDistance))
-                            ) || (
-                                (this.gravityDirection == GravityDirection.Right) &&
-                                (this.Rectangle.X >= this.InitialXPlacement)
-                            ))
+
+                        switch (gravityDirection)
                         {
-                            SwitchDirections();
+                            case GravityDirection.Left:
+                                if ((this.Rectangle.X + this.AccelerationCoefficient) <= (this.InitialXPlacement + this.ObjectXMoveDistance))
+                                {
+                                    SwitchDirections();
+                                }
+
+                                break;
+                            case GravityDirection.Right:                            
+                                if (this.Rectangle.X - this.AccelerationCoefficient >= this.InitialXPlacement)
+                                {
+                                    SwitchDirections();
+                                }
+
+                                break;
                         }
 
                         break;
                     case ObjectMovement.ToAndFroDownFirst:
-                        if ((
-                                (this.gravityDirection == GravityDirection.Down) &&
-                                (this.Rectangle.Y >= (this.InitialYPlacement + this.ObjectYMoveDistance))
-                            ) || (
-                                (this.gravityDirection == GravityDirection.Up) &&
-                                (this.Rectangle.Y <= this.InitialYPlacement)
-                            ))
+
+                        switch (gravityDirection)
                         {
-                            SwitchDirections();
+                            case GravityDirection.Down:
+                                if (this.Rectangle.Y + this.AccelerationCoefficient >= (this.InitialYPlacement + this.ObjectYMoveDistance))
+                                {
+                                    SwitchDirections();
+                                }
+
+                                break;
+                            case GravityDirection.Up:
+                                if (this.Rectangle.Y - this.AccelerationCoefficient <= this.InitialYPlacement)
+                                {
+                                    SwitchDirections();
+                                }
+
+                                break;
                         }
 
                         break;
                     case ObjectMovement.ToAndFroUpFirst:
-                        if ((
-                                (this.gravityDirection == GravityDirection.Up) &&
-                                (this.Rectangle.Y <= (this.InitialYPlacement - this.ObjectYMoveDistance))
-                            ) || (
-                                (this.gravityDirection == GravityDirection.Down) &&
-                                (this.Rectangle.Y >= this.InitialYPlacement)
-                            ))
+                        switch (gravityDirection)
                         {
-                            SwitchDirections();
+                            case GravityDirection.Up:
+                                if (this.Rectangle.Y + this.AccelerationCoefficient <= (this.InitialYPlacement - this.ObjectYMoveDistance))
+                                {
+                                    SwitchDirections();
+                                }
+
+                                break;
+                            case GravityDirection.Down:
+                                if (this.Rectangle.Y - this.AccelerationCoefficient >= this.InitialYPlacement)
+                                {
+                                    SwitchDirections();
+                                }
+
+                                break;
                         }
 
                         break;                    
