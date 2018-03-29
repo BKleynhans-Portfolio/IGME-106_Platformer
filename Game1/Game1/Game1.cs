@@ -279,7 +279,7 @@ namespace Game1
 
         private void LoadEnemyElements()
         {
-            enemies.Add(
+           /* enemies.Add(
                 new Enemy(
                     spriteTexture: enemyElements["GeneralEnemy"],
                     x: 200,
@@ -306,6 +306,53 @@ namespace Game1
             enemies[1].ApplyGravity = true;
             enemies[1].objectMovement = ObjectMovement.ToAndFroRightFirst;
             enemies[1].ObjectXMoveDistance = 50;
+            */
+
+            //added new enemy code, spawned randomly
+
+            Random rnd = new Random();
+
+            for(int i = 0;i<rnd.Next(1,21);i++)
+            {
+                enemies.Add(
+                new Enemy(
+                    spriteTexture: enemyElements["GeneralEnemy"],
+                    x: 50+rnd.Next(0,1200),
+                    y: 50+rnd.Next(0,800),
+                    width: 50,
+                    height: 50
+                    )
+                );
+                int j = rnd.Next(1,5);
+            enemies[i].ApplyGravity = true;
+                switch(j)
+                   {
+                    case 1: enemies[i].objectMovement = ObjectMovement.ToAndFroRightFirst;
+                        break;
+                    case 2: enemies[i].objectMovement = ObjectMovement.ToAndFroLeftFirst;
+                        break;
+                    case 3: enemies[i].objectMovement = ObjectMovement.ToAndFroUpFirst;
+                        break;
+                    case 4: enemies[i].objectMovement = ObjectMovement.ToAndFroDownFirst;
+                        break;
+                   }
+            
+            enemies[i].ObjectXMoveDistance = 50;
+            }
+            enemies.Add(
+                new Enemy(
+                    spriteTexture: enemyElements["GeneralEnemy"],
+                    x: 1200,
+                    y: 400,
+                    width: 100,
+                    height: 100
+                )
+            );
+
+            enemies[1].ApplyGravity = true;
+            enemies[1].objectMovement = ObjectMovement.ToAndFroUpFirst;
+            enemies[1].ObjectXMoveDistance = 100;
+                         
         }
 
         private void LoadGeneralElements()
