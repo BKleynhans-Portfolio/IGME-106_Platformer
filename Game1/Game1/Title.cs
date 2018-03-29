@@ -27,7 +27,7 @@ namespace Game1
 {
     public class Title : Menu
     {
-        public static Dictionary<string, Vector2> nameVectorDict = new Dictionary<string, Vector2>();
+        private static Dictionary<string, Vector2> titleMenuDictionary = new Dictionary<string, Vector2>();
 
         private string name;
 
@@ -41,8 +41,8 @@ namespace Game1
         /// <param name="height">Height of object</param>
         public Title(string menuItem, Texture2D spriteTexture, int x, int y, int width, int height) : base(spriteTexture, x, y, width, height)
         {
-            nameVectorDict.Add(menuItem, new Vector2(x, y));
-            name = menuItem;
+            titleMenuDictionary.Add(menuItem, new Vector2(x, y));
+            this.Name = menuItem;
         }
 
         /// <summary>
@@ -59,8 +59,8 @@ namespace Game1
                           bool addGravity, float appliedObjectMass) :
                 base(spriteTexture, x, y, width, height, addGravity, appliedObjectMass)
         {
-            nameVectorDict.Add(menuItem, new Vector2(x, y));
-            name = menuItem;
+            titleMenuDictionary.Add(menuItem, new Vector2(x, y));
+            this.Name = menuItem;
         }
 
         public string Name
@@ -75,7 +75,7 @@ namespace Game1
             {
                 string currentPosition = null;
 
-                foreach (KeyValuePair<string, Vector2> keyValuePair in nameVectorDict)
+                foreach (KeyValuePair<string, Vector2> keyValuePair in titleMenuDictionary)
                 {
                     if ((
                             (keyValuePair.Value.X == this.Rectangle.X)
@@ -94,11 +94,11 @@ namespace Game1
                     switch (currentPosition)
                     {
                         case "LoadGame":
-                            base.CreateRectangle(nameVectorDict["NewGame"]);
+                            base.CreateRectangle(titleMenuDictionary["NewGame"]);
 
                             break;
                         case "NewGame":
-                            base.CreateRectangle(nameVectorDict["Options"]);
+                            base.CreateRectangle(titleMenuDictionary["Options"]);
 
                             break;
                     }
@@ -108,11 +108,11 @@ namespace Game1
                     switch (currentPosition)
                     {
                         case "NewGame":
-                            base.CreateRectangle(nameVectorDict["LoadGame"]);
+                            base.CreateRectangle(titleMenuDictionary["LoadGame"]);
 
                             break;
                         case "Options":
-                            base.CreateRectangle(nameVectorDict["NewGame"]);
+                            base.CreateRectangle(titleMenuDictionary["NewGame"]);
 
                             break;
                     }
@@ -130,6 +130,8 @@ namespace Game1
 
                             break;
                         case "Options":
+                            gameState = GameState.Options;
+
                             break;
                     }
                 }

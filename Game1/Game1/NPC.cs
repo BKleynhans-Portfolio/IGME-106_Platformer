@@ -297,7 +297,7 @@ namespace Game1
                             if ((this.GetType().BaseType == typeof(Environment)) &&
                                 (this.GravitationalVelocity > -5))
                             {
-                                this.GravitationalVelocity -= this.EnvironmentAcceleration;
+                                this.GravitationalVelocity -= this.EnvironmentalAcceleration;
                             }
                             else if (this.GravitationalVelocity > -5)                            // If it is not hit, or it is hit and is an environment object, apply appropriate gravity
                             {
@@ -317,7 +317,7 @@ namespace Game1
                             if ((this.GetType().BaseType == typeof(Environment)) &&
                                 (this.GravitationalVelocity < 5))
                             {
-                                this.GravitationalVelocity += this.EnvironmentAcceleration;
+                                this.GravitationalVelocity += this.EnvironmentalAcceleration;
                             }
                             else if (this.GravitationalVelocity < 5)                             // If it is not hit, or it is hit and is an environment object, apply appropriate gravity
                             {
@@ -337,7 +337,7 @@ namespace Game1
                             if ((this.GetType().BaseType == typeof(Environment)) &&
                                 (this.MovementVelocity > -5))
                             {
-                                this.MovementVelocity -= this.EnvironmentAcceleration;
+                                this.MovementVelocity -= this.EnvironmentalAcceleration;
                             }
                             else if (this.MovementVelocity > -5)                                 // If it is not hit, or it is hit and is an environment object, apply appropriate gravity
                             {
@@ -358,7 +358,7 @@ namespace Game1
                             if ((this.GetType().BaseType == typeof(Environment)) &&
                                 (this.MovementVelocity < 5))
                             {
-                                this.MovementVelocity += this.EnvironmentAcceleration;
+                                this.MovementVelocity += this.EnvironmentalAcceleration;
                             }
                             else if (this.MovementVelocity < 5)                                  // If it is not hit, or it is hit and is an environment object, apply appropriate gravity
                             {

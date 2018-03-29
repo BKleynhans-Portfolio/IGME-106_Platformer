@@ -195,20 +195,20 @@ namespace Game1
             {
                 if ((HasJumped) && (GravitationalVelocity == 0))
                 {
-                    this.GravitationalVelocity -= DefaultVerticalVelocity;
+                    this.GravitationalVelocity -= DefaultVerticalVelocity + this.PlatformAcceleration;
                 }
                 else if ((HasJumped) && (GravitationalVelocity > -5))
                 {
-                    this.GravitationalVelocity -= this.GlobalAcceleration;
+                    this.GravitationalVelocity -= this.GlobalAcceleration + this.PlatformAcceleration;
                 }
                 else if ((HasJumped) && (GravitationalVelocity <= -5))
                 {
-                    this.GravitationalVelocity += this.GlobalAcceleration;
+                    this.GravitationalVelocity += this.GlobalAcceleration + this.PlatformAcceleration;
                     HasJumped = false;
                 }
                 else if ((!HasJumped) && (JumpInProgress) && (GravitationalVelocity <= -5))
                 {
-                    this.GravitationalVelocity += this.GlobalAcceleration;
+                    this.GravitationalVelocity += this.GlobalAcceleration + this.PlatformAcceleration;
                 }
             }
         }

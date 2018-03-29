@@ -104,7 +104,7 @@ namespace Game1
         private bool visible;                                                               // Is this object visible in the scene
 
         private float globalGlobalAcceleration;                                             // Acceleration to apply to characters during each iteration
-        private float environmentAcceleration;                                              // Acceleration to apply to platforms
+        private float environmentalAcceleration;                                              // Acceleration to apply to platforms
         private float gravitationalVelocity;                                                // Gravitational velocity for vertical movement
         private float movementVelocity;                                                     // Movement velocity for horizontal movement
         
@@ -117,6 +117,8 @@ namespace Game1
 
         private bool falling;                                                               // Is the object falling?
         private bool jumpInProgress;                                                        // Is the object in a jump process?
+
+        public float hasMoved;
 
         /// <summary>
         /// Default constructor.  Creates a GameObject with default values.
@@ -140,7 +142,7 @@ namespace Game1
             this.ObjectMass = 50;
             
             this.GlobalAcceleration = 0.25f;
-            this.EnvironmentAcceleration = 0.05f;
+            this.EnvironmentalAcceleration = 0.05f;
             this.spriteEffect = SpriteEffects.None;
 
             this.InitialXPlacement = x;
@@ -170,7 +172,7 @@ namespace Game1
             this.ObjectMass = appliedObjectMass;
 
             this.GlobalAcceleration = 0.25f;
-            this.EnvironmentAcceleration = 0.05f;
+            this.EnvironmentalAcceleration = 0.05f;
 
             this.InitialXPlacement = x;
             this.InitialYPlacement = y;
@@ -261,10 +263,10 @@ namespace Game1
             set { this.globalGlobalAcceleration = value; }
         }
 
-        public float EnvironmentAcceleration
+        public float EnvironmentalAcceleration
         {
-            get { return this.environmentAcceleration; }
-            set { this.environmentAcceleration = value; }
+            get { return this.environmentalAcceleration; }
+            set { this.environmentalAcceleration = value; }
         }
 
         /// <summary>
@@ -361,11 +363,11 @@ namespace Game1
                         else
                         {
                             if ((this.GetType().BaseType == typeof(Environment)) &&
-                                (this.GravitationalVelocity > -5))
+                                (this.GravitationalVelocity > -this.DefaultVerticalVelocity))
                             {
-                                this.GravitationalVelocity -= this.EnvironmentAcceleration;
+                                this.GravitationalVelocity -= this.EnvironmentalAcceleration;
                             }
-                            else if (this.GravitationalVelocity > -5)                            // If it is not hit, or it is hit and is an environment object, apply appropriate gravity
+                            else if (this.GravitationalVelocity > -this.DefaultVerticalVelocity)                            // If it is not hit, or it is hit and is an environment object, apply appropriate gravity
                             {
                                 this.GravitationalVelocity -= this.GlobalAcceleration;
                             }
@@ -381,11 +383,11 @@ namespace Game1
                         else
                         {
                             if ((this.GetType().BaseType == typeof(Environment)) &&
-                                (this.GravitationalVelocity < 5))
+                                (this.GravitationalVelocity < this.DefaultVerticalVelocity))
                             {
-                                this.GravitationalVelocity += this.EnvironmentAcceleration;
+                                this.GravitationalVelocity += this.EnvironmentalAcceleration;
                             }
-                            else if (this.GravitationalVelocity < 5)                             // If it is not hit, or it is hit and is an environment object, apply appropriate gravity
+                            else if (this.GravitationalVelocity < this.DefaultVerticalVelocity)                             // If it is not hit, or it is hit and is an environment object, apply appropriate gravity
                             {
                                 this.GravitationalVelocity += this.GlobalAcceleration;
                             }
@@ -401,11 +403,11 @@ namespace Game1
                         else
                         {
                             if ((this.GetType().BaseType == typeof(Environment)) &&
-                                (this.MovementVelocity > -5))
+                                (this.MovementVelocity > -this.DefaultHorizonalVelocity))
                             {
-                                this.MovementVelocity -= this.EnvironmentAcceleration;                                
+                                this.MovementVelocity -= this.EnvironmentalAcceleration;                                
                             }
-                            else if (this.MovementVelocity > -5)                                 // If it is not hit, or it is hit and is an environment object, apply appropriate gravity
+                            else if (this.MovementVelocity > -this.DefaultHorizonalVelocity)                                 // If it is not hit, or it is hit and is an environment object, apply appropriate gravity
                             {
                                 this.MovementVelocity -= this.GlobalAcceleration;
                             }
@@ -422,11 +424,11 @@ namespace Game1
                         else
                         {
                             if ((this.GetType().BaseType == typeof(Environment)) &&
-                                (this.MovementVelocity < 5))
+                                (this.MovementVelocity < this.DefaultHorizonalVelocity))
                             {
-                                this.MovementVelocity += this.EnvironmentAcceleration;                                              
+                                this.MovementVelocity += this.EnvironmentalAcceleration;                                              
                             } 
-                            else if (this.MovementVelocity < 5)                                  // If it is not hit, or it is hit and is an environment object, apply appropriate gravity
+                            else if (this.MovementVelocity < this.DefaultHorizonalVelocity)                                  // If it is not hit, or it is hit and is an environment object, apply appropriate gravity
                             {
                                 this.MovementVelocity += this.GlobalAcceleration;
                             }
@@ -484,7 +486,7 @@ namespace Game1
 
                         break;
                 }
-
+                
                 switch (objectMovement)
                 {
                     case ObjectMovement.ToAndFroRightFirst:
@@ -497,6 +499,7 @@ namespace Game1
                             ))
                         {
                             SwitchDirections();
+                            hasMoved = 0;
                         }
 
                         break;
@@ -538,7 +541,7 @@ namespace Game1
                             SwitchDirections();
                         }
 
-                        break;
+                        break;                    
                 }
             }
         }
