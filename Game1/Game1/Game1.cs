@@ -478,7 +478,7 @@ namespace Game1
             {
                 enemies.Add(
                 new Enemy(
-                    spriteTexture: enemyElements["GeneralEnemy"],
+                    spriteTexture: enemySprites["GeneralEnemy"],
                     x: 50+rnd.Next(0,1200),
                     y: 50+rnd.Next(0,800),
                     width: 50,
@@ -503,7 +503,7 @@ namespace Game1
             }
             enemies.Add(
                 new Enemy(
-                    spriteTexture: enemyElements["GeneralEnemy"],
+                    spriteTexture: enemySprites["GeneralEnemy"],
                     x: 1200,
                     y: 400,
                     width: 100,
