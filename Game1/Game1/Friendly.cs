@@ -34,8 +34,8 @@ namespace Game1
         }
 
         public Friendly(Texture2D spriteTexture, int x, int y, int width, int height,
-                          bool addGravity, float appliedObjectMass) :
-                base(spriteTexture, x, y, width, height, addGravity, appliedObjectMass)
+                          bool addGravity) :
+                base(spriteTexture, x, y, width, height, addGravity)
         {
             base.IsAlive = true;
         }

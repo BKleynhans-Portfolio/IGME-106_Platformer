@@ -29,7 +29,8 @@ namespace Game1
     {
         protected abstract override void Update(GameTime gameTime);
 
-        private float platformAcceleration;
+        private float platformHorizontalAcceleration;
+        private float platformVerticalAcceleration;
 
         private int lives;
 
@@ -63,10 +64,9 @@ namespace Game1
         /// <param name="width">Width of object</param>
         /// <param name="height">Height of object</param>
         /// <param name="addGravity">Does this object require immediate gravity implementation</param>
-        /// <param name="appliedObjectMass">This is the mass that should be applied to the object</param>
         public Character(Texture2D spriteTexture, int x, int y, int width, int height,
-                          bool addGravity, float appliedObjectMass) :
-                base(spriteTexture, x, y, width, height, addGravity, appliedObjectMass)
+                          bool addGravity) :
+                base(spriteTexture, x, y, width, height, addGravity)
         {
             this.HasJumped = false;
             base.JumpInProgress = false;
@@ -75,12 +75,17 @@ namespace Game1
         }
 
 
-        public float PlatformAcceleration
+        public float PlatformHorizontalAcceleration
         {
-            get { return this.platformAcceleration; }
-            set { this.platformAcceleration = value; }
+            get { return this.platformHorizontalAcceleration; }
+            set { this.platformHorizontalAcceleration = value; }
         }
 
+        public float PlatformVerticalAcceleration
+        {
+            get { return this.platformVerticalAcceleration; }
+            set { this.platformVerticalAcceleration = value; }
+        }
 
         /// <summary>
         /// Properties for variable which indicates whether the character is alive or not
@@ -151,7 +156,7 @@ namespace Game1
                         if (hitObstacle == HitObstacle.FromTop)                             // If this object hit another object on it's top
                         {                            
                             base.Falling = false;                                           // Stop falling
-                            this.GravitationalVelocity = 0;                            
+                            this.GravitationalVelocity = 0;
                         }           
                         else if (!HasJumped)                                                // If this object did not hit another object on its top and is not
                         {                                                                   // busy with a jump action                            
@@ -178,37 +183,38 @@ namespace Game1
         {
             if (movementAppliedTo == MovementAppliedTo.None)
             {
-                this.MovementVelocity = this.PlatformAcceleration;
+                this.MovementVelocity = this.PlatformHorizontalAcceleration;
+                //this.GravitationalVelocity = this.PlatformVerticalAcceleration;
             }
 
             if ((movementAppliedTo == MovementAppliedTo.Left) && (hitObstacle != HitObstacle.FromLeft))
             {
-                this.MovementVelocity = -DefaultHorizonalVelocity + this.PlatformAcceleration;
+                this.MovementVelocity = -DefaultHorizonalVelocity + this.PlatformHorizontalAcceleration;
             }
 
             if ((movementAppliedTo == MovementAppliedTo.Right) && (hitObstacle != HitObstacle.FromRight))
             {
-                this.MovementVelocity = DefaultHorizonalVelocity + this.PlatformAcceleration;
+                this.MovementVelocity = DefaultHorizonalVelocity + this.PlatformHorizontalAcceleration;
             }
 
             if ((movementAppliedTo == MovementAppliedTo.Up) && (hitObstacle != HitObstacle.FromTop))
             {
                 if ((HasJumped) && (GravitationalVelocity == 0))
                 {
-                    this.GravitationalVelocity -= DefaultVerticalVelocity + this.PlatformAcceleration;
+                    this.GravitationalVelocity -= DefaultVerticalVelocity + this.PlatformHorizontalAcceleration;
                 }
                 else if ((HasJumped) && (GravitationalVelocity > -5))
                 {
-                    this.GravitationalVelocity -= this.GlobalAcceleration + this.PlatformAcceleration;
+                    this.GravitationalVelocity -= this.GlobalAcceleration + this.PlatformHorizontalAcceleration;
                 }
                 else if ((HasJumped) && (GravitationalVelocity <= -5))
                 {
-                    this.GravitationalVelocity += this.GlobalAcceleration + this.PlatformAcceleration;
+                    this.GravitationalVelocity += this.GlobalAcceleration + this.PlatformHorizontalAcceleration;
                     HasJumped = false;
                 }
                 else if ((!HasJumped) && (JumpInProgress) && (GravitationalVelocity <= -5))
                 {
-                    this.GravitationalVelocity += this.GlobalAcceleration + this.PlatformAcceleration;
+                    this.GravitationalVelocity += this.GlobalAcceleration + this.PlatformHorizontalAcceleration;
                 }
             }
         }
@@ -240,7 +246,8 @@ namespace Game1
                     {
                         this.hitObstacle = HitObstacle.FromTop;
                         this.JumpInProgress = false;
-                        this.PlatformAcceleration = passedGameObject.MovementVelocity;
+                        this.PlatformHorizontalAcceleration = passedGameObject.MovementVelocity;
+                        this.PlatformVerticalAcceleration = passedGameObject.GravitationalVelocity;
 
                         newX = this.Rectangle.X;                                     // Define new X and Y coordinates and create a new rectangle                        
                         newY = passedGameObject.Rectangle.Y - this.Rectangle.Height + 1;

@@ -116,9 +116,7 @@ namespace Game1
         private float movementVelocity;                                                     // Movement velocity for horizontal movement
         
         private const float defaultHorizonalVelocity = 5f;                                  // Default velocity to implement horizontally
-        private const float defaultVerticalVelocity = 5f;                                   // Default velocity to implement vertically
-
-        private float objectMass;                                                           // Mass of objects                
+        private const float defaultVerticalVelocity = 5f;                                   // Default velocity to implement vertically   
 
         private bool applyGravity;                                                          // Should the object have gravity
 
@@ -144,10 +142,8 @@ namespace Game1
 
             this.ApplyGravity = false;
 
-            this.ObjectMass = 50;
-
             this.GlobalAcceleration = 0.25f;
-            this.EnvironmentalAcceleration = 0.05f;
+            this.EnvironmentalAcceleration =  0.05f;
             this.spriteEffect = SpriteEffects.None;
 
             this.InitialXPlacement = x;
@@ -168,9 +164,8 @@ namespace Game1
         /// <param name="width">Width of object</param>
         /// <param name="height">Height of object</param>
         /// <param name="addGravity">Does this object require immediate gravity implementation</param>
-        /// <param name="appliedObjectMass">This is the mass that should be applied to the object</param>
         public GameObject(Texture2D spriteTexture, int x, int y, int width, int height,
-                          bool addGravity, float appliedObjectMass)
+                          bool addGravity)
         {
             this.ObjectTexture = spriteTexture;
             this.Rectangle = new Rectangle(x, y, width, height);
@@ -178,8 +173,6 @@ namespace Game1
             this.Visible = true;
 
             this.ApplyGravity = addGravity;
-
-            this.ObjectMass = appliedObjectMass;
 
             this.GlobalAcceleration = 0.25f;
             this.EnvironmentalAcceleration = 0.05f;
@@ -325,15 +318,6 @@ namespace Game1
         {
             get { return this.environmentalAcceleration; }
             set { this.environmentalAcceleration = value; }
-        }
-
-        /// <summary>
-        /// Properties for variable containing the mass of the object
-        /// </summary>
-        public float ObjectMass
-        {
-            get { return this.objectMass; }
-            set { this.objectMass = value; }
         }
         
         /// <summary>

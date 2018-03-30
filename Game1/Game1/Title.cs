@@ -54,10 +54,9 @@ namespace Game1
         /// <param name="width">Width of object</param>
         /// <param name="height">Height of object</param>
         /// <param name="addGravity">Does this object require immediate gravity implementation</param>
-        /// <param name="appliedObjectMass">This is the mass that should be applied to the object</param>
         public Title(string menuItem, Texture2D spriteTexture, int x, int y, int width, int height,
-                          bool addGravity, float appliedObjectMass) :
-                base(spriteTexture, x, y, width, height, addGravity, appliedObjectMass)
+                          bool addGravity) :
+                base(spriteTexture, x, y, width, height, addGravity)
         {
             titleMenuDictionary.Add(menuItem, new Vector2(x, y));
             this.Name = menuItem;

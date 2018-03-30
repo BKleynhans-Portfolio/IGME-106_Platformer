@@ -140,28 +140,7 @@ namespace Game1
         {                                                                                            
             spriteBatch = new SpriteBatch(GraphicsDevice);                                  // Create a new SpriteBatch, which can be used to draw textures.            
 
-            LoadPlayerElements();
-            LoadFloorElements();
-            LoadEnemyElements();
-            LoadMenuElements();
-            LoadGeneralElements();
-                                                                                            // All objects need to be added to the gameObject list
-            gameObject.Add(player);                                                         // Add player to gameObject
-
-            foreach (Enemy enemy in enemies)                                                // Add enemies to gameObject
-            {
-                gameObject.Add(enemy);
-            }
-
-            foreach (Platform platform in platforms)                                        // Add platforms to gameObject
-            {
-                gameObject.Add(platform);
-            }
-
-            foreach (GraphicElement graphic in gameGraphics)
-            {
-                gameObject.Add(graphic);
-            }
+            InitializeGameObjects();
 
             fps = 10.0f;                                                                    // Set up animation variables;
             secondsPerFrame = 1.0f / fps;
@@ -203,7 +182,7 @@ namespace Game1
 
                         break;
                     case GameState.InGame:
-                        gameState = GameState.Title;
+                        gameState = GameState.GameOver;
 
                         break;
                     case GameState.GameOver:
@@ -258,6 +237,11 @@ namespace Game1
                 case GameState.Pause:
                     break;
                 case GameState.GameOver:
+                    //ClearGameObjects();
+
+                    //InitializeGameObjects();
+                    gameState = GameState.Title;
+
                     break;
             }
 
@@ -346,6 +330,43 @@ namespace Game1
             menuSprites.Add("OffText", Content.Load<Texture2D>("Options\\OffText"));
             menuSprites.Add("SettingsBar", Content.Load<Texture2D>("Options\\SettingsBar"));
             menuSprites.Add("SettingsSlider", Content.Load<Texture2D>("Options\\SettingsSlider"));
+        }
+
+        private void InitializeGameObjects()
+        {
+            LoadPlayerElements();
+            LoadFloorElements();
+            LoadEnemyElements();
+            LoadMenuElements();
+            LoadGeneralElements();
+
+            // All objects need to be added to the gameObject list
+            gameObject.Add(player);                                                         // Add player to gameObject
+
+            foreach (Enemy enemy in enemies)                                                // Add enemies to gameObject
+            {
+                gameObject.Add(enemy);
+            }
+
+            foreach (Platform platform in platforms)                                        // Add platforms to gameObject
+            {
+                gameObject.Add(platform);
+            }
+
+            foreach (GraphicElement graphic in gameGraphics)
+            {
+                gameObject.Add(graphic);
+            }
+        }
+
+        private void ClearGameObjects()
+        {
+            gameObject.Clear();
+            platforms.Clear();
+            enemies.Clear();
+            gameGraphics.Clear();
+            titleElements.Clear();
+            optionElements.Clear();
         }
 
         private void LoadPlayerElements()
@@ -441,7 +462,7 @@ namespace Game1
 
         private void LoadEnemyElements()
         {
-           /* enemies.Add(
+           enemies.Add(
                 new Enemy(
                     spriteTexture: enemySprites["GeneralEnemy"],
                     x: 200,
@@ -468,52 +489,52 @@ namespace Game1
             enemies[1].ApplyGravity = true;
             //enemies[1].objectMovement = ObjectMovement.ToAndFroRightFirst;
             enemies[1].ObjectXMoveDistance = 50;
-            */
+            
 
             //added new enemy code, spawned randomly
 
-            Random rnd = new Random();
+            //Random rnd = new Random();
 
-            for(int i = 0;i<rnd.Next(1,21);i++)
-            {
-                enemies.Add(
-                new Enemy(
-                    spriteTexture: enemySprites["GeneralEnemy"],
-                    x: 50+rnd.Next(0,1200),
-                    y: 50+rnd.Next(0,800),
-                    width: 50,
-                    height: 50
-                    )
-                );
-                int j = rnd.Next(1,5);
-            enemies[i].ApplyGravity = true;
-                switch(j)
-                   {
-                    case 1: enemies[i].objectMovement = ObjectMovement.ToAndFroRightFirst;
-                        break;
-                    case 2: enemies[i].objectMovement = ObjectMovement.ToAndFroLeftFirst;
-                        break;
-                    case 3: enemies[i].objectMovement = ObjectMovement.ToAndFroUpFirst;
-                        break;
-                    case 4: enemies[i].objectMovement = ObjectMovement.ToAndFroDownFirst;
-                        break;
-                   }
+            //for(int i = 0;i<rnd.Next(1,21);i++)
+            //{
+            //    enemies.Add(
+            //    new Enemy(
+            //        spriteTexture: enemySprites["GeneralEnemy"],
+            //        x: 50+rnd.Next(0,1200),
+            //        y: 50+rnd.Next(0,800),
+            //        width: 50,
+            //        height: 50
+            //        )
+            //    );
+            //    int j = rnd.Next(1,5);
+            //enemies[i].ApplyGravity = true;
+            //    switch(j)
+            //       {
+            //        case 1: enemies[i].objectMovement = ObjectMovement.ToAndFroRightFirst;
+            //            break;
+            //        case 2: enemies[i].objectMovement = ObjectMovement.ToAndFroLeftFirst;
+            //            break;
+            //        case 3: enemies[i].objectMovement = ObjectMovement.ToAndFroUpFirst;
+            //            break;
+            //        case 4: enemies[i].objectMovement = ObjectMovement.ToAndFroDownFirst;
+            //            break;
+            //       }
             
-            enemies[i].ObjectXMoveDistance = 50;
-            }
-            enemies.Add(
-                new Enemy(
-                    spriteTexture: enemySprites["GeneralEnemy"],
-                    x: 1200,
-                    y: 400,
-                    width: 100,
-                    height: 100
-                )
-            );
+            //enemies[i].ObjectXMoveDistance = 50;
+            //}
+            //enemies.Add(
+            //    new Enemy(
+            //        spriteTexture: enemySprites["GeneralEnemy"],
+            //        x: 1200,
+            //        y: 400,
+            //        width: 100,
+            //        height: 100
+            //    )
+            //);
 
-            enemies[1].ApplyGravity = true;
-            enemies[1].objectMovement = ObjectMovement.ToAndFroUpFirst;
-            enemies[1].ObjectXMoveDistance = 100;
+            //enemies[1].ApplyGravity = true;
+            //enemies[1].objectMovement = ObjectMovement.ToAndFroUpFirst;
+            //enemies[1].ObjectXMoveDistance = 100;
                          
         }
 
@@ -565,8 +586,7 @@ namespace Game1
                     y: (SCREENHEIGHT / 2) - 400,
                     width: 800,
                     height: 800,
-                    addGravity: false,
-                    appliedObjectMass: 0
+                    addGravity: false
                 )
             );
 
@@ -578,8 +598,7 @@ namespace Game1
                     y: (SCREENHEIGHT / 2) - 400,
                     width: 600,
                     height: 200,
-                    addGravity: false,
-                    appliedObjectMass: 0
+                    addGravity: false
                 )
             );
 
@@ -591,8 +610,7 @@ namespace Game1
                     y: (SCREENHEIGHT / 2) - 100,
                     width: 400,
                     height: 100,
-                    addGravity: false,
-                    appliedObjectMass: 0
+                    addGravity: false
                 )
             );
 
@@ -604,8 +622,7 @@ namespace Game1
                     y: (SCREENHEIGHT / 2) + 50,
                     width: 400,
                     height: 100,
-                    addGravity: false,
-                    appliedObjectMass: 0
+                    addGravity: false
                 )
             );
 
@@ -617,8 +634,7 @@ namespace Game1
                     y: (SCREENHEIGHT / 2) + 200,
                     width: 400,
                     height: 100,
-                    addGravity: false,
-                    appliedObjectMass: 0
+                    addGravity: false
                 )
             );
 
@@ -630,8 +646,7 @@ namespace Game1
                     y: (SCREENHEIGHT / 2) - 100,
                     width: 400,
                     height: 100,
-                    addGravity: false,
-                    appliedObjectMass: 0
+                    addGravity: false
                 )
             );
 
@@ -645,8 +660,7 @@ namespace Game1
                     y: (SCREENHEIGHT / 2) - 400,
                     width: 800,
                     height: 800,
-                    addGravity: false,
-                    appliedObjectMass: 0
+                    addGravity: false
                 )
             );
 
@@ -658,8 +672,7 @@ namespace Game1
                     y: (SCREENHEIGHT / 2) - 400,
                     width: 600,
                     height: 200,
-                    addGravity: false,
-                    appliedObjectMass: 0
+                    addGravity: false
                 )
             );
 
@@ -671,8 +684,7 @@ namespace Game1
                     y: (SCREENHEIGHT / 2) - 100,
                     width: 200,
                     height: 80,
-                    addGravity: false,
-                    appliedObjectMass: 0
+                    addGravity: false
                 )
             );
 
@@ -684,8 +696,7 @@ namespace Game1
                     y: (SCREENHEIGHT / 2) - 70,
                     width: 50,
                     height: 30,
-                    addGravity: false,
-                    appliedObjectMass: 0
+                    addGravity: false
                 )
             );
 
@@ -697,8 +708,7 @@ namespace Game1
                     y: (SCREENHEIGHT / 2) - 70,
                     width: 75,
                     height: 30,
-                    addGravity: false,
-                    appliedObjectMass: 0
+                    addGravity: false
                 )
             );
 
@@ -710,8 +720,7 @@ namespace Game1
                     y: (SCREENHEIGHT / 2) - 60,
                     width: 100,
                     height: 10,
-                    addGravity: false,
-                    appliedObjectMass: 0
+                    addGravity: false
                 )
             );
 
@@ -723,8 +732,7 @@ namespace Game1
                     y: (SCREENHEIGHT / 2) - 76,
                     width: 10,
                     height: 40,
-                    addGravity: false,
-                    appliedObjectMass: 0
+                    addGravity: false
                 )
             );
 
@@ -736,8 +744,7 @@ namespace Game1
                     y: (SCREENHEIGHT / 2),
                     width: 200,
                     height: 80,
-                    addGravity: false,
-                    appliedObjectMass: 0
+                    addGravity: false
                 )
             );
 
@@ -749,8 +756,7 @@ namespace Game1
                     y: (SCREENHEIGHT / 2) + 20,
                     width: 50,
                     height: 30,
-                    addGravity: false,
-                    appliedObjectMass: 0
+                    addGravity: false
                 )
             );
 
@@ -762,8 +768,7 @@ namespace Game1
                     y: (SCREENHEIGHT / 2) + 20,
                     width: 75,
                     height: 30,
-                    addGravity: false,
-                    appliedObjectMass: 0
+                    addGravity: false
                 )
             );
 
@@ -775,8 +780,7 @@ namespace Game1
                     y: (SCREENHEIGHT / 2) + 30,
                     width: 100,
                     height: 10,
-                    addGravity: false,
-                    appliedObjectMass: 0
+                    addGravity: false
                 )
             );
 
@@ -788,8 +792,7 @@ namespace Game1
                     y: (SCREENHEIGHT / 2) + 14,
                     width: 10,
                     height: 40,
-                    addGravity: false,
-                    appliedObjectMass: 0
+                    addGravity: false
                 )
             );
 
@@ -801,8 +804,7 @@ namespace Game1
                     y: (SCREENHEIGHT / 2) + 100,
                     width: 200,
                     height: 80,
-                    addGravity: false,
-                    appliedObjectMass: 0
+                    addGravity: false
                 )
             );
         }

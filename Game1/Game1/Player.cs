@@ -51,10 +51,9 @@ namespace Game1
         /// <param name="width">Width of object</param>
         /// <param name="height">Height of object</param>
         /// <param name="addGravity">Does this object require immediate gravity implementation</param>
-        /// <param name="appliedObjectMass">This is the mass that should be applied to the object</param>
         public Player(Texture2D spriteTexture, int x, int y, int width, int height,
-                          bool addGravity, float appliedObjectMass) :
-                base(spriteTexture, x, y, width, height, addGravity, appliedObjectMass)
+                          bool addGravity) :
+                base(spriteTexture, x, y, width, height, addGravity)
         {
             base.IsAlive = true;
         }
@@ -156,11 +155,17 @@ namespace Game1
 
                     if ((!stillIntersecting) && (this.HasJumped == false))
                     {
-                        if (base.intersectedBy[i].GetType() == typeof(Platform))
+                        if ((base.intersectedBy[i].GetType() == typeof(Platform)) && (base.intersectedBy[i].GravitationalVelocity >= 0))
                         {
                             base.Falling = true;
                             base.hitObstacle = HitObstacle.None;
                         }
+
+                        //if ((base.intersectedBy[i].GetType() == typeof(Platform)) && (base.intersectedBy[i].GravitationalVelocity < 0))
+                        //{
+                        //    base.Falling = true;
+                        //    base.hitObstacle = HitObstacle.None;
+                        //}
 
                         if (base.intersectedBy[i].GetType() == typeof(Enemy))
                         {
@@ -174,7 +179,7 @@ namespace Game1
                         base.hitObstacle = HitObstacle.None;
 
                         base.intersectedBy.Remove(intersectedBy[i]);
-                    }
+                    }                    
                 }
 
                 CreateRectangle(ApplyMovement());
