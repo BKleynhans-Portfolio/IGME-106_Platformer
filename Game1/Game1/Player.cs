@@ -146,7 +146,11 @@ namespace Game1
                 base.MovementVelocity = 0f;
                 base.GravitationalVelocity = 0f;
             }
-
+            else if (this.Rectangle.Y < 0)
+            {
+                CreateRectangle(this.Rectangle.X, 1);
+            }
+            
             if (this.IsAlive)
             {
                 for (int i = 0; i < base.intersectedBy.Count; i++)
