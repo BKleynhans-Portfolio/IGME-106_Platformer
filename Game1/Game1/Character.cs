@@ -184,7 +184,6 @@ namespace Game1
             if (movementAppliedTo == MovementAppliedTo.None)
             {
                 this.MovementVelocity = this.PlatformHorizontalAcceleration;
-                //this.GravitationalVelocity = this.PlatformVerticalAcceleration;
             }
 
             if ((movementAppliedTo == MovementAppliedTo.Left) && (hitObstacle != HitObstacle.FromLeft))
@@ -201,20 +200,20 @@ namespace Game1
             {
                 if ((HasJumped) && (GravitationalVelocity == 0))
                 {
-                    this.GravitationalVelocity -= DefaultVerticalVelocity + this.PlatformHorizontalAcceleration;
+                    this.GravitationalVelocity -= (int)(this.DefaultVerticalVelocity / 1.2);//+ this.PlatformVerticalAcceleration;
                 }
                 else if ((HasJumped) && (GravitationalVelocity > -5))
                 {
-                    this.GravitationalVelocity -= this.GlobalAcceleration + this.PlatformHorizontalAcceleration;
+                    this.GravitationalVelocity -= this.GlobalAcceleration;// + this.PlatformVerticalAcceleration;
                 }
                 else if ((HasJumped) && (GravitationalVelocity <= -5))
                 {
-                    this.GravitationalVelocity += this.GlobalAcceleration + this.PlatformHorizontalAcceleration;
+                    this.GravitationalVelocity += this.GlobalAcceleration;// + this.PlatformVerticalAcceleration;
                     HasJumped = false;
                 }
                 else if ((!HasJumped) && (JumpInProgress) && (GravitationalVelocity <= -5))
                 {
-                    this.GravitationalVelocity += this.GlobalAcceleration + this.PlatformHorizontalAcceleration;
+                    this.GravitationalVelocity += this.GlobalAcceleration;// + this.PlatformVerticalAcceleration;
                 }
             }
         }

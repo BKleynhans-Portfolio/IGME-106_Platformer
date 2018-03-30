@@ -164,13 +164,7 @@ namespace Game1
                             base.Falling = true;
                             base.hitObstacle = HitObstacle.None;
                         }
-
-                        //if ((base.intersectedBy[i].GetType() == typeof(Platform)) && (base.intersectedBy[i].GravitationalVelocity < 0))
-                        //{
-                        //    base.Falling = true;
-                        //    base.hitObstacle = HitObstacle.None;
-                        //}
-
+                        
                         if (base.intersectedBy[i].GetType() == typeof(Enemy))
                         {
                             base.TookLife = false;

@@ -451,7 +451,7 @@ namespace Game1
                 )
             );
 
-            platforms[4].ApplyGravity = true;
+            platforms[4].ApplyGravity = false;
             platforms[4].gravityOnProximityFrom = GravityOnProximityFrom.Top;
             platforms[4].objectMovement = ObjectMovement.ToAndFroRightFirst;
             platforms[4].ObjectXMoveDistance = 400;
@@ -462,18 +462,18 @@ namespace Game1
 
         private void LoadEnemyElements()
         {
-           enemies.Add(
-                new Enemy(
-                    spriteTexture: enemySprites["GeneralEnemy"],
-                    x: 200,
-                    y: 50,
-                    width: 50,
-                    height: 50
-                )
-            );
+            enemies.Add(
+                 new Enemy(
+                     spriteTexture: enemySprites["GeneralEnemy"],
+                     x: 200,
+                     y: 50,
+                     width: 50,
+                     height: 50
+                 )
+             );
 
             enemies[0].ApplyGravity = true;
-            //enemies[0].objectMovement = ObjectMovement.ToAndFroRightFirst;
+            enemies[0].objectMovement = ObjectMovement.ToAndFroRightFirst;
             enemies[0].ObjectXMoveDistance = 50;
 
             enemies.Add(
@@ -487,9 +487,9 @@ namespace Game1
             );
 
             enemies[1].ApplyGravity = true;
-            //enemies[1].objectMovement = ObjectMovement.ToAndFroRightFirst;
+            enemies[1].objectMovement = ObjectMovement.ToAndFroRightFirst;
             enemies[1].ObjectXMoveDistance = 50;
-            
+
 
             //added new enemy code, spawned randomly
 
@@ -519,7 +519,7 @@ namespace Game1
             //        case 4: enemies[i].objectMovement = ObjectMovement.ToAndFroDownFirst;
             //            break;
             //       }
-            
+
             //enemies[i].ObjectXMoveDistance = 50;
             //}
             //enemies.Add(
@@ -535,7 +535,7 @@ namespace Game1
             //enemies[1].ApplyGravity = true;
             //enemies[1].objectMovement = ObjectMovement.ToAndFroUpFirst;
             //enemies[1].ObjectXMoveDistance = 100;
-                         
+
         }
 
         private void LoadGeneralElements()
