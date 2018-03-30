@@ -200,7 +200,7 @@ namespace Game1
             {
                 if ((HasJumped) && (GravitationalVelocity == 0))
                 {
-                    this.GravitationalVelocity -= (int)(this.DefaultVerticalVelocity / 1.2);//+ this.PlatformVerticalAcceleration;
+                    this.GravitationalVelocity -= (int)(this.DefaultVerticalVelocity * 1.5);    // number is multiplier for player gravity application during jump
                 }
                 else if ((HasJumped) && (GravitationalVelocity > -5))
                 {

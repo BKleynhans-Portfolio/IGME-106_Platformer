@@ -150,7 +150,15 @@ namespace Game1
             {
                 CreateRectangle(this.Rectangle.X, 1);
             }
-            
+            else if (this.Rectangle.X < 0)
+            {
+                CreateRectangle(1, this.Rectangle.Y);
+            }
+            else if (this.Rectangle.X > 1600)
+            {
+                CreateRectangle(1599, this.Rectangle.Y);
+            }
+
             if (this.IsAlive)
             {
                 for (int i = 0; i < base.intersectedBy.Count; i++)
