@@ -200,7 +200,7 @@ namespace Game1
             {
                 if ((HasJumped) && (GravitationalVelocity == 0))
                 {
-                    this.GravitationalVelocity -= (int)(this.DefaultVerticalVelocity * 1.5);    // number is multiplier for player gravity application during jump
+                    this.GravitationalVelocity -= (int)(this.DefaultVerticalVelocity * 2.2);    // number is multiplier for player gravity application during jump
                 }
                 else if ((HasJumped) && (GravitationalVelocity > -5))
                 {
@@ -444,7 +444,7 @@ namespace Game1
                 Lives++;
             }
 
-            base.CreateRectangle(new Vector2(50, 50));
+            base.CreateRectangle(new Vector2(0, 800));
 
             gameState = GameState.Title;
         }

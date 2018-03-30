@@ -546,13 +546,20 @@ namespace Game1
                     Console.ReadLine();
                 }
 
+                if ((this.ToString().Equals("Game1.Enemy") && (this.objectMovement == ObjectMovement.ToAndFroLeftFirst)) && this.CalculateCoefficient == true)
+                {
+                    Console.ReadLine();
+                }
+
                 if (((this.MovementVelocity == 0) && (!this.AccelerationCoefficientStartingXSet)) && this.CalculateCoefficient == true)
                 {
                     this.AccelerationCoefficientStartingPoint = this.Rectangle.X;
 
                     this.AccelerationCoefficientStartingXSet = true;
                 }
-                else if (((this.MovementVelocity >= 4.98) && (this.MovementVelocity < 5.02)) && (!this.AccelerationCoefficientEndingXSet))
+                else if ((((this.MovementVelocity >= 4.98) && (this.MovementVelocity < 5.02)) ||
+                        ((this.MovementVelocity <= -4.98) && (this.MovementVelocity > -5.02))) && 
+                        (!this.AccelerationCoefficientEndingXSet))
                 {
                     this.AccelerationCoefficientEndingPoint = this.Rectangle.X;
 
@@ -597,14 +604,14 @@ namespace Game1
                         switch (gravityDirection)
                         {
                             case GravityDirection.Left:
-                                if ((this.Rectangle.X + this.AccelerationCoefficient) <= (this.InitialXPlacement + this.ObjectXMoveDistance))
+                                if ((this.Rectangle.X - this.AccelerationCoefficient) <= (this.InitialXPlacement - this.ObjectXMoveDistance))
                                 {
                                     SwitchDirections();
                                 }
 
                                 break;
                             case GravityDirection.Right:                            
-                                if (this.Rectangle.X - this.AccelerationCoefficient >= this.InitialXPlacement)
+                                if (this.Rectangle.X + this.AccelerationCoefficient >= this.InitialXPlacement)
                                 {
                                     SwitchDirections();
                                 }

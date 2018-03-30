@@ -373,10 +373,10 @@ namespace Game1
         {
             player = new Player(
                             playerSprites["PlayerCharacter"],
-                            x: 50,
-                            y: 50,
-                            width: 50,
-                            height: 50
+                            x: 0,
+                            y: 800,
+                            width: 40,
+                            height: 40
                          );
 
             player.ApplyGravity = true;
@@ -384,103 +384,327 @@ namespace Game1
 
         private void LoadFloorElements()
         {
+            //000
             platforms.Add(                                                                  // Ceiling platform
                 new Platform(
                     spriteTexture: platformSprites["FlatPlatform"],
-                    x: 200,
-                    y: 400,
+                    x: 0,
+                    y: 860,
+                    width: 400,
+                    height: 50
+                )
+            );
+
+            //001
+            platforms.Add(
+                new Platform(
+                    spriteTexture: platformSprites["FlatPlatform"],
+                    x: 490,
+                    y: 860,
+                    width: 110,
+                    height: 50
+                )
+            );
+
+            //002
+            platforms.Add(
+                new Platform(
+                    spriteTexture: platformSprites["FlatPlatform"],
+                    x: 800,
+                    y: 860,
                     width: 200,
                     height: 50
                 )
             );
 
-            //platforms[0].ApplyGravity = true;                                              // MOST OF THESE ARE FOR TESTING PURPOSES
-            //platforms[0].gravityDirection = GravityDirection.Right;                        // YOU CAN UNCOMMENT TO SEE WHAT HAPPENS
-            //platforms[0].gravityOnProximityFrom = GravityOnProximityFrom.Top;
+            //003
+            platforms.Add(
+                new Platform(
+                    spriteTexture: platformSprites["FlatPlatform"],
+                    x: 1400,
+                    y: 860,
+                    width: 200,
+                    height: 50
+                )
+            );
 
+            //004
+            platforms.Add(
+                new Platform(
+                    spriteTexture: platformSprites["FlatPlatform"],
+                    x: 1100,
+                    y: 800,
+                    width: 100,
+                    height: 50
+                )
+            );
 
+            platforms[4].ApplyGravity = true;
+            platforms[4].objectMovement = ObjectMovement.ToAndFroUpFirst;
+            platforms[4].ObjectYMoveDistance = 150;
+
+            //005
+            platforms.Add(
+                new Platform(
+                    spriteTexture: platformSprites["FlatPlatform"],
+                    x: 550,
+                    y: 700,
+                    width: 100,
+                    height: 50
+                )
+            );
+
+            platforms[5].ApplyGravity = true;
+            platforms[5].objectMovement = ObjectMovement.ToAndFroRightFirst;
+            platforms[5].ObjectXMoveDistance = 400;
+
+            //006
+            platforms.Add(
+                new Platform(
+                    spriteTexture: platformSprites["FlatPlatform"],
+                    x: 300,
+                    y: 700,
+                    width: 200,
+                    height: 50
+                )
+            );
+
+            //007
             platforms.Add(
                 new Platform(
                     spriteTexture: platformSprites["FlatPlatform"],
                     x: 0,
+                    y: 510,
+                    width: 510,
+                    height: 50
+                )
+            );
+
+            //008
+            platforms.Add(
+                new Platform(
+                    spriteTexture: platformSprites["FlatPlatform"],
+                    x: 50,
                     y: 400,
                     width: 100,
-                    height: 100
-                )
-            );
-
-            //platforms[1].ApplyGravity = false;                                            // State that the second platform should not have gravity
-            //platforms[1].gravityDirection = GravityDirection.Down;                         // during instantiation because gravity will be implemented
-            //platforms[1].gravityDirection = GravityDirection.Right;                       // to the right if the object receives a proximity warning
-            //platforms[1].gravityOnProximityFrom = GravityOnProximityFrom.Top;             // from above and then moves back and forth
-            //platforms[1].objectMovement = ObjectMovement.ToAndFroRightFirst;
-            //platforms[1].objectMovement = ObjectMovement.ToAndFroLeftFirst;
-            //platforms[1].objectMovement = ObjectMovement.ToAndFroDownFirst;
-
-            platforms.Add(
-                new Platform(
-                    spriteTexture: platformSprites["FlatPlatform"],
-                    x: 90,
-                    y: 200,
-                    width: 210,
                     height: 50
                 )
             );
 
+            platforms[8].ApplyGravity = true;
+            platforms[8].objectMovement = ObjectMovement.ToAndFroUpFirst;
+            platforms[8].ObjectYMoveDistance = 75;
+
+            //009
             platforms.Add(
                 new Platform(
                     spriteTexture: platformSprites["FlatPlatform"],
-                    x: 400,
-                    y: 200,
+                    x: 1000,
+                    y: 500,
                     width: 100,
                     height: 50
                 )
             );
 
-            platforms[3].ApplyGravity = true;
-            platforms[3].objectMovement = ObjectMovement.ToAndFroUpFirst;
-            platforms[3].ObjectYMoveDistance = 50;
+            platforms[9].ApplyGravity = true;
+            platforms[9].objectMovement = ObjectMovement.ToAndFroUpFirst;
+            platforms[9].ObjectYMoveDistance = 100;
 
+            //010
             platforms.Add(
                 new Platform(
                     spriteTexture: platformSprites["FlatPlatform"],
-                    x: 500,
-                    y: 100,
+                    x: 1200,
+                    y: 150,
+                    width: 50,
+                    height: 650
+                )
+            );
+
+            //011
+            platforms.Add(
+                new Platform(
+                    spriteTexture: platformSprites["FlatPlatform"],
+                    x: 800,
+                    y: 250,
                     width: 200,
                     height: 50
                 )
             );
 
-            platforms[4].ApplyGravity = false;
-            platforms[4].gravityOnProximityFrom = GravityOnProximityFrom.Top;
-            platforms[4].objectMovement = ObjectMovement.ToAndFroRightFirst;
-            platforms[4].ObjectXMoveDistance = 400;
+            //012
+            platforms.Add(
+                new Platform(
+                    spriteTexture: platformSprites["FlatPlatform"],
+                    x: 700,
+                    y: 250,
+                    width: 100,
+                    height: 50
+                )
+            );
 
-            //platforms.Add(new Platform(platformSprites, (SCREENWIDTH / 2) - 400, (SCREENHEIGHT / 2) - 400, 800, 800));        // Size of the menus
+            platforms[12].ApplyGravity = false;
+            platforms[12].gravityDirection = GravityDirection.Down;
+            platforms[12].objectMovement = ObjectMovement.OneDirection;
+            platforms[12].gravityOnProximityFrom = GravityOnProximityFrom.Top;
+
+            //013
+            platforms.Add(
+                new Platform(
+                    spriteTexture: platformSprites["FlatPlatform"],
+                    x: 600,
+                    y: 250,
+                    width: 100,
+                    height: 50
+                )
+            );
+
+            //014
+            platforms.Add(
+                new Platform(
+                    spriteTexture: platformSprites["FlatPlatform"],
+                    x: 450,
+                    y: 150,
+                    width: 50,
+                    height: 300
+                )
+            );
+
+            //015
+            platforms.Add(
+                new Platform(
+                    spriteTexture: platformSprites["FlatPlatform"],
+                    x: 400,
+                    y: 250,
+                    width: 50,
+                    height: 50
+                )
+            );
+
+            platforms[15].ApplyGravity = true;            
+            platforms[15].objectMovement = ObjectMovement.ToAndFroLeftFirst;            
+            platforms[15].ObjectXMoveDistance = 75;
+
+            //016
+            platforms.Add(
+                new Platform(
+                    spriteTexture: platformSprites["FlatPlatform"],
+                    x: 150,
+                    y: 250,
+                    width: 100,
+                    height: 50
+                )
+            );
+
+            //017
+            platforms.Add(
+                new Platform(
+                    spriteTexture: platformSprites["FlatPlatform"],
+                    x: 0,
+                    y: 150,
+                    width: 100,
+                    height: 50
+                )
+            );
+
+            platforms[17].ApplyGravity = true;
+            platforms[17].gravityDirection = GravityDirection.Up;
+            platforms[17].objectMovement = ObjectMovement.ToAndFroUpFirst;
+            platforms[17].gravityOnProximityFrom = GravityOnProximityFrom.Top;
+            platforms[17].ObjectXMoveDistance = 100;
+
+            //018
+            platforms.Add(
+                new Platform(
+                    spriteTexture: platformSprites["FlatPlatform"],
+                    x: 100,
+                    y: 150,
+                    width: 300,
+                    height: 50
+                )
+            );
+
+            //019
+            platforms.Add(
+                new Platform(
+                    spriteTexture: platformSprites["FlatPlatform"],
+                    x: 100,
+                    y: 50,
+                    width: 350,
+                    height: 50
+                )
+            );
+
+            //020
+            platforms.Add(
+                new Platform(
+                    spriteTexture: platformSprites["FlatPlatform"],
+                    x: 450,
+                    y: 100,
+                    width: 550,
+                    height: 50
+                )
+            );
+
+            //021
+            platforms.Add(
+                new Platform(
+                    spriteTexture: platformSprites["FlatPlatform"],
+                    x: 1000,
+                    y: 100,
+                    width: 100,
+                    height: 50
+                )
+            );
+
+            platforms[21].ApplyGravity = false;
+            platforms[21].gravityDirection = GravityDirection.Down;
+            platforms[21].objectMovement = ObjectMovement.OneDirection;
+            platforms[21].gravityOnProximityFrom = GravityOnProximityFrom.Top;
+
+            //022
+            platforms.Add(
+                new Platform(
+                    spriteTexture: platformSprites["FlatPlatform"],
+                    x: 1100,
+                    y: 100,
+                    width: 100,
+                    height: 50
+                )
+            );
+
+            platforms[22].ApplyGravity = false;
+            platforms[22].gravityDirection = GravityDirection.Down;
+            platforms[22].objectMovement = ObjectMovement.OneDirection;
+            platforms[22].gravityOnProximityFrom = GravityOnProximityFrom.Top;
+
 
         }
 
         private void LoadEnemyElements()
         {
+            //000
             enemies.Add(
                  new Enemy(
                      spriteTexture: enemySprites["GeneralEnemy"],
-                     x: 200,
-                     y: 50,
+                     x: 350,
+                     y: 800,
                      width: 50,
                      height: 50
                  )
              );
 
             enemies[0].ApplyGravity = true;
-            enemies[0].objectMovement = ObjectMovement.ToAndFroRightFirst;
-            enemies[0].ObjectXMoveDistance = 50;
+            enemies[0].gravityDirection = GravityDirection.Down;
+            enemies[0].objectMovement = ObjectMovement.ToAndFroLeftFirst;
+            enemies[0].ObjectXMoveDistance = 100;
 
+            //001
             enemies.Add(
                 new Enemy(
                     spriteTexture: enemySprites["GeneralEnemy"],
-                    x: 700,
-                    y: 150,
+                    x: 800,
+                    y: 800,
                     width: 50,
                     height: 50
                 )
@@ -488,7 +712,22 @@ namespace Game1
 
             enemies[1].ApplyGravity = true;
             enemies[1].objectMovement = ObjectMovement.ToAndFroRightFirst;
-            enemies[1].ObjectXMoveDistance = 50;
+            enemies[1].ObjectXMoveDistance = 70;
+
+            //002
+            enemies.Add(
+                new Enemy(
+                    spriteTexture: enemySprites["GeneralEnemy"],
+                    x: 200,
+                    y: 460,
+                    width: 50,
+                    height: 50
+                )
+            );
+
+            enemies[2].ApplyGravity = true;
+            enemies[2].objectMovement = ObjectMovement.ToAndFroRightFirst;
+            enemies[2].ObjectXMoveDistance = 150;
 
 
             //added new enemy code, spawned randomly

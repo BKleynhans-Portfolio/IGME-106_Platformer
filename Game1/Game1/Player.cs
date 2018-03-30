@@ -142,7 +142,7 @@ namespace Game1
             {
                 base.TakeLife();
 
-                CreateRectangle(new Vector2(50, 50));
+                CreateRectangle(new Vector2(0, 800));
                 base.MovementVelocity = 0f;
                 base.GravitationalVelocity = 0f;
             }

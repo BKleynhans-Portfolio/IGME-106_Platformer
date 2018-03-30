@@ -101,25 +101,6 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Game1
 {
-    //public enum GravityOnProximityFrom
-    //{
-    //    Left,
-    //    Right,
-    //    Top,
-    //    Bottom,
-    //    Center,
-    //    None
-    //}
-
-    //public enum ObjectMovement
-    //{
-    //    OneDirection,
-    //    ToAndFroUpFirst,
-    //    ToAndFroDownFirst,
-    //    ToAndFroLeftFirst,
-    //    ToAndFroRightFirst
-    //}
-
     public abstract class NPC : Character
     {
         /// <summary>
@@ -280,89 +261,69 @@ namespace Game1
         /// </summary>
         public override void CalculateGravity()
         {
-            if (this.ApplyGravity)                                                          // If the object requires gravity to be implemented
+            if (base.ApplyGravity)                                                          // If the object requires gravity to be implemented
             {
                 switch (gravityDirection)                                                   // Based on which direction the gravity is implemented in
                 {
-                    case GravityDirection.Up:
-                        if ((hitObstacle == HitObstacle.FromBottom) &&                      // If this object is hit from the bottom and it is not an environment object
-                            (this.GetType().BaseType != typeof(Environment)))
-                        {
-                            this.GravitationalVelocity = 0;                                 // Set gravitational velocity to 0
-                        }
-                        else
-                        {
-                            if ((this.GetType().BaseType == typeof(Environment)) &&
-                                (this.GravitationalVelocity > -5))
+                    case GravityDirection.Up:                        
+                            if 
+                                (base.GravitationalVelocity > -base.DefaultVerticalVelocity)
                             {
-                                this.GravitationalVelocity -= this.EnvironmentalAcceleration;
+                                base.GravitationalVelocity -= base.EnvironmentalAcceleration;
                             }
-                            else if (this.GravitationalVelocity > -5)                            // If it is not hit, or it is hit and is an environment object, apply appropriate gravity
+                            else if (base.GravitationalVelocity > -base.DefaultVerticalVelocity)                            // If it is not hit, or it is hit and is an environment object, apply appropriate gravity
                             {
-                                this.GravitationalVelocity -= this.GlobalAcceleration;
+                                base.GravitationalVelocity -= base.GlobalAcceleration;
                             }
-                        }
 
                         break;
-                    case GravityDirection.Down:
-                        if ((hitObstacle == HitObstacle.FromTop) &&                         // If this object is hit from the top and it is not an environment object
-                            (this.GetType().BaseType != typeof(Environment)))
-                        {
-                            this.GravitationalVelocity = 0;                                 // Set gravitational velocity to 0
-                        }
-                        else
-                        {
-                            if ((this.GetType().BaseType == typeof(Environment)) &&
-                                (this.GravitationalVelocity < 5))
+                    case GravityDirection.Down:                        
+                            if 
+                                (base.GravitationalVelocity < base.DefaultVerticalVelocity)
                             {
-                                this.GravitationalVelocity += this.EnvironmentalAcceleration;
+                                base.GravitationalVelocity += base.EnvironmentalAcceleration;
                             }
-                            else if (this.GravitationalVelocity < 5)                             // If it is not hit, or it is hit and is an environment object, apply appropriate gravity
+                            else if (base.GravitationalVelocity < base.DefaultVerticalVelocity)                             // If it is not hit, or it is hit and is an environment object, apply appropriate gravity
                             {
-                                this.GravitationalVelocity += this.GlobalAcceleration;
+                                base.GravitationalVelocity += base.GlobalAcceleration;
                             }
-                        }
 
                         break;
-                    case GravityDirection.Left:
-                        if ((hitObstacle == HitObstacle.FromRight) &&                       // If this object is hit from the right and it is not an environment object
-                            (this.GetType().BaseType != typeof(Environment)))
-                        {
-                            this.MovementVelocity = 0;                                      // Set gravitational velocity to 0
-                        }
-                        else
-                        {
-                            if ((this.GetType().BaseType == typeof(Environment)) &&
-                                (this.MovementVelocity > -5))
+                    case GravityDirection.Left:                        
+                            if 
+                                (base.MovementVelocity > -base.DefaultHorizonalVelocity)
                             {
-                                this.MovementVelocity -= this.EnvironmentalAcceleration;
+                                base.MovementVelocity -= base.EnvironmentalAcceleration;
+                                base.CyclesToThreshold++;
+
+                                if ((base.MovementVelocity > -0.02) && (base.MovementVelocity < 0.02))
+                                {
+                                    CyclesToThreshold = 0;
+                                }
                             }
-                            else if (this.MovementVelocity > -5)                                 // If it is not hit, or it is hit and is an environment object, apply appropriate gravity
+                            else if (base.MovementVelocity > -base.DefaultHorizonalVelocity)                                 // If it is not hit, or it is hit and is an environment object, apply appropriate gravity
                             {
-                                this.MovementVelocity -= this.GlobalAcceleration;
+                                base.MovementVelocity -= base.GlobalAcceleration;
                             }
-                        }
 
                         break;
 
-                    case GravityDirection.Right:
-                        if ((hitObstacle == HitObstacle.FromLeft) &&                        // If this object is hit from the left and it is not an environment object
-                            (this.GetType().BaseType != typeof(Environment)))
-                        {
-                            this.MovementVelocity = 0;                                      // Set gravitational velocity to 0
-                        }
-                        else
-                        {
-                            if ((this.GetType().BaseType == typeof(Environment)) &&
-                                (this.MovementVelocity < 5))
+                    case GravityDirection.Right:                        
+                            if 
+                                (base.MovementVelocity < base.DefaultHorizonalVelocity)
                             {
-                                this.MovementVelocity += this.EnvironmentalAcceleration;
+                                base.MovementVelocity += base.EnvironmentalAcceleration;
+                                base.CyclesToThreshold++;
+
+                                if ((base.MovementVelocity > -0.02) && (base.MovementVelocity < 0.02))
+                                {
+                                    CyclesToThreshold = 0;
+                                }
                             }
-                            else if (this.MovementVelocity < 5)                                  // If it is not hit, or it is hit and is an environment object, apply appropriate gravity
+                            else if (base.MovementVelocity < base.DefaultHorizonalVelocity)                                  // If it is not hit, or it is hit and is an environment object, apply appropriate gravity
                             {
-                                this.MovementVelocity += this.GlobalAcceleration;
+                                base.MovementVelocity += base.GlobalAcceleration;
                             }
-                        }
 
                         break;
                 }
