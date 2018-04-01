@@ -229,7 +229,7 @@ namespace Game1
             graphics.PreferredBackBufferHeight = SCREENHEIGHT;                              // Set desired height of window            
             graphics.ApplyChanges();
 
-            Window.Position = new Point(                                        // Center the game view on the screen
+            Window.Position = new Point(                                                    // Center the game view on the screen
                 (GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width / 2) -
                     (graphics.PreferredBackBufferWidth / 2),
                 (GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height / 2) -
@@ -263,6 +263,7 @@ namespace Game1
         protected override void UnloadContent()
         {
             // TODO: Unload any non ContentManager content here
+            
         }
 
         /// <summary>
@@ -346,9 +347,9 @@ namespace Game1
                 case GameState.Pause:
                     break;
                 case GameState.GameOver:
-                    //ClearGameObjects();
+                    ClearGameObjects();
 
-                    //InitializeGameObjects();
+                    InitializeGameObjects();
                     GameState = GameState.Title;
 
                     break;
@@ -445,9 +446,13 @@ namespace Game1
         {
             LoadPlayerElements();
             LoadFloorElements();
-            LoadEnemyElements();
-            LoadMenuElements();
+            LoadEnemyElements();            
             LoadGeneralElements();
+
+            if (TitleElements.Count == 0)
+            {
+                LoadMenuElements();
+            }
 
             // All objects need to be added to the GameObject list
             GameObject.Add(player);                                                         // Add player to GameObject
@@ -474,8 +479,6 @@ namespace Game1
             Platforms.Clear();
             Enemies.Clear();
             GameGraphics.Clear();
-            TitleElements.Clear();
-            OptionElements.Clear();
         }
 
         private void LoadPlayerElements()
