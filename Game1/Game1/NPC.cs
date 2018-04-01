@@ -1,80 +1,4 @@
-﻿//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Text;
-//using System.Threading.Tasks;
-
-//using Microsoft.Xna.Framework;
-//using Microsoft.Xna.Framework.Graphics;
-//using Microsoft.Xna.Framework.Input;
-
-///// <summary>
-///// IGME-106 - Game Development and Algorithmic Problem Solving
-///// Group Project
-///// Class Description   : 
-///// Created By          : Benjamin Kleynhans
-///// Creation Date       : March 22, 2018
-///// Authors             : Benjamin Kleynhans
-/////                       
-/////                       
-/////                       
-///// Last Modified By    : Benjamin Kleynhans
-///// Last Modified Date  : March 22, 2018
-///// Filename            : NPC.cs
-///// </summary>
-
-//namespace Game1
-//{
-//    abstract class NPC : Character
-//    {
-//        /// <summary>
-//        /// Default constructor.  Creates a GameObject with default values.
-//        /// </summary>
-//        /// <param name="spriteTexture">Texture2D image for object</param>
-//        /// <param name="x">Starting X coordinate of object</param>
-//        /// <param name="y">Starting Y coordinate of object</param>
-//        /// <param name="width">Width of object</param>
-//        /// <param name="height">Height of object</param>
-//        public NPC(Texture2D spriteTexture, int x, int y, int width, int height) : base(spriteTexture, x, y, width, height)
-//        {
-
-//        }
-
-//        /// <summary>
-//        /// This is a secondary constructor for the GameObject.
-//        /// </summary>
-//        /// <param name="spriteTexture">Texture2D image for object</param>
-//        /// <param name="x">Starting X coordinate of object</param>
-//        /// <param name="y">Starting Y coordinate of object</param>
-//        /// <param name="width">Width of object</param>
-//        /// <param name="height">Height of object</param>
-//        /// <param name="addGravity">Does this object require immediate gravity implementation</param>
-//        public NPC(Texture2D spriteTexture, int x, int y, int width, int height,
-//                          bool addGravity) :
-//                base(spriteTexture, x, y, width, height, addGravity)
-//        {
-
-//        }
-
-//        public override Vector2 ApplyMovement()
-//        {
-//            Vector2 returnValue;
-
-//            base.CalculateGravity();
-//            base.CalculateMovement();
-
-//            returnValue = new Vector2(
-//                this.Rectangle.X + base.MovementVelocity,
-//                this.Rectangle.Y + base.GravitationalVelocity
-//            );
-
-//            return returnValue;
-//        }
-//    }
-//}
-
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -156,7 +80,7 @@ namespace Game1
 
                 if (!stillIntersecting)
                 {
-                    base.hitObstacle = HitObstacle.None;
+                    base.HitObstacle = HitObstacle.None;
 
                     base.intersectedBy.Remove(intersectedBy[i]);
                 }
@@ -189,12 +113,12 @@ namespace Game1
                 {
                     if (passedGameObject.GetType().BaseType == typeof(Environment))
                     {
-                        hitObstacle = HitObstacle.None;
+                        base.HitObstacle = HitObstacle.None;
                     }
                     else if ((passedGameObject.GetType().BaseType == typeof(Character)) ||
                             (passedGameObject.GetType().BaseType.BaseType == typeof(Character)))
                     {
-                        hitObstacle = HitObstacle.FromBottom;
+                        base.HitObstacle = HitObstacle.FromBottom;
                     }
                 }
                 else if ((// From Bottom
@@ -208,12 +132,12 @@ namespace Game1
                     // *** Each continuation of the BaseType keyword goes up one additional level in the derived classes                    
                     if (passedGameObject.GetType().BaseType == typeof(Environment))
                     {
-                        hitObstacle = HitObstacle.None;
+                        base.HitObstacle = HitObstacle.None;
                     }
                     else if ((passedGameObject.GetType().BaseType == typeof(Character)) ||
                                 (passedGameObject.GetType().BaseType.BaseType == typeof(Character)))
                     {
-                        hitObstacle = HitObstacle.FromTop;
+                        base.HitObstacle = HitObstacle.FromTop;
                     }
                 }
                 else if ((// From Right
@@ -226,12 +150,12 @@ namespace Game1
                                                                                             // *** Each continuation of the BaseType keyword goes up one additional level in the derived classes
                     if (passedGameObject.GetType().BaseType == typeof(Environment))
                     {
-                        hitObstacle = HitObstacle.None;
+                        base.HitObstacle = HitObstacle.None;
                     }
                     else if ((passedGameObject.GetType().BaseType == typeof(Character)) ||
                                (passedGameObject.GetType().BaseType.BaseType == typeof(Character)))
                     {
-                        hitObstacle = HitObstacle.FromLeft;
+                        base.HitObstacle = HitObstacle.FromLeft;
                     }
                 }
                 else if ((// From Left
@@ -243,13 +167,13 @@ namespace Game1
                 {
                     if (passedGameObject.GetType().BaseType == typeof(Environment))
                     {
-                        hitObstacle = HitObstacle.None;
+                        base.HitObstacle = HitObstacle.None;
                     }
                     else if (
                                (passedGameObject.GetType().BaseType == typeof(Character)) ||
                                (passedGameObject.GetType().BaseType.BaseType == typeof(Character)))
                     {
-                        hitObstacle = HitObstacle.FromRight;
+                        base.HitObstacle = HitObstacle.FromRight;
                     }
                 }
             }
@@ -261,69 +185,69 @@ namespace Game1
         /// </summary>
         public override void CalculateGravity()
         {
-            if (base.ApplyGravity)                                                          // If the object requires gravity to be implemented
+            if (base.ApplyGravity)
             {
-                switch (gravityDirection)                                                   // Based on which direction the gravity is implemented in
+                switch (base.GravityDirection)
                 {
-                    case GravityDirection.Up:                        
-                            if 
-                                (base.GravitationalVelocity > -base.DefaultVerticalVelocity)
+                    case GravityDirection.Up:
+                        if
+                            (base.GravitationalVelocity > -base.DefaultVerticalVelocity)
+                        {
+                            if ((base.GravitationalVelocity > -1) && (base.GravitationalVelocity < 1))
+                            {
+                                base.GravitationalVelocity = -1;
+                            }
+                            else
                             {
                                 base.GravitationalVelocity -= base.EnvironmentalAcceleration;
                             }
-                            else if (base.GravitationalVelocity > -base.DefaultVerticalVelocity)                            // If it is not hit, or it is hit and is an environment object, apply appropriate gravity
-                            {
-                                base.GravitationalVelocity -= base.GlobalAcceleration;
-                            }
+                        }
 
                         break;
-                    case GravityDirection.Down:                        
-                            if 
-                                (base.GravitationalVelocity < base.DefaultVerticalVelocity)
+                    case GravityDirection.Down:
+                        if
+                            (base.GravitationalVelocity < base.DefaultVerticalVelocity)
+                        {
+                            if ((base.GravitationalVelocity > -1) && (base.GravitationalVelocity < 1))
+                            {
+                                base.GravitationalVelocity = 1;
+                            }
+                            else
                             {
                                 base.GravitationalVelocity += base.EnvironmentalAcceleration;
                             }
-                            else if (base.GravitationalVelocity < base.DefaultVerticalVelocity)                             // If it is not hit, or it is hit and is an environment object, apply appropriate gravity
-                            {
-                                base.GravitationalVelocity += base.GlobalAcceleration;
-                            }
+                        }
 
                         break;
-                    case GravityDirection.Left:                        
-                            if 
-                                (base.MovementVelocity > -base.DefaultHorizonalVelocity)
+                    case GravityDirection.Left:
+                        if
+                            (base.MovementVelocity > -base.DefaultHorizonalVelocity)
+                        {
+                            if ((base.MovementVelocity > -1) && (base.MovementVelocity < 1))
+                            {
+                                base.MovementVelocity = -1;
+                            }
+                            else
                             {
                                 base.MovementVelocity -= base.EnvironmentalAcceleration;
-                                base.CyclesToThreshold++;
-
-                                if ((base.MovementVelocity > -0.02) && (base.MovementVelocity < 0.02))
-                                {
-                                    CyclesToThreshold = 0;
-                                }
                             }
-                            else if (base.MovementVelocity > -base.DefaultHorizonalVelocity)                                 // If it is not hit, or it is hit and is an environment object, apply appropriate gravity
-                            {
-                                base.MovementVelocity -= base.GlobalAcceleration;
-                            }
+                        }
 
                         break;
 
-                    case GravityDirection.Right:                        
-                            if 
-                                (base.MovementVelocity < base.DefaultHorizonalVelocity)
+                    case GravityDirection.Right:
+                        if
+                            (base.MovementVelocity < base.DefaultHorizonalVelocity)
+                        {
+                            if ((base.MovementVelocity > -1) && (base.MovementVelocity < 1))
+                            {
+                                base.MovementVelocity = 1;
+                            }
+                            else
                             {
                                 base.MovementVelocity += base.EnvironmentalAcceleration;
-                                base.CyclesToThreshold++;
-
-                                if ((base.MovementVelocity > -0.02) && (base.MovementVelocity < 0.02))
-                                {
-                                    CyclesToThreshold = 0;
-                                }
                             }
-                            else if (base.MovementVelocity < base.DefaultHorizonalVelocity)                                  // If it is not hit, or it is hit and is an environment object, apply appropriate gravity
-                            {
-                                base.MovementVelocity += base.GlobalAcceleration;
-                            }
+                        }
 
                         break;
                 }

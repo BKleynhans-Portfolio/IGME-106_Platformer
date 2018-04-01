@@ -52,7 +52,7 @@ namespace Game1
         None
     }
 
-    public enum HitNPC                                                                      // These are the intersection parameters used for gravity calculation
+    public enum HitNpc                                                                      // These are the intersection parameters used for gravity calculation
     {
         FromLeft,
         FromRight,
@@ -82,12 +82,12 @@ namespace Game1
 
     public abstract class GameObject : Game1
     {
-        public GravityDirection gravityDirection = GravityDirection.Down;
-        public MovementAppliedTo movementAppliedTo = MovementAppliedTo.None;
-        public HitObstacle hitObstacle = HitObstacle.None;
-        public HitNPC hitNPC = HitNPC.None;
-        public GravityOnProximityFrom gravityOnProximityFrom = GravityOnProximityFrom.None;
-        public ObjectMovement objectMovement = ObjectMovement.OneDirection;
+        private GravityDirection gravityDirection;
+        private MovementAppliedTo movementAppliedTo;
+        private HitObstacle hitObstacle;
+        private HitNpc hitNpc;
+        private GravityOnProximityFrom gravityOnProximityFrom;
+        private ObjectMovement objectMovement;
 
         private float objectXMoveDistance;
         private float objectYMoveDistance;
@@ -103,7 +103,7 @@ namespace Game1
         private bool accelerationCoefficientStartingXSet = false;
         private bool accelerationCoefficientEndingXSet = false;
         private bool calculateCoefficient = true;
-        private int accelerationCoefficient = 0;                                                    // Calculate pixels covered during acceleration
+        private float accelerationCoefficient = 0;                                          // Calculate pixels covered during acceleration
 
         private Texture2D objectTexture;                                                    // Texture and rectangle
         private Rectangle rectangle;
@@ -114,7 +114,7 @@ namespace Game1
         private float environmentalAcceleration;                                              // Acceleration to apply to platforms
         private float gravitationalVelocity;                                                // Gravitational velocity for vertical movement
         private float movementVelocity;                                                     // Movement velocity for horizontal movement
-        
+
         private const float defaultHorizonalVelocity = 5f;                                  // Default velocity to implement horizontally
         private const float defaultVerticalVelocity = 5f;                                   // Default velocity to implement vertically   
 
@@ -143,7 +143,7 @@ namespace Game1
             this.ApplyGravity = false;
 
             this.GlobalAcceleration = 0.25f;
-            this.EnvironmentalAcceleration =  0.05f;
+            this.EnvironmentalAcceleration = 0.05f;
             this.spriteEffect = SpriteEffects.None;
 
             this.InitialXPlacement = x;
@@ -153,6 +153,12 @@ namespace Game1
             this.AccelerationCoefficientEndingPoint = 0;
             this.AccelerationCoefficientStartingXSet = false;
             this.AccelerationCoefficientEndingXSet = false;
+            GravityDirection = GravityDirection.Down;
+            MovementAppliedTo = MovementAppliedTo.None;
+            HitObstacle = HitObstacle.None;
+            HitNpc = HitNpc.None;
+            GravityOnProximityFrom = GravityOnProximityFrom.None;
+            ObjectMovement = ObjectMovement.OneDirection;
         }
 
         /// <summary>
@@ -174,7 +180,7 @@ namespace Game1
 
             this.ApplyGravity = addGravity;
 
-            this.GlobalAcceleration = 0.25f;
+            this.GlobalAcceleration = 2f;// 0.25f;
             this.EnvironmentalAcceleration = 0.05f;
 
             this.InitialXPlacement = x;
@@ -184,6 +190,12 @@ namespace Game1
             this.AccelerationCoefficientEndingPoint = 0;
             this.AccelerationCoefficientStartingXSet = false;
             this.AccelerationCoefficientEndingXSet = false;
+            GravityDirection = GravityDirection.Down;
+            MovementAppliedTo = MovementAppliedTo.None;
+            HitObstacle = HitObstacle.None;
+            HitNpc = HitNpc.None;
+            GravityOnProximityFrom = GravityOnProximityFrom.None;
+            ObjectMovement = ObjectMovement.OneDirection;
         }
 
         /// <summary>
@@ -229,6 +241,42 @@ namespace Game1
             set { this.spriteEffect = value; }
         }
 
+        public GravityDirection GravityDirection
+        {
+            get { return this.gravityDirection; }
+            set { this.gravityDirection = value; }
+        }
+
+        public MovementAppliedTo MovementAppliedTo
+        {
+            get { return this.movementAppliedTo; }
+            set { this.movementAppliedTo = value; }
+        }
+
+        public HitObstacle HitObstacle
+        {
+            get { return this.hitObstacle; }
+            set { this.hitObstacle = value; }
+        }
+
+        public HitNpc HitNpc
+        {
+            get { return this.hitNpc; }
+            set { this.hitNpc = value; }
+        }
+
+        public GravityOnProximityFrom GravityOnProximityFrom
+        {
+            get { return this.gravityOnProximityFrom; }
+            set { this.gravityOnProximityFrom = value; }
+        }
+
+        public ObjectMovement ObjectMovement
+        {
+            get { return this.objectMovement; }
+            set { this.objectMovement = value; }
+        }
+
         public int CyclesToThreshold
         {
             get { return this.cyclesToThreshold; }
@@ -266,7 +314,7 @@ namespace Game1
             set { this.calculateCoefficient = value; }
         }
 
-        public int AccelerationCoefficient
+        public float AccelerationCoefficient
         {
             get { return accelerationCoefficient; }
             set { this.accelerationCoefficient = value; }
@@ -391,108 +439,32 @@ namespace Game1
         /// Calculates the amount of force to apply for the object during each iteration of the game loop
         /// </summary>
         public virtual void CalculateGravity()
-        {            
+        {
             if (this.ApplyGravity)                                                          // If the object requires gravity to be implemented
-            {                
+            {
                 switch (gravityDirection)                                                   // Based on which direction the gravity is implemented in
                 {
-                    case GravityDirection.Up:                        
-                        if ((hitObstacle == HitObstacle.FromBottom) &&                      // If this object is hit from the bottom and it is not an environment object
-                            (this.GetType().BaseType != typeof(Environment)))
-                        {                            
-                            this.GravitationalVelocity = 0;                                 // Set gravitational velocity to 0
-                        }
-                        else
-                        {
-                            if ((this.GetType().BaseType == typeof(Environment)) &&
-                                (this.GravitationalVelocity > -this.DefaultVerticalVelocity))
-                            {
-                                this.GravitationalVelocity -= this.EnvironmentalAcceleration;
-                            }
-                            else if (this.GravitationalVelocity > -this.DefaultVerticalVelocity)                            // If it is not hit, or it is hit and is an environment object, apply appropriate gravity
-                            {
-                                this.GravitationalVelocity -= this.GlobalAcceleration;
-                            }
-                        }
+                    case GravityDirection.Up:
+                        this.GravitationalVelocity -= this.GlobalAcceleration;
 
                         break;
                     case GravityDirection.Down:
-                        if ((hitObstacle == HitObstacle.FromTop) &&                         // If this object is hit from the top and it is not an environment object
-                            (this.GetType().BaseType != typeof(Environment)))
-                        {                            
-                            this.GravitationalVelocity = 0;                                 // Set gravitational velocity to 0
-                        }
-                        else
-                        {
-                            if ((this.GetType().BaseType == typeof(Environment)) &&
-                                (this.GravitationalVelocity < this.DefaultVerticalVelocity))
-                            {
-                                this.GravitationalVelocity += this.EnvironmentalAcceleration;                                
-                            }
-                            else if (this.GravitationalVelocity < this.DefaultVerticalVelocity)                             // If it is not hit, or it is hit and is an environment object, apply appropriate gravity
-                            {
-                                this.GravitationalVelocity += this.GlobalAcceleration;
-                            }
-                        }
+                        this.GravitationalVelocity += this.GlobalAcceleration;
 
                         break;
-                    case GravityDirection.Left:                        
-                        if ((hitObstacle == HitObstacle.FromRight) &&                       // If this object is hit from the right and it is not an environment object
-                            (this.GetType().BaseType != typeof(Environment)))
-                        {                            
-                            this.MovementVelocity = 0;                                      // Set gravitational velocity to 0
-                        }
-                        else
-                        {
-                            if ((this.GetType().BaseType == typeof(Environment)) &&
-                                (this.MovementVelocity > -this.DefaultHorizonalVelocity))
-                            {                                
-                                this.MovementVelocity -= this.EnvironmentalAcceleration;
-                                this.CyclesToThreshold++;
-
-                                if ((this.MovementVelocity > -0.02) && (this.MovementVelocity < 0.02))
-                                {
-                                    CyclesToThreshold = 0;
-                                }
-                            }
-                            else if (this.MovementVelocity > -this.DefaultHorizonalVelocity)                                 // If it is not hit, or it is hit and is an environment object, apply appropriate gravity
-                            {
-                                this.MovementVelocity -= this.GlobalAcceleration;
-                            }
-                        }
+                    case GravityDirection.Left:
+                        this.MovementVelocity -= this.GlobalAcceleration;                        
 
                         break;
 
-                    case GravityDirection.Right:                        
-                        if ((hitObstacle == HitObstacle.FromLeft) &&                        // If this object is hit from the left and it is not an environment object
-                            (this.GetType().BaseType != typeof(Environment)))
-                        {                            
-                            this.MovementVelocity = 0;                                      // Set gravitational velocity to 0
-                        }
-                        else
-                        {
-                            if ((this.GetType().BaseType == typeof(Environment)) &&
-                                (this.MovementVelocity < this.DefaultHorizonalVelocity))
-                            {
-                                this.MovementVelocity += this.EnvironmentalAcceleration;
-                                this.CyclesToThreshold++;
-
-                                if ((this.MovementVelocity > -0.02) && (this.MovementVelocity < 0.02))
-                                {
-                                    CyclesToThreshold = 0;
-                                }
-                            } 
-                            else if (this.MovementVelocity < this.DefaultHorizonalVelocity)                                  // If it is not hit, or it is hit and is an environment object, apply appropriate gravity
-                            {
-                                this.MovementVelocity += this.GlobalAcceleration;
-                            }
-                        }
+                    case GravityDirection.Right:
+                        this.MovementVelocity += this.GlobalAcceleration;
 
                         break;
                 }
             }
         }
-        
+
         public void UpdateMovementParameters()
         {
             switch (hitObstacle)
@@ -540,42 +512,7 @@ namespace Game1
 
                         break;
                 }
-
-                if ((this.ToString().Equals("Game1.Platform") && (this.objectMovement == ObjectMovement.ToAndFroRightFirst)) && this.CalculateCoefficient == true)
-                {
-                    Console.ReadLine();
-                }
-
-                if ((this.ToString().Equals("Game1.Enemy") && (this.objectMovement == ObjectMovement.ToAndFroLeftFirst)) && this.CalculateCoefficient == true)
-                {
-                    Console.ReadLine();
-                }
-
-                if (((this.MovementVelocity == 0) && (!this.AccelerationCoefficientStartingXSet)) && this.CalculateCoefficient == true)
-                {
-                    this.AccelerationCoefficientStartingPoint = this.Rectangle.X;
-
-                    this.AccelerationCoefficientStartingXSet = true;
-                }
-                else if ((((this.MovementVelocity >= 4.98) && (this.MovementVelocity < 5.02)) ||
-                        ((this.MovementVelocity <= -4.98) && (this.MovementVelocity > -5.02))) && 
-                        (!this.AccelerationCoefficientEndingXSet))
-                {
-                    this.AccelerationCoefficientEndingPoint = this.Rectangle.X;
-
-                    this.AccelerationCoefficientEndingXSet = true;
-                }
-
-                if (this.AccelerationCoefficientStartingXSet && this.AccelerationCoefficientEndingXSet)
-                {
-                    this.AccelerationCoefficient = Math.Abs(this.AccelerationCoefficientEndingPoint - this.AccelerationCoefficientStartingPoint);
-                    this.AccelerationCoefficient --;
-
-                    this.AccelerationCoefficientStartingXSet = false;
-                    this.AccelerationCoefficientEndingXSet = false;
-                    this.CalculateCoefficient = false;
-                }
-
+                
                 switch (objectMovement)
                 {
                     case ObjectMovement.ToAndFroRightFirst:
@@ -583,14 +520,14 @@ namespace Game1
                         switch (gravityDirection)
                         {
                             case GravityDirection.Right:
-                                if ((this.Rectangle.X + this.AccelerationCoefficient) >= (this.InitialXPlacement + this.ObjectXMoveDistance))
-                                {
+                                if (this.Rectangle.X >= (this.InitialXPlacement + (this.ObjectXMoveDistance / 2)))
+                                {                                    
                                     SwitchDirections();
                                 }
 
                                 break;
                             case GravityDirection.Left:
-                                if (this.Rectangle.X - this.AccelerationCoefficient <= this.InitialXPlacement)
+                                if (this.Rectangle.X <= (this.InitialXPlacement + (this.ObjectXMoveDistance / 2)))
                                 {
                                     SwitchDirections();
                                 }
@@ -604,14 +541,14 @@ namespace Game1
                         switch (gravityDirection)
                         {
                             case GravityDirection.Left:
-                                if ((this.Rectangle.X - this.AccelerationCoefficient) <= (this.InitialXPlacement - this.ObjectXMoveDistance))
+                                if (this.Rectangle.X <= (this.InitialXPlacement - (this.ObjectXMoveDistance / 2)))
                                 {
                                     SwitchDirections();
                                 }
 
                                 break;
-                            case GravityDirection.Right:                            
-                                if (this.Rectangle.X + this.AccelerationCoefficient >= this.InitialXPlacement)
+                            case GravityDirection.Right:
+                                if (this.Rectangle.X >= (this.InitialXPlacement - (this.ObjectXMoveDistance / 2)))
                                 {
                                     SwitchDirections();
                                 }
@@ -625,14 +562,14 @@ namespace Game1
                         switch (gravityDirection)
                         {
                             case GravityDirection.Down:
-                                if (this.Rectangle.Y + this.AccelerationCoefficient >= (this.InitialYPlacement + this.ObjectYMoveDistance))
+                                if (this.Rectangle.Y >= (this.InitialYPlacement + (this.ObjectYMoveDistance / 2)))
                                 {
                                     SwitchDirections();
                                 }
 
                                 break;
                             case GravityDirection.Up:
-                                if (this.Rectangle.Y - this.AccelerationCoefficient <= this.InitialYPlacement)
+                                if (this.Rectangle.Y <= (this.InitialYPlacement + (this.ObjectYMoveDistance / 2)))
                                 {
                                     SwitchDirections();
                                 }
@@ -645,14 +582,14 @@ namespace Game1
                         switch (gravityDirection)
                         {
                             case GravityDirection.Up:
-                                if (this.Rectangle.Y + this.AccelerationCoefficient <= (this.InitialYPlacement - this.ObjectYMoveDistance))
+                                if (this.Rectangle.Y <= (this.InitialYPlacement - (this.ObjectYMoveDistance / 2)))
                                 {
                                     SwitchDirections();
                                 }
 
                                 break;
                             case GravityDirection.Down:
-                                if (this.Rectangle.Y - this.AccelerationCoefficient >= this.InitialYPlacement)
+                                if (this.Rectangle.Y >= (this.InitialYPlacement - (this.ObjectYMoveDistance / 2)))
                                 {
                                     SwitchDirections();
                                 }
@@ -660,8 +597,9 @@ namespace Game1
                                 break;
                         }
 
-                        break;                    
+                        break;
                 }
+                
             }
         }
 

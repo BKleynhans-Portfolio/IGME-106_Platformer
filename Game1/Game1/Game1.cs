@@ -40,53 +40,53 @@ namespace Game1
     /// </summary>
     public class Game1 : Game
     {
-        protected static GameState gameState = GameState.Title;
+        protected static GameState gameState;
 
         // Define graphics devices
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
         // Define input devices
-        public static KeyboardState currentKeyboardState;
-        public static KeyboardState previousKeyboardState;
+        private static KeyboardState currentKeyboardState;
+        private static KeyboardState previousKeyboardState;
 
         // Dictionary of player sprites
-        public static Dictionary<string, Texture2D> playerSprites = new Dictionary<string, Texture2D>();
+        private static Dictionary<string, Texture2D> playerSprites = new Dictionary<string, Texture2D>();
 
         // Dictionary of enemy sprites
-        public static Dictionary<string, Texture2D> enemySprites = new Dictionary<string, Texture2D>();
+        private static Dictionary<string, Texture2D> enemySprites = new Dictionary<string, Texture2D>();
 
         // Dictionary of platform sprites
-        public static Dictionary<string, Texture2D> platformSprites = new Dictionary<string, Texture2D>();
+        private static Dictionary<string, Texture2D> platformSprites = new Dictionary<string, Texture2D>();
 
         // Dictionary of general menu sprites
-        public static Dictionary<string, Texture2D> menuSprites = new Dictionary<string, Texture2D>();
+        private static Dictionary<string, Texture2D> menuSprites = new Dictionary<string, Texture2D>();
 
         // Dictionary of general sprites
-        public static Dictionary<string, Texture2D> generalSprites = new Dictionary<string, Texture2D>();
+        private static Dictionary<string, Texture2D> generalSprites = new Dictionary<string, Texture2D>();
 
         // List of all GameObjects
-        public static List<GameObject> gameObject = new List<GameObject>();
+        private static List<GameObject> gameObject = new List<GameObject>();
 
         // Create menu screens objects and parameters
-        public static List<Title> titleElements = new List<Title>();
-        public static List<Option> optionElements = new List<Option>();
-        public static List<GameOver> gameOverElements = new List<GameOver>();
+        private static List<Title> titleElements = new List<Title>();
+        private static List<Option> optionElements = new List<Option>();
+        private static List<GameOver> gameOverElements = new List<GameOver>();
 
         // Create stack of lives
-        public static List<GraphicElement> livesLeft = new List<GraphicElement>();
+        private static List<GraphicElement> livesLeft = new List<GraphicElement>();
 
         // Create player object and parameters
-        Player player;
+        private Player player;
 
         // Create enemy object and parameters
-        List<Enemy> enemies = new List<Enemy>();
+        private List<Enemy> enemies = new List<Enemy>();
 
         // Create platform object and parameters
-        List<Platform> platforms = new List<Platform>();
+        private List<Platform> platforms = new List<Platform>();
 
         // Create gameGraphics object and parameters
-        List<GraphicElement> gameGraphics = new List<GraphicElement>();
+        private List<GraphicElement> gameGraphics = new List<GraphicElement>();
 
         // List of objects currently being intersected
         protected List<GameObject> intersectedBy = new List<GameObject>();
@@ -99,6 +99,115 @@ namespace Game1
         // Window properties
         public const int SCREENWIDTH = 1600;
         public const int SCREENHEIGHT = 900;
+
+        public GameState GameState
+        {
+            get { return gameState; }
+            set { gameState = value; }
+        }
+
+        public KeyboardState CurrentKeyboardState
+        {
+            get { return currentKeyboardState; }
+            set { currentKeyboardState = value; }
+        }
+
+        public KeyboardState PreviousKeyboardState
+        {
+            get { return previousKeyboardState; }
+            set { previousKeyboardState = value; }
+        }
+
+        private static Dictionary<string, Texture2D> PlayerSprites
+        {
+            get { return playerSprites; }
+            set { playerSprites = value; }
+        }
+                
+        private static Dictionary<string, Texture2D> EnemySprites
+        {
+            get { return enemySprites; }
+            set { enemySprites = value; }
+        }
+
+        private static Dictionary<string, Texture2D> PlatformSprites
+        {
+            get { return platformSprites; }
+            set { platformSprites = value; }
+        }
+
+        private static Dictionary<string, Texture2D> MenuSprites
+        {
+            get { return menuSprites; }
+            set { menuSprites = value; }
+        }
+
+        private static Dictionary<string, Texture2D> GeneralSprites
+        {
+            get { return generalSprites; }
+            set { generalSprites = value; }
+        }
+
+        private static List<GameObject> GameObject
+        {
+            get { return gameObject; }
+            set { gameObject = value; }
+        }
+
+        
+        private static List<Title> TitleElements
+        {
+            get { return titleElements; }
+            set { titleElements = value; }
+        }
+
+        private static List<Option> OptionElements
+        {
+            get { return optionElements; }
+            set { optionElements = value; }
+        }
+
+        private static List<GameOver> GameOverElements
+        {
+            get { return gameOverElements; }
+            set { gameOverElements = value; }
+        }
+                
+        public static List<GraphicElement> LivesLeft
+        {
+            get { return livesLeft; }
+            set { livesLeft = value; }
+        }
+
+        private Player Player
+        {
+            get { return player; }
+            set { player = value; }
+        }
+
+        private List<Enemy> Enemies
+        {
+            get { return enemies; }
+            set { enemies = value; }
+        }
+                
+        private List<Platform> Platforms
+        {
+            get { return platforms; }
+            set { platforms = value; }
+        }
+
+        private List<GraphicElement> GameGraphics
+        {
+            get { return gameGraphics; }
+            set { gameGraphics = value; }
+        }
+
+        protected List<GameObject> IntersectedBy
+        {
+            get { return intersectedBy; }
+            set { intersectedBy = value; }
+        }
 
         public Game1()
         {
@@ -166,10 +275,10 @@ namespace Game1
             //if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             //    Exit();
 
-            previousKeyboardState = currentKeyboardState;                                   // Get comparative keyboard states
-            currentKeyboardState = Keyboard.GetState();
+            PreviousKeyboardState = CurrentKeyboardState;                                   // Get comparative keyboard states
+            CurrentKeyboardState = Keyboard.GetState();
 
-            if (currentKeyboardState.IsKeyDown(Keys.Escape) && previousKeyboardState.IsKeyUp(Keys.Escape))
+            if (CurrentKeyboardState.IsKeyDown(Keys.Escape) && PreviousKeyboardState.IsKeyUp(Keys.Escape))
             {
                 switch (gameState)
                 {
@@ -178,15 +287,15 @@ namespace Game1
 
                         break;
                     case GameState.Options:
-                        gameState = GameState.Title;
+                        GameState = GameState.Title;
 
                         break;
                     case GameState.InGame:
-                        gameState = GameState.GameOver;
+                        GameState = GameState.GameOver;
 
                         break;
                     case GameState.GameOver:
-                        gameState = GameState.Title;
+                        GameState = GameState.Title;
 
                         break;
                 }
@@ -195,42 +304,42 @@ namespace Game1
             switch (gameState)
             {
                 case GameState.Title:
-                    for (int i = 0; i < titleElements.Count; i++)
+                    for (int i = 0; i < TitleElements.Count; i++)
                     {
-                        titleElements[i].Update(gameTime);
+                        TitleElements[i].Update(gameTime);
                     }
 
                     break;
                 case GameState.Options:
-                    for (int i = 0; i < titleElements.Count; i++)
+                    for (int i = 0; i < TitleElements.Count; i++)
                     {
-                        titleElements[i].Update(gameTime);
+                        TitleElements[i].Update(gameTime);
                     }
 
                     break;
                 case GameState.InGame:
-                    for (int i = 0; i < (gameObject.Count - 1); i++)                                // Cycle through gameObject list and test
+                    for (int i = 0; i < (GameObject.Count - 1); i++)                                // Cycle through GameObject list and test
                     {                                                                               // all created objects for intersection
-                        for (int j = i + 1; j < gameObject.Count; j++)
+                        for (int j = i + 1; j < GameObject.Count; j++)
                         {
-                            if (gameObject[i].Intersects(gameObject[j]))
+                            if (GameObject[i].Intersects(GameObject[j]))
                             {
-                                if (!gameObject[i].intersectedBy.Contains(gameObject[j]))           // If there is an intersection, create
+                                if (!GameObject[i].intersectedBy.Contains(GameObject[j]))           // If there is an intersection, create
                                 {                                                                   // references in the objects to each other
-                                    gameObject[i].intersectedBy.Add(gameObject[j]);
+                                    GameObject[i].intersectedBy.Add(GameObject[j]);
                                 }
 
-                                if (!gameObject[j].intersectedBy.Contains(gameObject[i]))
+                                if (!GameObject[j].intersectedBy.Contains(GameObject[i]))
                                 {
-                                    gameObject[j].intersectedBy.Add(gameObject[i]);
+                                    GameObject[j].intersectedBy.Add(GameObject[i]);
                                 }
                             }
                         }
                     }
 
-                    for (int i = 0; i < gameObject.Count; i++)                                      // Update all the objects in the game
+                    for (int i = 0; i < GameObject.Count; i++)                                      // Update all the objects in the game
                     {
-                        gameObject[i].Update(gameTime);
+                        GameObject[i].Update(gameTime);
                     }
 
                     break;
@@ -240,7 +349,7 @@ namespace Game1
                     //ClearGameObjects();
 
                     //InitializeGameObjects();
-                    gameState = GameState.Title;
+                    GameState = GameState.Title;
 
                     break;
             }
@@ -260,28 +369,28 @@ namespace Game1
 
             spriteBatch.Begin();
 
-            switch (gameState)
+            switch (GameState)
             {
                 case GameState.Title:
-                    for (int i = 0; i < titleElements.Count; i++)
+                    for (int i = 0; i < TitleElements.Count; i++)
                     {
-                        titleElements[i].Draw(spriteBatch);
+                        TitleElements[i].Draw(spriteBatch);
                     }
 
                     break;
                 case GameState.Options:
-                    for (int i = 0; i < optionElements.Count; i++)
+                    for (int i = 0; i < OptionElements.Count; i++)
                     {
-                        optionElements[i].Draw(spriteBatch);
+                        OptionElements[i].Draw(spriteBatch);
                     }
 
                     break;
                 case GameState.InGame:
-                    for (int i = 0; i < gameObject.Count; i++)                                      // Draw all the objects in the game
+                    for (int i = 0; i < GameObject.Count; i++)                                      // Draw all the objects in the game
                     {
-                        if (gameObject[i].Visible)
+                        if (GameObject[i].Visible)
                         {
-                            gameObject[i].Draw(spriteBatch);
+                            GameObject[i].Draw(spriteBatch);
                         }
                     }
 
@@ -301,35 +410,35 @@ namespace Game1
         private void LoadSprites()
         {
             // Add player sprites
-            playerSprites.Add("PlayerCharacter", Content.Load<Texture2D>("TestImage"));
+            PlayerSprites.Add("PlayerCharacter", Content.Load<Texture2D>("TestImage"));
 
             // Add platform sprites
-            platformSprites.Add("FlatPlatform", Content.Load<Texture2D>("Platform"));
+            PlatformSprites.Add("FlatPlatform", Content.Load<Texture2D>("Platform"));
 
             // Add enemy sprites
-            enemySprites.Add("GeneralEnemy", Content.Load<Texture2D>("TestEnemySprite"));
+            EnemySprites.Add("GeneralEnemy", Content.Load<Texture2D>("TestEnemySprite"));
 
             // Add random other graphics sprites
-            generalSprites.Add("LifeIcon", Content.Load<Texture2D>("GeneralElements\\LifeIcon"));
+            GeneralSprites.Add("LifeIcon", Content.Load<Texture2D>("GeneralElements\\LifeIcon"));
 
             // Add menu sprites
-            menuSprites.Add("MenuBackground", Content.Load<Texture2D>("MenuBackground"));
-            menuSprites.Add("Title", Content.Load<Texture2D>("Title\\Title"));
-            menuSprites.Add("SelectionFrame", Content.Load<Texture2D>("Title\\SelectionFrame"));
-            menuSprites.Add("LoadGame", Content.Load<Texture2D>("Title\\LoadGame"));
-            menuSprites.Add("NewGame", Content.Load<Texture2D>("Title\\NewGame"));
-            menuSprites.Add("Options", Content.Load<Texture2D>("Title\\Options"));
+            MenuSprites.Add("MenuBackground", Content.Load<Texture2D>("MenuBackground"));
+            MenuSprites.Add("Title", Content.Load<Texture2D>("Title\\Title"));
+            MenuSprites.Add("SelectionFrame", Content.Load<Texture2D>("Title\\SelectionFrame"));
+            MenuSprites.Add("LoadGame", Content.Load<Texture2D>("Title\\LoadGame"));
+            MenuSprites.Add("NewGame", Content.Load<Texture2D>("Title\\NewGame"));
+            MenuSprites.Add("Options", Content.Load<Texture2D>("Title\\Options"));
 
-            menuSprites.Add("OptionsTitle", Content.Load<Texture2D>("Options\\OptionsTitle"));
-            menuSprites.Add("Music", Content.Load<Texture2D>("Options\\Music"));
-            menuSprites.Add("SFX", Content.Load<Texture2D>("Options\\SFX"));
-            menuSprites.Add("Difficulty", Content.Load<Texture2D>("Options\\Difficulty"));
-            menuSprites.Add("OnButton", Content.Load<Texture2D>("Options\\OnButton"));
-            menuSprites.Add("OffButton", Content.Load<Texture2D>("Options\\OffButton"));
-            menuSprites.Add("OnText", Content.Load<Texture2D>("Options\\OnText"));
-            menuSprites.Add("OffText", Content.Load<Texture2D>("Options\\OffText"));
-            menuSprites.Add("SettingsBar", Content.Load<Texture2D>("Options\\SettingsBar"));
-            menuSprites.Add("SettingsSlider", Content.Load<Texture2D>("Options\\SettingsSlider"));
+            MenuSprites.Add("OptionsTitle", Content.Load<Texture2D>("Options\\OptionsTitle"));
+            MenuSprites.Add("Music", Content.Load<Texture2D>("Options\\Music"));
+            MenuSprites.Add("SFX", Content.Load<Texture2D>("Options\\SFX"));
+            MenuSprites.Add("Difficulty", Content.Load<Texture2D>("Options\\Difficulty"));
+            MenuSprites.Add("OnButton", Content.Load<Texture2D>("Options\\OnButton"));
+            MenuSprites.Add("OffButton", Content.Load<Texture2D>("Options\\OffButton"));
+            MenuSprites.Add("OnText", Content.Load<Texture2D>("Options\\OnText"));
+            MenuSprites.Add("OffText", Content.Load<Texture2D>("Options\\OffText"));
+            MenuSprites.Add("SettingsBar", Content.Load<Texture2D>("Options\\SettingsBar"));
+            MenuSprites.Add("SettingsSlider", Content.Load<Texture2D>("Options\\SettingsSlider"));
         }
 
         private void InitializeGameObjects()
@@ -340,54 +449,54 @@ namespace Game1
             LoadMenuElements();
             LoadGeneralElements();
 
-            // All objects need to be added to the gameObject list
-            gameObject.Add(player);                                                         // Add player to gameObject
+            // All objects need to be added to the GameObject list
+            GameObject.Add(player);                                                         // Add player to GameObject
 
-            foreach (Enemy enemy in enemies)                                                // Add enemies to gameObject
+            foreach (Enemy enemy in Enemies)                                                // Add enemies to GameObject
             {
-                gameObject.Add(enemy);
+                GameObject.Add(enemy);
             }
 
-            foreach (Platform platform in platforms)                                        // Add platforms to gameObject
+            foreach (Platform platform in Platforms)                                        // Add platforms to GameObject
             {
-                gameObject.Add(platform);
+                GameObject.Add(platform);
             }
 
-            foreach (GraphicElement graphic in gameGraphics)
+            foreach (GraphicElement graphic in GameGraphics)
             {
-                gameObject.Add(graphic);
+                GameObject.Add(graphic);
             }
         }
 
         private void ClearGameObjects()
         {
-            gameObject.Clear();
-            platforms.Clear();
-            enemies.Clear();
-            gameGraphics.Clear();
-            titleElements.Clear();
-            optionElements.Clear();
+            GameObject.Clear();
+            Platforms.Clear();
+            Enemies.Clear();
+            GameGraphics.Clear();
+            TitleElements.Clear();
+            OptionElements.Clear();
         }
 
         private void LoadPlayerElements()
         {
-            player = new Player(
-                            playerSprites["PlayerCharacter"],
+            Player = new Player(
+                            PlayerSprites["PlayerCharacter"],
                             x: 0,
                             y: 800,
                             width: 40,
                             height: 40
                          );
 
-            player.ApplyGravity = true;
+            Player.ApplyGravity = true;
         }
 
         private void LoadFloorElements()
         {
             //000
-            platforms.Add(                                                                  // Ceiling platform
+            Platforms.Add(                                                                  // Ceiling platform
                 new Platform(
-                    spriteTexture: platformSprites["FlatPlatform"],
+                    spriteTexture: PlatformSprites["FlatPlatform"],
                     x: 0,
                     y: 860,
                     width: 400,
@@ -396,9 +505,9 @@ namespace Game1
             );
 
             //001
-            platforms.Add(
+            Platforms.Add(
                 new Platform(
-                    spriteTexture: platformSprites["FlatPlatform"],
+                    spriteTexture: PlatformSprites["FlatPlatform"],
                     x: 490,
                     y: 860,
                     width: 110,
@@ -407,9 +516,9 @@ namespace Game1
             );
 
             //002
-            platforms.Add(
+            Platforms.Add(
                 new Platform(
-                    spriteTexture: platformSprites["FlatPlatform"],
+                    spriteTexture: PlatformSprites["FlatPlatform"],
                     x: 800,
                     y: 860,
                     width: 200,
@@ -418,9 +527,9 @@ namespace Game1
             );
 
             //003
-            platforms.Add(
+            Platforms.Add(
                 new Platform(
-                    spriteTexture: platformSprites["FlatPlatform"],
+                    spriteTexture: PlatformSprites["FlatPlatform"],
                     x: 1400,
                     y: 860,
                     width: 200,
@@ -429,9 +538,9 @@ namespace Game1
             );
 
             //004
-            platforms.Add(
+            Platforms.Add(
                 new Platform(
-                    spriteTexture: platformSprites["FlatPlatform"],
+                    spriteTexture: PlatformSprites["FlatPlatform"],
                     x: 1100,
                     y: 800,
                     width: 100,
@@ -439,29 +548,29 @@ namespace Game1
                 )
             );
 
-            platforms[4].ApplyGravity = true;
-            platforms[4].objectMovement = ObjectMovement.ToAndFroUpFirst;
-            platforms[4].ObjectYMoveDistance = 150;
+            Platforms[4].ApplyGravity = true;
+            Platforms[4].ObjectMovement = ObjectMovement.ToAndFroUpFirst;
+            Platforms[4].ObjectYMoveDistance = 300;
 
             //005
-            platforms.Add(
+            Platforms.Add(
                 new Platform(
-                    spriteTexture: platformSprites["FlatPlatform"],
-                    x: 550,
+                    spriteTexture: PlatformSprites["FlatPlatform"],
+                    x: 600,
                     y: 700,
                     width: 100,
                     height: 50
                 )
             );
 
-            platforms[5].ApplyGravity = true;
-            platforms[5].objectMovement = ObjectMovement.ToAndFroRightFirst;
-            platforms[5].ObjectXMoveDistance = 400;
+            Platforms[5].ApplyGravity = true;
+            Platforms[5].ObjectMovement = ObjectMovement.ToAndFroRightFirst;
+            Platforms[5].ObjectXMoveDistance = 400;
 
             //006
-            platforms.Add(
+            Platforms.Add(
                 new Platform(
-                    spriteTexture: platformSprites["FlatPlatform"],
+                    spriteTexture: PlatformSprites["FlatPlatform"],
                     x: 300,
                     y: 700,
                     width: 200,
@@ -470,9 +579,9 @@ namespace Game1
             );
 
             //007
-            platforms.Add(
+            Platforms.Add(
                 new Platform(
-                    spriteTexture: platformSprites["FlatPlatform"],
+                    spriteTexture: PlatformSprites["FlatPlatform"],
                     x: 0,
                     y: 510,
                     width: 510,
@@ -481,9 +590,9 @@ namespace Game1
             );
 
             //008
-            platforms.Add(
+            Platforms.Add(
                 new Platform(
-                    spriteTexture: platformSprites["FlatPlatform"],
+                    spriteTexture: PlatformSprites["FlatPlatform"],
                     x: 50,
                     y: 400,
                     width: 100,
@@ -491,14 +600,14 @@ namespace Game1
                 )
             );
 
-            platforms[8].ApplyGravity = true;
-            platforms[8].objectMovement = ObjectMovement.ToAndFroUpFirst;
-            platforms[8].ObjectYMoveDistance = 75;
+            Platforms[8].ApplyGravity = true;
+            Platforms[8].ObjectMovement = ObjectMovement.ToAndFroUpFirst;
+            Platforms[8].ObjectYMoveDistance = 100;
 
             //009
-            platforms.Add(
+            Platforms.Add(
                 new Platform(
-                    spriteTexture: platformSprites["FlatPlatform"],
+                    spriteTexture: PlatformSprites["FlatPlatform"],
                     x: 1000,
                     y: 500,
                     width: 100,
@@ -506,14 +615,14 @@ namespace Game1
                 )
             );
 
-            platforms[9].ApplyGravity = true;
-            platforms[9].objectMovement = ObjectMovement.ToAndFroUpFirst;
-            platforms[9].ObjectYMoveDistance = 100;
+            Platforms[9].ApplyGravity = true;
+            Platforms[9].ObjectMovement = ObjectMovement.ToAndFroUpFirst;
+            Platforms[9].ObjectYMoveDistance = 200;
 
             //010
-            platforms.Add(
+            Platforms.Add(
                 new Platform(
-                    spriteTexture: platformSprites["FlatPlatform"],
+                    spriteTexture: PlatformSprites["FlatPlatform"],
                     x: 1200,
                     y: 150,
                     width: 50,
@@ -522,9 +631,9 @@ namespace Game1
             );
 
             //011
-            platforms.Add(
+            Platforms.Add(
                 new Platform(
-                    spriteTexture: platformSprites["FlatPlatform"],
+                    spriteTexture: PlatformSprites["FlatPlatform"],
                     x: 800,
                     y: 250,
                     width: 200,
@@ -533,9 +642,9 @@ namespace Game1
             );
 
             //012
-            platforms.Add(
+            Platforms.Add(
                 new Platform(
-                    spriteTexture: platformSprites["FlatPlatform"],
+                    spriteTexture: PlatformSprites["FlatPlatform"],
                     x: 700,
                     y: 250,
                     width: 100,
@@ -543,15 +652,15 @@ namespace Game1
                 )
             );
 
-            platforms[12].ApplyGravity = false;
-            platforms[12].gravityDirection = GravityDirection.Down;
-            platforms[12].objectMovement = ObjectMovement.OneDirection;
-            platforms[12].gravityOnProximityFrom = GravityOnProximityFrom.Top;
+            Platforms[12].ApplyGravity = false;
+            Platforms[12].GravityDirection = GravityDirection.Down;
+            Platforms[12].ObjectMovement = ObjectMovement.OneDirection;
+            Platforms[12].GravityOnProximityFrom = GravityOnProximityFrom.Top;
 
             //013
-            platforms.Add(
+            Platforms.Add(
                 new Platform(
-                    spriteTexture: platformSprites["FlatPlatform"],
+                    spriteTexture: PlatformSprites["FlatPlatform"],
                     x: 600,
                     y: 250,
                     width: 100,
@@ -560,9 +669,9 @@ namespace Game1
             );
 
             //014
-            platforms.Add(
+            Platforms.Add(
                 new Platform(
-                    spriteTexture: platformSprites["FlatPlatform"],
+                    spriteTexture: PlatformSprites["FlatPlatform"],
                     x: 450,
                     y: 150,
                     width: 50,
@@ -571,9 +680,9 @@ namespace Game1
             );
 
             //015
-            platforms.Add(
+            Platforms.Add(
                 new Platform(
-                    spriteTexture: platformSprites["FlatPlatform"],
+                    spriteTexture: PlatformSprites["FlatPlatform"],
                     x: 400,
                     y: 250,
                     width: 50,
@@ -581,14 +690,14 @@ namespace Game1
                 )
             );
 
-            platforms[15].ApplyGravity = true;            
-            platforms[15].objectMovement = ObjectMovement.ToAndFroLeftFirst;            
-            platforms[15].ObjectXMoveDistance = 75;
+            Platforms[15].ApplyGravity = true;            
+            Platforms[15].ObjectMovement = ObjectMovement.ToAndFroLeftFirst;            
+            Platforms[15].ObjectXMoveDistance = 100;
 
             //016
-            platforms.Add(
+            Platforms.Add(
                 new Platform(
-                    spriteTexture: platformSprites["FlatPlatform"],
+                    spriteTexture: PlatformSprites["FlatPlatform"],
                     x: 150,
                     y: 250,
                     width: 100,
@@ -597,9 +706,9 @@ namespace Game1
             );
 
             //017
-            platforms.Add(
+            Platforms.Add(
                 new Platform(
-                    spriteTexture: platformSprites["FlatPlatform"],
+                    spriteTexture: PlatformSprites["FlatPlatform"],
                     x: 0,
                     y: 150,
                     width: 100,
@@ -607,16 +716,16 @@ namespace Game1
                 )
             );
 
-            platforms[17].ApplyGravity = true;
-            platforms[17].gravityDirection = GravityDirection.Up;
-            platforms[17].objectMovement = ObjectMovement.ToAndFroUpFirst;
-            platforms[17].gravityOnProximityFrom = GravityOnProximityFrom.Top;
-            platforms[17].ObjectXMoveDistance = 100;
+            Platforms[17].ApplyGravity = true;
+            Platforms[17].GravityDirection = GravityDirection.Up;
+            Platforms[17].ObjectMovement = ObjectMovement.ToAndFroUpFirst;
+            Platforms[17].GravityOnProximityFrom = GravityOnProximityFrom.Top;
+            Platforms[17].ObjectXMoveDistance = 100;
 
             //018
-            platforms.Add(
+            Platforms.Add(
                 new Platform(
-                    spriteTexture: platformSprites["FlatPlatform"],
+                    spriteTexture: PlatformSprites["FlatPlatform"],
                     x: 100,
                     y: 150,
                     width: 300,
@@ -625,9 +734,9 @@ namespace Game1
             );
 
             //019
-            platforms.Add(
+            Platforms.Add(
                 new Platform(
-                    spriteTexture: platformSprites["FlatPlatform"],
+                    spriteTexture: PlatformSprites["FlatPlatform"],
                     x: 100,
                     y: 50,
                     width: 350,
@@ -636,9 +745,9 @@ namespace Game1
             );
 
             //020
-            platforms.Add(
+            Platforms.Add(
                 new Platform(
-                    spriteTexture: platformSprites["FlatPlatform"],
+                    spriteTexture: PlatformSprites["FlatPlatform"],
                     x: 450,
                     y: 100,
                     width: 550,
@@ -647,9 +756,9 @@ namespace Game1
             );
 
             //021
-            platforms.Add(
+            Platforms.Add(
                 new Platform(
-                    spriteTexture: platformSprites["FlatPlatform"],
+                    spriteTexture: PlatformSprites["FlatPlatform"],
                     x: 1000,
                     y: 100,
                     width: 100,
@@ -657,15 +766,15 @@ namespace Game1
                 )
             );
 
-            platforms[21].ApplyGravity = false;
-            platforms[21].gravityDirection = GravityDirection.Down;
-            platforms[21].objectMovement = ObjectMovement.OneDirection;
-            platforms[21].gravityOnProximityFrom = GravityOnProximityFrom.Top;
+            Platforms[21].ApplyGravity = false;
+            Platforms[21].GravityDirection = GravityDirection.Down;
+            Platforms[21].ObjectMovement = ObjectMovement.OneDirection;
+            Platforms[21].GravityOnProximityFrom = GravityOnProximityFrom.Top;
 
             //022
-            platforms.Add(
+            Platforms.Add(
                 new Platform(
-                    spriteTexture: platformSprites["FlatPlatform"],
+                    spriteTexture: PlatformSprites["FlatPlatform"],
                     x: 1100,
                     y: 100,
                     width: 100,
@@ -673,10 +782,10 @@ namespace Game1
                 )
             );
 
-            platforms[22].ApplyGravity = false;
-            platforms[22].gravityDirection = GravityDirection.Down;
-            platforms[22].objectMovement = ObjectMovement.OneDirection;
-            platforms[22].gravityOnProximityFrom = GravityOnProximityFrom.Top;
+            Platforms[22].ApplyGravity = false;
+            Platforms[22].GravityDirection = GravityDirection.Down;
+            Platforms[22].ObjectMovement = ObjectMovement.OneDirection;
+            Platforms[22].GravityOnProximityFrom = GravityOnProximityFrom.Top;
 
 
         }
@@ -684,7 +793,7 @@ namespace Game1
         private void LoadEnemyElements()
         {
             //000
-            enemies.Add(
+            Enemies.Add(
                  new Enemy(
                      spriteTexture: enemySprites["GeneralEnemy"],
                      x: 350,
@@ -694,13 +803,12 @@ namespace Game1
                  )
              );
 
-            enemies[0].ApplyGravity = true;
-            enemies[0].gravityDirection = GravityDirection.Down;
-            enemies[0].objectMovement = ObjectMovement.ToAndFroLeftFirst;
-            enemies[0].ObjectXMoveDistance = 100;
+            Enemies[0].ApplyGravity = true;
+            Enemies[0].ObjectMovement = ObjectMovement.ToAndFroLeftFirst;
+            Enemies[0].ObjectXMoveDistance = 150;
 
             //001
-            enemies.Add(
+            Enemies.Add(
                 new Enemy(
                     spriteTexture: enemySprites["GeneralEnemy"],
                     x: 800,
@@ -710,12 +818,12 @@ namespace Game1
                 )
             );
 
-            enemies[1].ApplyGravity = true;
-            enemies[1].objectMovement = ObjectMovement.ToAndFroRightFirst;
-            enemies[1].ObjectXMoveDistance = 70;
+            Enemies[1].ApplyGravity = true;
+            Enemies[1].ObjectMovement = ObjectMovement.ToAndFroRightFirst;
+            Enemies[1].ObjectXMoveDistance = 150;
 
             //002
-            enemies.Add(
+            Enemies.Add(
                 new Enemy(
                     spriteTexture: enemySprites["GeneralEnemy"],
                     x: 200,
@@ -725,9 +833,9 @@ namespace Game1
                 )
             );
 
-            enemies[2].ApplyGravity = true;
-            enemies[2].objectMovement = ObjectMovement.ToAndFroRightFirst;
-            enemies[2].ObjectXMoveDistance = 150;
+            Enemies[2].ApplyGravity = true;
+            Enemies[2].ObjectMovement = ObjectMovement.ToAndFroRightFirst;
+            Enemies[2].ObjectXMoveDistance = 250;
 
 
             //added new enemy code, spawned randomly
@@ -736,7 +844,7 @@ namespace Game1
 
             //for(int i = 0;i<rnd.Next(1,21);i++)
             //{
-            //    enemies.Add(
+            //    Enemies.Add(
             //    new Enemy(
             //        spriteTexture: enemySprites["GeneralEnemy"],
             //        x: 50+rnd.Next(0,1200),
@@ -746,22 +854,22 @@ namespace Game1
             //        )
             //    );
             //    int j = rnd.Next(1,5);
-            //enemies[i].ApplyGravity = true;
+            //Enemies[i].ApplyGravity = true;
             //    switch(j)
             //       {
-            //        case 1: enemies[i].objectMovement = ObjectMovement.ToAndFroRightFirst;
+            //        case 1: Enemies[i].objectMovement = ObjectMovement.ToAndFroRightFirst;
             //            break;
-            //        case 2: enemies[i].objectMovement = ObjectMovement.ToAndFroLeftFirst;
+            //        case 2: Enemies[i].objectMovement = ObjectMovement.ToAndFroLeftFirst;
             //            break;
-            //        case 3: enemies[i].objectMovement = ObjectMovement.ToAndFroUpFirst;
+            //        case 3: Enemies[i].objectMovement = ObjectMovement.ToAndFroUpFirst;
             //            break;
-            //        case 4: enemies[i].objectMovement = ObjectMovement.ToAndFroDownFirst;
+            //        case 4: Enemies[i].objectMovement = ObjectMovement.ToAndFroDownFirst;
             //            break;
             //       }
 
-            //enemies[i].ObjectXMoveDistance = 50;
+            //Enemies[i].ObjectXMoveDistance = 50;
             //}
-            //enemies.Add(
+            //Enemies.Add(
             //    new Enemy(
             //        spriteTexture: enemySprites["GeneralEnemy"],
             //        x: 1200,
@@ -771,18 +879,18 @@ namespace Game1
             //    )
             //);
 
-            //enemies[1].ApplyGravity = true;
-            //enemies[1].objectMovement = ObjectMovement.ToAndFroUpFirst;
-            //enemies[1].ObjectXMoveDistance = 100;
+            //Enemies[1].ApplyGravity = true;
+            //Enemies[1].objectMovement = ObjectMovement.ToAndFroUpFirst;
+            //Enemies[1].ObjectXMoveDistance = 100;
 
         }
 
         private void LoadGeneralElements()
         {
-            gameGraphics.Add(
+            GameGraphics.Add(
                 new GraphicElement(
                     elementName: "LifeIcon",
-                    spriteTexture: generalSprites["LifeIcon"],
+                    spriteTexture: GeneralSprites["LifeIcon"],
                     x: 10,
                     y: 10,
                     width: 40,
@@ -790,10 +898,10 @@ namespace Game1
                 )
             );
 
-            gameGraphics.Add(
+            GameGraphics.Add(
                 new GraphicElement(
                     elementName: "LifeIcon",
-                    spriteTexture: generalSprites["LifeIcon"],
+                    spriteTexture: GeneralSprites["LifeIcon"],
                     x: 60,
                     y: 10,
                     width: 40,
@@ -801,10 +909,10 @@ namespace Game1
                 )
             );
 
-            gameGraphics.Add(
+            GameGraphics.Add(
                 new GraphicElement(
                     elementName: "LifeIcon",
-                    spriteTexture: generalSprites["LifeIcon"],
+                    spriteTexture: GeneralSprites["LifeIcon"],
                     x: 110, 
                     y: 10, 
                     width: 40, 
@@ -817,10 +925,10 @@ namespace Game1
         private void LoadMenuElements()
         {
 // Title menu starts here
-            titleElements.Add(
+            TitleElements.Add(
                 new Title(
                     menuItem: "MenuBackground",
-                    spriteTexture: menuSprites["MenuBackground"],
+                    spriteTexture: MenuSprites["MenuBackground"],
                     x: (SCREENWIDTH / 2) - 400,
                     y: (SCREENHEIGHT / 2) - 400,
                     width: 800,
@@ -829,10 +937,10 @@ namespace Game1
                 )
             );
 
-            titleElements.Add(
+            TitleElements.Add(
                 new Title(
                     menuItem: "Title",
-                    spriteTexture: menuSprites["Title"],
+                    spriteTexture: MenuSprites["Title"],
                     x: (SCREENWIDTH / 2) - 300,
                     y: (SCREENHEIGHT / 2) - 400,
                     width: 600,
@@ -841,10 +949,10 @@ namespace Game1
                 )
             );
 
-            titleElements.Add(
+            TitleElements.Add(
                 new Title(
                     menuItem: "LoadGame",
-                    spriteTexture: menuSprites["LoadGame"],
+                    spriteTexture: MenuSprites["LoadGame"],
                     x: (SCREENWIDTH / 2) - 200,
                     y: (SCREENHEIGHT / 2) - 100,
                     width: 400,
@@ -853,10 +961,10 @@ namespace Game1
                 )
             );
 
-            titleElements.Add(
+            TitleElements.Add(
                 new Title(
                     menuItem: "NewGame",
-                    spriteTexture: menuSprites["NewGame"],
+                    spriteTexture: MenuSprites["NewGame"],
                     x: (SCREENWIDTH / 2) - 200,
                     y: (SCREENHEIGHT / 2) + 50,
                     width: 400,
@@ -865,10 +973,10 @@ namespace Game1
                 )
             );
 
-            titleElements.Add(
+            TitleElements.Add(
                 new Title(
                     menuItem: "Options",
-                    spriteTexture: menuSprites["Options"],
+                    spriteTexture: MenuSprites["Options"],
                     x: (SCREENWIDTH / 2) - 200,
                     y: (SCREENHEIGHT / 2) + 200,
                     width: 400,
@@ -877,10 +985,10 @@ namespace Game1
                 )
             );
 
-            titleElements.Add(
+            TitleElements.Add(
                 new Title(
                     menuItem: "SelectionFrame",
-                    spriteTexture: menuSprites["SelectionFrame"],
+                    spriteTexture: MenuSprites["SelectionFrame"],
                     x: (SCREENWIDTH / 2) - 200,
                     y: (SCREENHEIGHT / 2) - 100,
                     width: 400,
@@ -891,10 +999,10 @@ namespace Game1
 
 // Option menu starts here
 
-            optionElements.Add(
+            OptionElements.Add(
                 new Option(
                     menuItem: "MenuBackground",
-                    spriteTexture: menuSprites["MenuBackground"],
+                    spriteTexture: MenuSprites["MenuBackground"],
                     x: (SCREENWIDTH / 2) - 400,
                     y: (SCREENHEIGHT / 2) - 400,
                     width: 800,
@@ -903,10 +1011,10 @@ namespace Game1
                 )
             );
 
-            optionElements.Add(
+            OptionElements.Add(
                 new Option(
                     menuItem: "OptionsTitle",
-                    spriteTexture: menuSprites["OptionsTitle"],
+                    spriteTexture: MenuSprites["OptionsTitle"],
                     x: (SCREENWIDTH / 2) - 300,
                     y: (SCREENHEIGHT / 2) - 400,
                     width: 600,
@@ -915,10 +1023,10 @@ namespace Game1
                 )
             );
 
-            optionElements.Add(
+            OptionElements.Add(
                 new Option(
                     menuItem: "Music",
-                    spriteTexture: menuSprites["Music"],
+                    spriteTexture: MenuSprites["Music"],
                     x: (SCREENWIDTH / 2) - 200,
                     y: (SCREENHEIGHT / 2) - 100,
                     width: 200,
@@ -927,10 +1035,10 @@ namespace Game1
                 )
             );
 
-            optionElements.Add(
+            OptionElements.Add(
                 new Option(
                     menuItem: "MusicOn",
-                    spriteTexture: menuSprites["OnText"],
+                    spriteTexture: MenuSprites["OnText"],
                     x: (SCREENWIDTH / 2) + 100,
                     y: (SCREENHEIGHT / 2) - 70,
                     width: 50,
@@ -939,10 +1047,10 @@ namespace Game1
                 )
             );
 
-            optionElements.Add(
+            OptionElements.Add(
                 new Option(
                     menuItem: "MusicOff",
-                    spriteTexture: menuSprites["OffText"],
+                    spriteTexture: MenuSprites["OffText"],
                     x: (SCREENWIDTH / 2) + 300,
                     y: (SCREENHEIGHT / 2) - 70,
                     width: 75,
@@ -951,10 +1059,10 @@ namespace Game1
                 )
             );
 
-            optionElements.Add(
+            OptionElements.Add(
                 new Option(
                     menuItem: "MusicBar",
-                    spriteTexture: menuSprites["SettingsBar"],
+                    spriteTexture: MenuSprites["SettingsBar"],
                     x: (SCREENWIDTH / 2) + 175,
                     y: (SCREENHEIGHT / 2) - 60,
                     width: 100,
@@ -963,10 +1071,10 @@ namespace Game1
                 )
             );
 
-            optionElements.Add(
+            OptionElements.Add(
                 new Option(
                     menuItem: "MusicSlider",
-                    spriteTexture: menuSprites["SettingsSlider"],
+                    spriteTexture: MenuSprites["SettingsSlider"],
                     x: (SCREENWIDTH / 2) + 180,
                     y: (SCREENHEIGHT / 2) - 76,
                     width: 10,
@@ -975,10 +1083,10 @@ namespace Game1
                 )
             );
 
-            optionElements.Add(
+            OptionElements.Add(
                 new Option(
                     menuItem: "SFX",
-                    spriteTexture: menuSprites["SFX"],
+                    spriteTexture: MenuSprites["SFX"],
                     x: (SCREENWIDTH / 2) - 200,
                     y: (SCREENHEIGHT / 2),
                     width: 200,
@@ -987,10 +1095,10 @@ namespace Game1
                 )
             );
 
-            optionElements.Add(
+            OptionElements.Add(
                 new Option(
                     menuItem: "SFXOn",
-                    spriteTexture: menuSprites["OnText"],
+                    spriteTexture: MenuSprites["OnText"],
                     x: (SCREENWIDTH / 2) + 100,
                     y: (SCREENHEIGHT / 2) + 20,
                     width: 50,
@@ -999,10 +1107,10 @@ namespace Game1
                 )
             );
 
-            optionElements.Add(
+            OptionElements.Add(
                 new Option(
                     menuItem: "SFXOff",
-                    spriteTexture: menuSprites["OffText"],
+                    spriteTexture: MenuSprites["OffText"],
                     x: (SCREENWIDTH / 2) + 300,
                     y: (SCREENHEIGHT / 2) + 20,
                     width: 75,
@@ -1011,10 +1119,10 @@ namespace Game1
                 )
             );
 
-            optionElements.Add(
+            OptionElements.Add(
                 new Option(
                     menuItem: "SFXBar",
-                    spriteTexture: menuSprites["SettingsBar"],
+                    spriteTexture: MenuSprites["SettingsBar"],
                     x: (SCREENWIDTH / 2) + 175,
                     y: (SCREENHEIGHT / 2) + 30,
                     width: 100,
@@ -1023,10 +1131,10 @@ namespace Game1
                 )
             );
 
-            optionElements.Add(
+            OptionElements.Add(
                 new Option(
                     menuItem: "SFXSlider",
-                    spriteTexture: menuSprites["SettingsSlider"],
+                    spriteTexture: MenuSprites["SettingsSlider"],
                     x: (SCREENWIDTH / 2) + 180,
                     y: (SCREENHEIGHT / 2) + 14,
                     width: 10,
@@ -1035,10 +1143,10 @@ namespace Game1
                 )
             );
 
-            optionElements.Add(
+            OptionElements.Add(
                 new Option(
                     menuItem: "Difficulty",
-                    spriteTexture: menuSprites["Difficulty"],
+                    spriteTexture: MenuSprites["Difficulty"],
                     x: (SCREENWIDTH / 2) - 200,
                     y: (SCREENHEIGHT / 2) + 100,
                     width: 200,

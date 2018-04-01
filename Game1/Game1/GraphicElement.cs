@@ -35,7 +35,7 @@ namespace Game1
 
             if (elementName.Equals("LifeIcon"))
             {
-                livesLeft.Add(this);
+                LivesLeft.Add(this);
             }
         }
 
@@ -47,7 +47,7 @@ namespace Game1
 
             if (elementName.Equals("LifeIcon"))
             {
-                livesLeft.Add(this);
+                LivesLeft.Add(this);
             }
         }
 

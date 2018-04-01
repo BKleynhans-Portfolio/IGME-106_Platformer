@@ -38,6 +38,8 @@ namespace Game1
         private bool isAlive;
         private bool hasJumped;
 
+        private int jumpVelocity;
+
         /// <summary>
         /// Default constructor.  Creates a GameObject with default values.
         /// </summary>
@@ -50,9 +52,9 @@ namespace Game1
         {
             this.HasJumped = false;
             base.JumpInProgress = false;
-
-
-                this.Lives = 3; ;
+            
+            this.Lives = 3;
+            this.JumpVelocity = 12;
         }
 
         /// <summary>
@@ -72,8 +74,14 @@ namespace Game1
             base.JumpInProgress = false;
 
             this.Lives = 3;
+            this.JumpVelocity = 10;
         }
 
+        public int JumpVelocity
+        {
+            get { return this.jumpVelocity; }
+            set { this.jumpVelocity = value; }
+        }
 
         public float PlatformHorizontalAcceleration
         {
@@ -128,8 +136,8 @@ namespace Game1
         {
             Vector2 returnValue;
 
-            CalculateGravity();
-            CalculateMovement();
+            this.CalculateGravity();
+            this.CalculateMovement();
 
             returnValue = new Vector2(
                 this.Rectangle.X + base.MovementVelocity,
@@ -146,14 +154,14 @@ namespace Game1
         {   
             if (this.ApplyGravity)                                                          // If this character needs to have gravity applied
             {                
-                switch (gravityDirection)                                                   // Determine in which direction the gravity needs to be applied
+                switch (base.GravityDirection)                                                   // Determine in which direction the gravity needs to be applied
                 {                    
                     case GravityDirection.Up:                                               // If gravity needs to be applied in a upward direction
                         // If we have time
 
                         break;
                     case GravityDirection.Down:                        
-                        if (hitObstacle == HitObstacle.FromTop)                             // If this object hit another object on it's top
+                        if (base.HitObstacle == HitObstacle.FromTop)                             // If this object hit another object on it's top
                         {                            
                             base.Falling = false;                                           // Stop falling
                             this.GravitationalVelocity = 0;
@@ -181,40 +189,46 @@ namespace Game1
         /// </summary>
         public void CalculateMovement()
         {
-            if (movementAppliedTo == MovementAppliedTo.None)
+            if (base.MovementAppliedTo == MovementAppliedTo.None)
             {
-                this.MovementVelocity = this.PlatformHorizontalAcceleration;
+                base.MovementVelocity = this.PlatformHorizontalAcceleration;                
             }
 
-            if ((movementAppliedTo == MovementAppliedTo.Left) && (hitObstacle != HitObstacle.FromLeft))
+            if ((base.MovementAppliedTo == MovementAppliedTo.Left) && (base.HitObstacle != HitObstacle.FromLeft))
             {
-                this.MovementVelocity = -DefaultHorizonalVelocity + this.PlatformHorizontalAcceleration;
+                base.MovementVelocity = -DefaultHorizonalVelocity + this.PlatformHorizontalAcceleration;
             }
 
-            if ((movementAppliedTo == MovementAppliedTo.Right) && (hitObstacle != HitObstacle.FromRight))
+            if ((base.MovementAppliedTo == MovementAppliedTo.Right) && (base.HitObstacle != HitObstacle.FromRight))
             {
-                this.MovementVelocity = DefaultHorizonalVelocity + this.PlatformHorizontalAcceleration;
+                base.MovementVelocity = DefaultHorizonalVelocity + this.PlatformHorizontalAcceleration;
             }
 
-            if ((movementAppliedTo == MovementAppliedTo.Up) && (hitObstacle != HitObstacle.FromTop))
+            if ((base.MovementAppliedTo == MovementAppliedTo.Up) && (base.HitObstacle != HitObstacle.FromTop))
             {
                 if ((HasJumped) && (GravitationalVelocity == 0))
                 {
-                    this.GravitationalVelocity -= (int)(this.DefaultVerticalVelocity * 2.2);    // number is multiplier for player gravity application during jump
+                    this.GravitationalVelocity -= this.JumpVelocity;
                 }
                 else if ((HasJumped) && (GravitationalVelocity > -5))
                 {
-                    this.GravitationalVelocity -= this.GlobalAcceleration;// + this.PlatformVerticalAcceleration;
+                    this.GravitationalVelocity -= this.GlobalAcceleration;
                 }
                 else if ((HasJumped) && (GravitationalVelocity <= -5))
                 {
-                    this.GravitationalVelocity += this.GlobalAcceleration;// + this.PlatformVerticalAcceleration;
+                    this.GravitationalVelocity += this.GlobalAcceleration;
                     HasJumped = false;
                 }
                 else if ((!HasJumped) && (JumpInProgress) && (GravitationalVelocity <= -5))
                 {
-                    this.GravitationalVelocity += this.GlobalAcceleration;// + this.PlatformVerticalAcceleration;
+                    this.GravitationalVelocity += this.GlobalAcceleration;
                 }
+            }
+
+            if ((base.MovementAppliedTo == MovementAppliedTo.Up) && (base.HitObstacle == HitObstacle.FromBottom))
+            {
+                this.GravitationalVelocity = 0;
+
             }
         }
 
@@ -236,14 +250,14 @@ namespace Game1
 
                 if ((// From Top
                         (this.Rectangle.Bottom > passedGameObject.Rectangle.Top) &&         // If the lower border of this object has a larger Y coordinate than the upper border
-                        (this.Rectangle.Bottom < (passedGameObject.Rectangle.Top + 10))     // of the passed in object but a lower Y coordinate than the passed in objects
+                        (this.Rectangle.Bottom < (passedGameObject.Rectangle.Top + 20))     // of the passed in object but a lower Y coordinate than the passed in objects
                     ) && (                                                                  // Y coordinate + 10
                         (this.Rectangle.Bottom != passedGameObject.Rectangle.Bottom)
                     ))
                 {
                     if (passedGameObject.GetType() == typeof(Platform))
                     {
-                        this.hitObstacle = HitObstacle.FromTop;
+                        base.HitObstacle = HitObstacle.FromTop;
                         this.JumpInProgress = false;
                         this.PlatformHorizontalAcceleration = passedGameObject.MovementVelocity;
                         this.PlatformVerticalAcceleration = passedGameObject.GravitationalVelocity;
@@ -260,7 +274,7 @@ namespace Game1
                             (passedGameObject.GetType().BaseType == typeof(Character)))
 
                     {
-                        this.hitNPC = HitNPC.FromTop;                                       // Indicate that this object was hit by an NPC coming from the top
+                        base.HitNpc = HitNpc.FromTop;                                       // Indicate that this object was hit by an NPC coming from the top
 
                         // If the player was hit by and NPC and it is not a friendly NPC, subtract one life.
                         if ((this.GetType() == typeof(Player)) && (passedGameObject.GetType() != typeof(Friendly)))
@@ -274,7 +288,7 @@ namespace Game1
                 }
                 else if ((// From Bottom
                             (this.Rectangle.Top < passedGameObject.Rectangle.Bottom) &&     // If the upper border of this object has a smaller Y coordinate than the lower border
-                            (this.Rectangle.Top > (passedGameObject.Rectangle.Bottom - 10)) // of the passed in object but a higher Y coordinate than the passed in objects
+                            (this.Rectangle.Top > (passedGameObject.Rectangle.Bottom - 20)) // of the passed in object but a higher Y coordinate than the passed in objects
                         ) && (                                                              // Y coordinate - 10
                             (this.Rectangle.Bottom != passedGameObject.Rectangle.Bottom)
                         ))
@@ -283,8 +297,12 @@ namespace Game1
                     // *** Each continuation of the BaseType keyword goes up one additional level in the derived classes
                     if (passedGameObject.GetType() == typeof(Platform))
                     {
-                        this.hitObstacle = HitObstacle.FromBottom;
+                        base.HitObstacle = HitObstacle.FromBottom;
                         this.JumpInProgress = false;
+                        this.HasJumped = false;
+                        base.Falling = true;
+                        base.HitObstacle = HitObstacle.None;
+                        base.GravitationalVelocity += 1;
 
                         newX = this.Rectangle.X;                                            // Define new X and Y coordinates and create a new rectangle
                         newY = passedGameObject.Rectangle.Y + passedGameObject.Rectangle.Height - 1;
@@ -297,7 +315,7 @@ namespace Game1
                     else if ((passedGameObject.GetType().BaseType.BaseType == typeof(Character)) ||
                             (passedGameObject.GetType().BaseType == typeof(Character)))
                     {
-                        this.hitNPC = HitNPC.FromBottom;                                    // Indicate that this object was hit by an NPC coming from the bottom
+                        base.HitNpc = HitNpc.FromBottom;                                    // Indicate that this object was hit by an NPC coming from the bottom
 
                         // If the player was hit by and NPC and it is not a friendly NPC, subtract one life.
                         if ((this.GetType() == typeof(Player)) && (passedGameObject.GetType() != typeof(Friendly)))
@@ -311,7 +329,7 @@ namespace Game1
                 }
                 else if ((// From Right
                             (this.Rectangle.Left < passedGameObject.Rectangle.Right) &&     // If the left border of this object has a smaller X coordinate than the right border
-                            (this.Rectangle.Left > (passedGameObject.Rectangle.Right - 10)) // of the passed in object but a higher X coordinate than the passed in objects
+                            (this.Rectangle.Left > (passedGameObject.Rectangle.Right - 20)) // of the passed in object but a higher X coordinate than the passed in objects
                         ) && (                                                              // X coordinate - 10
                             (this.Rectangle.Right != passedGameObject.Rectangle.Right)
                         ))
@@ -319,9 +337,9 @@ namespace Game1
                                                                                             // *** Each continuation of the BaseType keyword goes up one additional level in the derived classes
                     if (passedGameObject.GetType() == typeof(Platform))
                     {
-                        if (((JumpInProgress) || (Falling)) && (this.hitObstacle != HitObstacle.FromTop))
+                        if (((JumpInProgress) || (Falling)) && (base.HitObstacle != HitObstacle.FromTop))
                         {
-                            this.hitObstacle = HitObstacle.FromRight;
+                            base.HitObstacle = HitObstacle.FromRight;
                         }
 
                         this.JumpInProgress = false;
@@ -338,7 +356,7 @@ namespace Game1
                        ((passedGameObject.GetType().BaseType.BaseType == typeof(Character)) ||
                         (passedGameObject.GetType().BaseType == typeof(Character)))
                     {
-                        this.hitNPC = HitNPC.FromRight;                                     // Indicate that this object was hit by an NPC coming from the right
+                        base.HitNpc = HitNpc.FromRight;                                     // Indicate that this object was hit by an NPC coming from the right
 
                         // If the player was hit by and NPC and it is not a friendly NPC, subtract one life.
                         if ((this.GetType() == typeof(Player)) && (passedGameObject.GetType() != typeof(Friendly)))
@@ -352,7 +370,7 @@ namespace Game1
                 }
                 else if ((// From Left
                             (this.Rectangle.Right > passedGameObject.Rectangle.Left) &&     // If the left border of this object has a smaller X coordinate than the right border
-                            (this.Rectangle.Right < (passedGameObject.Rectangle.Left + 10)) // of the passed in object but a higher X coordinate than the passed in objects
+                            (this.Rectangle.Right < (passedGameObject.Rectangle.Left + 20)) // of the passed in object but a higher X coordinate than the passed in objects
                         ) && (                                                              // X coordinate - 10
                             (this.Rectangle.Right != passedGameObject.Rectangle.Right)
                         ))
@@ -360,9 +378,9 @@ namespace Game1
                                                                                             // *** Each continuation of the BaseType keyword goes up one additional level in the derived classes
                     if (passedGameObject.GetType() == typeof(Platform))
                     {
-                        if (((JumpInProgress) || (Falling)) && (this.hitObstacle != HitObstacle.FromTop))
+                        if (((JumpInProgress) || (Falling)) && (base.HitObstacle != HitObstacle.FromTop))
                         {
-                            this.hitObstacle = HitObstacle.FromLeft;
+                            base.HitObstacle = HitObstacle.FromLeft;
                         }
 
                         this.JumpInProgress = false;
@@ -379,7 +397,7 @@ namespace Game1
                        ((passedGameObject.GetType().BaseType.BaseType == typeof(Character)) ||
                         (passedGameObject.GetType().BaseType == typeof(Character)))
                     {
-                        this.hitNPC = HitNPC.FromLeft;                                      // Indicate that this object was hit by an NPC coming from the left
+                        base.HitNpc = HitNpc.FromLeft;                                      // Indicate that this object was hit by an NPC coming from the left
 
                         // If the player was hit by and NPC and it is not a friendly NPC, subtract one life.
                         if ((this.GetType() == typeof(Player)) && (passedGameObject.GetType() != typeof(Friendly)))
@@ -405,9 +423,9 @@ namespace Game1
 
             do
             {
-                if (livesLeft[lifeCounter - 1].Visible)
+                if (LivesLeft[lifeCounter - 1].Visible)
                 {
-                    livesLeft[lifeCounter - 1].Visible = false;
+                    LivesLeft[lifeCounter - 1].Visible = false;
                     heartTaken = true;
                 }
                 else
@@ -437,7 +455,7 @@ namespace Game1
         {
             Console.WriteLine("Player Died");
 
-            foreach (GraphicElement graphicsElement in livesLeft)
+            foreach (GraphicElement graphicsElement in LivesLeft)
             {
                 graphicsElement.Visible = true;
 

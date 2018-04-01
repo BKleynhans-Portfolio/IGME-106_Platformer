@@ -62,7 +62,7 @@ namespace Game1
         {
             Vector2 returnValue;
 
-            base.CalculateGravity();
+            this.CalculateGravity();
 
             returnValue = new Vector2(
                 this.Rectangle.X + base.MovementVelocity,
@@ -80,7 +80,7 @@ namespace Game1
 
                 if (!stillIntersecting)
                 {   
-                    base.hitObstacle = HitObstacle.None;
+                    base.HitObstacle = HitObstacle.None;
                                         
                     base.intersectedBy.Remove(intersectedBy[i]);
                 }                
@@ -100,6 +100,9 @@ namespace Game1
         {
             bool returnValue = false;
 
+            if (passedGameObject.GetType().BaseType == typeof(Character))
+                Console.ReadLine();
+
             if (this.Rectangle.Intersects(passedGameObject.Rectangle))                      // Does this object's rectangle intersect with the passed in object's rectangle
             {
                 returnValue = true;
@@ -113,12 +116,12 @@ namespace Game1
                 {
                     if (passedGameObject.GetType().BaseType == typeof(Environment))
                     {
-                        hitObstacle = HitObstacle.None;
+                        base.HitObstacle = HitObstacle.None;
                     }
                     else if ((passedGameObject.GetType().BaseType == typeof(Character)) ||
                             (passedGameObject.GetType().BaseType.BaseType == typeof(Character)))
                     {
-                        hitObstacle = HitObstacle.FromBottom;
+                        base.HitObstacle = HitObstacle.FromBottom;
                     }
                 }
                 else if ((// From Bottom
@@ -132,12 +135,12 @@ namespace Game1
                     // *** Each continuation of the BaseType keyword goes up one additional level in the derived classes                    
                     if(passedGameObject.GetType().BaseType == typeof(Environment))
                     {
-                        hitObstacle = HitObstacle.None;
+                        base.HitObstacle = HitObstacle.None;
                     }
                     else if ((passedGameObject.GetType().BaseType == typeof(Character)) ||
                                 (passedGameObject.GetType().BaseType.BaseType == typeof(Character)))
                     {
-                        hitObstacle = HitObstacle.FromTop;
+                        base.HitObstacle = HitObstacle.FromTop;
                     }
                 }
                 else if ((// From Right
@@ -150,12 +153,12 @@ namespace Game1
                                                                                             // *** Each continuation of the BaseType keyword goes up one additional level in the derived classes
                     if (passedGameObject.GetType().BaseType == typeof(Environment))
                     {
-                        hitObstacle = HitObstacle.None;
+                        base.HitObstacle = HitObstacle.None;
                     }
                     else if ((passedGameObject.GetType().BaseType == typeof(Character)) ||
                                (passedGameObject.GetType().BaseType.BaseType == typeof(Character)))
                     {
-                        hitObstacle = HitObstacle.FromLeft;
+                        base.HitObstacle = HitObstacle.FromLeft;
                     }
                 }
                 else if ((// From Left
@@ -167,18 +170,91 @@ namespace Game1
                 {                    
                     if (passedGameObject.GetType().BaseType == typeof(Environment))
                     {
-                        hitObstacle = HitObstacle.None;
+                        base.HitObstacle = HitObstacle.None;
                     }
                     else if (
                                (passedGameObject.GetType().BaseType == typeof(Character)) ||
                                (passedGameObject.GetType().BaseType.BaseType == typeof(Character)))
                     {
-                        hitObstacle = HitObstacle.FromRight;
+                        base.HitObstacle = HitObstacle.FromRight;
                     }
                 }
             }
 
             return returnValue;
+        }
+        
+        /// Calculates the amount of force to apply for the object during each iteration of the game loop
+        /// </summary>
+        public override void CalculateGravity()
+        {
+            if (base.ApplyGravity)
+            {
+                switch (base.GravityDirection)
+                {
+                    case GravityDirection.Up:
+                        if
+                            (base.GravitationalVelocity > -base.DefaultVerticalVelocity)
+                        {
+                            if ((base.GravitationalVelocity > -1) && (base.GravitationalVelocity < 1))
+                            {
+                                base.GravitationalVelocity = -1;
+                            }
+                            else
+                            {
+                                base.GravitationalVelocity -= base.EnvironmentalAcceleration;
+                            }
+                        }
+
+                        break;
+                    case GravityDirection.Down:
+                        if
+                            (base.GravitationalVelocity < base.DefaultVerticalVelocity)
+                        {
+                            if ((base.GravitationalVelocity > -1) && (base.GravitationalVelocity < 1))
+                            {
+                                base.GravitationalVelocity = 1;
+                            }
+                            else
+                            {
+                                base.GravitationalVelocity += base.EnvironmentalAcceleration;
+                            }
+                        }
+
+                        break;
+                    case GravityDirection.Left:
+                        if
+                            (base.MovementVelocity > -base.DefaultHorizonalVelocity)
+                        {
+                            if ((base.MovementVelocity > -1) && (base.MovementVelocity < 1))
+                            {
+                                base.MovementVelocity = -1;
+                            }
+                            else
+                            {
+                                base.MovementVelocity -= base.EnvironmentalAcceleration;
+                            }
+                        }
+
+                        break;
+
+                    case GravityDirection.Right:
+                        if
+                            (base.MovementVelocity < base.DefaultHorizonalVelocity)
+                        {
+                            if ((base.MovementVelocity > -1) && (base.MovementVelocity < 1))
+                            {
+                                base.MovementVelocity = 1;
+                            }
+                            else
+                            {
+                                base.MovementVelocity += base.EnvironmentalAcceleration;
+                            }
+                        }
+
+                        break;
+                }
+            }
         }
     }
 }

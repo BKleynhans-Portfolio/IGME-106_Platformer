@@ -88,7 +88,7 @@ namespace Game1
                     }
                 }
 
-                if (currentKeyboardState.IsKeyDown(Keys.Down) && previousKeyboardState.IsKeyUp(Keys.Down))                    
+                if (CurrentKeyboardState.IsKeyDown(Keys.Down) && PreviousKeyboardState.IsKeyUp(Keys.Down))                    
                 {
                     switch (currentPosition)
                     {
@@ -102,7 +102,7 @@ namespace Game1
                             break;
                     }
                 }
-                else if (currentKeyboardState.IsKeyDown(Keys.Up) && previousKeyboardState.IsKeyUp(Keys.Up))
+                else if (CurrentKeyboardState.IsKeyDown(Keys.Up) && PreviousKeyboardState.IsKeyUp(Keys.Up))
                 {
                     switch (currentPosition)
                     {
@@ -116,7 +116,7 @@ namespace Game1
                             break;
                     }
                 }
-                else if (currentKeyboardState.IsKeyDown(Keys.Enter) && previousKeyboardState.IsKeyUp(Keys.Enter))
+                else if (CurrentKeyboardState.IsKeyDown(Keys.Enter) && PreviousKeyboardState.IsKeyUp(Keys.Enter))
                 {
                     switch (currentPosition)
                     {

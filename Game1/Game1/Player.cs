@@ -68,23 +68,23 @@ namespace Game1
         {
             Vector2 returnValue;
 
-            if ((currentKeyboardState.IsKeyDown(Keys.A)) && (previousKeyboardState.IsKeyUp(Keys.A)))
+            if ((CurrentKeyboardState.IsKeyDown(Keys.A)) && (PreviousKeyboardState.IsKeyUp(Keys.A)))
             {
-                base.movementAppliedTo = MovementAppliedTo.Left;
+                base.MovementAppliedTo = MovementAppliedTo.Left;
             }
-            else if ((currentKeyboardState.IsKeyDown(Keys.D)) && (previousKeyboardState.IsKeyUp(Keys.D)))
+            else if ((CurrentKeyboardState.IsKeyDown(Keys.D)) && (PreviousKeyboardState.IsKeyUp(Keys.D)))
             {
-                base.movementAppliedTo = MovementAppliedTo.Right;
+                base.MovementAppliedTo = MovementAppliedTo.Right;
             }
 
-            if (gravityDirection == GravityDirection.Down)
+            if (base.GravityDirection == GravityDirection.Down)
             {
-                if (((currentKeyboardState.IsKeyDown(Keys.Space)) && (previousKeyboardState.IsKeyUp(Keys.Space))) &&
-                    ((this.hitObstacle == HitObstacle.FromTop) || (this.JumpCount == 1)))
+                if (((CurrentKeyboardState.IsKeyDown(Keys.Space)) && (PreviousKeyboardState.IsKeyUp(Keys.Space))) &&
+                    ((base.HitObstacle == HitObstacle.FromTop) || (this.JumpCount == 1)))
                 {
-                    base.movementAppliedTo = MovementAppliedTo.Up;
+                    base.MovementAppliedTo = MovementAppliedTo.Up;
 
-                    base.hitObstacle = HitObstacle.None;
+                    base.HitObstacle = HitObstacle.None;
 
                     if (base.HasJumped == false)
                     {
@@ -98,14 +98,14 @@ namespace Game1
 
                 }
             }
-            else if (gravityDirection == GravityDirection.Up)
+            else if (base.GravityDirection == GravityDirection.Up)
             {
-                if (((currentKeyboardState.IsKeyDown(Keys.Space)) && (previousKeyboardState.IsKeyUp(Keys.Space))) &&
-                    ((this.hitObstacle == HitObstacle.FromTop) || (this.JumpCount == 1)))
+                if (((CurrentKeyboardState.IsKeyDown(Keys.Space)) && (PreviousKeyboardState.IsKeyUp(Keys.Space))) &&
+                    ((base.HitObstacle == HitObstacle.FromTop) || (this.JumpCount == 1)))
                 {
-                    base.movementAppliedTo = MovementAppliedTo.Down;
+                    base.MovementAppliedTo = MovementAppliedTo.Down;
 
-                    base.hitObstacle = HitObstacle.None;
+                    base.HitObstacle = HitObstacle.None;
 
                     if (base.HasJumped == false)
                     {
@@ -119,10 +119,10 @@ namespace Game1
                 }
             }
 
-            if ((currentKeyboardState.IsKeyUp(Keys.A)) && (currentKeyboardState.IsKeyUp(Keys.D)) &&
+            if ((CurrentKeyboardState.IsKeyUp(Keys.A)) && (CurrentKeyboardState.IsKeyUp(Keys.D)) &&
                 (base.Falling == false) && (base.HasJumped == false) && (base.JumpInProgress == false))
             {
-                base.movementAppliedTo = MovementAppliedTo.None;
+                base.MovementAppliedTo = MovementAppliedTo.None;
             }
 
             base.CalculateGravity();
@@ -170,7 +170,7 @@ namespace Game1
                         if ((base.intersectedBy[i].GetType() == typeof(Platform)) && (base.intersectedBy[i].GravitationalVelocity >= 0))
                         {
                             base.Falling = true;
-                            base.hitObstacle = HitObstacle.None;
+                            base.HitObstacle = HitObstacle.None;
                         }
                         
                         if (base.intersectedBy[i].GetType() == typeof(Enemy))
@@ -182,10 +182,15 @@ namespace Game1
                     }
                     else if ((!stillIntersecting) & (this.HasJumped == true))
                     {
-                        base.hitObstacle = HitObstacle.None;
+                        base.HitObstacle = HitObstacle.None;
 
                         base.intersectedBy.Remove(intersectedBy[i]);
-                    }                    
+                    }
+                    else if ((base.HitObstacle == HitObstacle.FromBottom) && (this.HasJumped == false))
+                    {
+                        base.GravitationalVelocity = 0;
+                        base.Falling = true;
+                    }
                 }
 
                 CreateRectangle(ApplyMovement());
