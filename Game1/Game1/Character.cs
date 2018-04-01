@@ -464,7 +464,7 @@ namespace Game1
 
             base.CreateRectangle(new Vector2(0, 800));
 
-            gameState = GameState.Title;
+            gameState = GameState.GameOver;
         }
     }
 }
