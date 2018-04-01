@@ -109,7 +109,7 @@ namespace Game1
 
                 if ((// From Top
                         (this.Rectangle.Bottom > passedGameObject.Rectangle.Top) &&         // If the lower border of this object has a larger Y coordinate than the upper border
-                        (this.Rectangle.Bottom < (passedGameObject.Rectangle.Top + 10))     // of the passed in object but a lower Y coordinate than the passed in objects
+                        (this.Rectangle.Bottom < (passedGameObject.Rectangle.Top + 20))     // of the passed in object but a lower Y coordinate than the passed in objects
                     ) && (                                                                  // Y coordinate + 10
                         (this.Rectangle.Bottom != passedGameObject.Rectangle.Bottom)
                     ))
@@ -126,7 +126,7 @@ namespace Game1
                 }
                 else if ((// From Bottom
                             (this.Rectangle.Top < passedGameObject.Rectangle.Bottom) &&     // If the upper border of this object has a smaller Y coordinate than the lower border
-                            (this.Rectangle.Top > (passedGameObject.Rectangle.Bottom - 10)) // of the passed in object but a higher Y coordinate than the passed in objects
+                            (this.Rectangle.Top > (passedGameObject.Rectangle.Bottom - 20)) // of the passed in object but a higher Y coordinate than the passed in objects
                         ) && (                                                              // Y coordinate - 10
                             (this.Rectangle.Bottom != passedGameObject.Rectangle.Bottom)
                         ))
@@ -145,7 +145,7 @@ namespace Game1
                 }
                 else if ((// From Right
                             (this.Rectangle.Left < passedGameObject.Rectangle.Right) &&     // If the left border of this object has a smaller X coordinate than the right border
-                            (this.Rectangle.Left > (passedGameObject.Rectangle.Right - 10)) // of the passed in object but a higher X coordinate than the passed in objects
+                            (this.Rectangle.Left > (passedGameObject.Rectangle.Right - 20)) // of the passed in object but a higher X coordinate than the passed in objects
                         ) && (                                                              // X coordinate - 10
                             (this.Rectangle.Right != passedGameObject.Rectangle.Right)
                         ))
@@ -163,7 +163,7 @@ namespace Game1
                 }
                 else if ((// From Left
                             (this.Rectangle.Right > passedGameObject.Rectangle.Left) &&     // If the left border of this object has a smaller X coordinate than the right border
-                            (this.Rectangle.Right < (passedGameObject.Rectangle.Left + 10)) // of the passed in object but a higher X coordinate than the passed in objects
+                            (this.Rectangle.Right < (passedGameObject.Rectangle.Left + 20)) // of the passed in object but a higher X coordinate than the passed in objects
                         ) && (                                                              // X coordinate - 10
                             (this.Rectangle.Right != passedGameObject.Rectangle.Right)
                         ))
