@@ -479,6 +479,7 @@ namespace Game1
             Platforms.Clear();
             Enemies.Clear();
             GameGraphics.Clear();
+            LivesLeft.Clear();
         }
 
         private void LoadPlayerElements()
