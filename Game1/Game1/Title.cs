@@ -70,7 +70,7 @@ namespace Game1
         
         protected override void Update(GameTime gameTime)
         {
-            if (this.Name == "SelectionFrame")
+            if (this.Name == "TitleSelectionFrame")
             {
                 string currentPosition = null;
 
@@ -81,7 +81,7 @@ namespace Game1
                         ) && (
                             (keyValuePair.Value.Y == this.Rectangle.Y)
                         ) && (
-                            (keyValuePair.Key != "SelectionFrame")
+                            (keyValuePair.Key != "TitleSelectionFrame")
                         ))
                     {
                         currentPosition = keyValuePair.Key;

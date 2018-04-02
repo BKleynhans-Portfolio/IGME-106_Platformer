@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Audio;
 
 /// <summary>
 /// IGME-106 - Game Development and Algorithmic Problem Solving
@@ -64,6 +65,8 @@ namespace Game1
             set { this.jumpCount = value; }
         }
 
+        public event SoundHandler SoundEvent;
+
         public override Vector2 ApplyMovement()
         {
             Vector2 returnValue;
@@ -89,6 +92,7 @@ namespace Game1
                     if (base.HasJumped == false)
                     {
                         base.HasJumped = true;
+                        SoundEffectInstances["JumpSound"].Play();
                     }
 
                     if (base.JumpInProgress == false)
@@ -102,7 +106,7 @@ namespace Game1
             {
                 if (((CurrentKeyboardState.IsKeyDown(Keys.Space)) && (PreviousKeyboardState.IsKeyUp(Keys.Space))) &&
                     ((base.HitObstacle == HitObstacle.FromTop) || (this.JumpCount == 1)))
-                {
+                {                    
                     base.MovementAppliedTo = MovementAppliedTo.Down;
 
                     base.HitObstacle = HitObstacle.None;

@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Audio;
 
+
 /// <summary>
 /// IGME-106 - Game Development and Algorithmic Problem Solving
 /// Group Project
@@ -35,6 +36,9 @@ namespace Game1
         GameOver,
         Pause
     }
+
+    //public enum SoundEvents { SoundEvent }
+
     /// <summary>
     /// This is the main type for your game.
     /// </summary>
@@ -49,6 +53,12 @@ namespace Game1
         // Define input devices
         private static KeyboardState currentKeyboardState;
         private static KeyboardState previousKeyboardState;
+
+        // Dictionary of sounds
+        private static Dictionary<string, SoundEffect> soundEffects = new Dictionary<string, SoundEffect>();
+
+        // Dictionary of sound effect instances - required to adjust sound without recreation
+        private static Dictionary<string, SoundEffectInstance> soundEffectInstances = new Dictionary<string, SoundEffectInstance>();
 
         // Dictionary of player sprites
         private static Dictionary<string, Texture2D> playerSprites = new Dictionary<string, Texture2D>();
@@ -116,6 +126,18 @@ namespace Game1
         {
             get { return previousKeyboardState; }
             set { previousKeyboardState = value; }
+        }
+
+        public static Dictionary<string, SoundEffect> SoundEffects
+        {
+            get { return soundEffects; }
+            set { soundEffects = value; }
+        }
+
+        public static Dictionary<string, SoundEffectInstance> SoundEffectInstances
+        {
+            get { return soundEffectInstances; }
+            set { soundEffectInstances = value; }
         }
 
         private static Dictionary<string, Texture2D> PlayerSprites
@@ -224,6 +246,7 @@ namespace Game1
         protected override void Initialize()
         {
             LoadSprites();
+            LoadSoundEffects();
 
             graphics.PreferredBackBufferWidth = SCREENWIDTH;                                // Set desired width of window
             graphics.PreferredBackBufferHeight = SCREENHEIGHT;                              // Set desired height of window            
@@ -312,9 +335,9 @@ namespace Game1
 
                     break;
                 case GameState.Options:
-                    for (int i = 0; i < TitleElements.Count; i++)
+                    for (int i = 0; i < OptionElements.Count; i++)
                     {
-                        TitleElements[i].Update(gameTime);
+                        OptionElements[i].Update(gameTime);
                     }
 
                     break;
@@ -425,7 +448,7 @@ namespace Game1
             // Add menu sprites
             MenuSprites.Add("MenuBackground", Content.Load<Texture2D>("MenuBackground"));
             MenuSprites.Add("Title", Content.Load<Texture2D>("Title\\Title"));
-            MenuSprites.Add("SelectionFrame", Content.Load<Texture2D>("Title\\SelectionFrame"));
+            MenuSprites.Add("TitleSelectionFrame", Content.Load<Texture2D>("Title\\TitleSelectionFrame"));
             MenuSprites.Add("LoadGame", Content.Load<Texture2D>("Title\\LoadGame"));
             MenuSprites.Add("NewGame", Content.Load<Texture2D>("Title\\NewGame"));
             MenuSprites.Add("Options", Content.Load<Texture2D>("Title\\Options"));
@@ -440,6 +463,20 @@ namespace Game1
             MenuSprites.Add("OffText", Content.Load<Texture2D>("Options\\OffText"));
             MenuSprites.Add("SettingsBar", Content.Load<Texture2D>("Options\\SettingsBar"));
             MenuSprites.Add("SettingsSlider", Content.Load<Texture2D>("Options\\SettingsSlider"));
+            MenuSprites.Add("OptionsSelectionFrame", Content.Load<Texture2D>("Options\\OptionsSelectionFrame"));
+        }
+
+        private void LoadSoundEffects()
+        {
+            SoundEffects.Add("JumpSound", Content.Load<SoundEffect>("Sounds\\JumpSound"));
+            SoundEffectInstances.Add("JumpSound", SoundEffects["JumpSound"].CreateInstance());
+
+            foreach (KeyValuePair<string, SoundEffectInstance> keyValuePair in SoundEffectInstances)
+            {
+                keyValuePair.Value.Volume = 1.0f;
+                keyValuePair.Value.Pitch = 0.0f;
+                keyValuePair.Value.Pan = 0.0f;
+            }
         }
 
         private void InitializeGameObjects()
@@ -479,6 +516,7 @@ namespace Game1
             Platforms.Clear();
             Enemies.Clear();
             GameGraphics.Clear();
+            LivesLeft.Clear();
         }
 
         private void LoadPlayerElements()
@@ -990,8 +1028,8 @@ namespace Game1
 
             TitleElements.Add(
                 new Title(
-                    menuItem: "SelectionFrame",
-                    spriteTexture: MenuSprites["SelectionFrame"],
+                    menuItem: "TitleSelectionFrame",
+                    spriteTexture: MenuSprites["TitleSelectionFrame"],
                     x: (SCREENWIDTH / 2) - 200,
                     y: (SCREENHEIGHT / 2) - 100,
                     width: 400,
@@ -1054,7 +1092,7 @@ namespace Game1
                 new Option(
                     menuItem: "MusicOff",
                     spriteTexture: MenuSprites["OffText"],
-                    x: (SCREENWIDTH / 2) + 300,
+                    x: (SCREENWIDTH / 2) + 310,
                     y: (SCREENHEIGHT / 2) - 70,
                     width: 75,
                     height: 30,
@@ -1068,7 +1106,7 @@ namespace Game1
                     spriteTexture: MenuSprites["SettingsBar"],
                     x: (SCREENWIDTH / 2) + 175,
                     y: (SCREENHEIGHT / 2) - 60,
-                    width: 100,
+                    width: 110,
                     height: 10,
                     addGravity: false
                 )
@@ -1114,7 +1152,7 @@ namespace Game1
                 new Option(
                     menuItem: "SFXOff",
                     spriteTexture: MenuSprites["OffText"],
-                    x: (SCREENWIDTH / 2) + 300,
+                    x: (SCREENWIDTH / 2) + 310,
                     y: (SCREENHEIGHT / 2) + 20,
                     width: 75,
                     height: 30,
@@ -1128,7 +1166,7 @@ namespace Game1
                     spriteTexture: MenuSprites["SettingsBar"],
                     x: (SCREENWIDTH / 2) + 175,
                     y: (SCREENHEIGHT / 2) + 30,
-                    width: 100,
+                    width: 110,
                     height: 10,
                     addGravity: false
                 )
@@ -1154,6 +1192,18 @@ namespace Game1
                     y: (SCREENHEIGHT / 2) + 100,
                     width: 200,
                     height: 80,
+                    addGravity: false
+                )
+            );
+
+            OptionElements.Add(
+                new Option(
+                    menuItem: "OptionsSelectionFrame",
+                    spriteTexture: MenuSprites["OptionsSelectionFrame"],
+                    x: (SCREENWIDTH / 2) - 220,
+                    y: (SCREENHEIGHT / 2) - 115,
+                    width: 240,
+                    height: 100,
                     addGravity: false
                 )
             );

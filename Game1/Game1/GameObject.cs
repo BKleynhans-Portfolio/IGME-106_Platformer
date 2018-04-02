@@ -122,7 +122,7 @@ namespace Game1
 
         private bool falling;                                                               // Is the object falling?
         private bool jumpInProgress;                                                        // Is the object in a jump process?
-
+        
         /// <summary>
         /// Default constructor.  Creates a GameObject with default values.
         /// </summary>
@@ -435,6 +435,11 @@ namespace Game1
             this.Rectangle = new Rectangle((int)vector2.X, (int)vector2.Y, this.Rectangle.Width, this.Rectangle.Height);            
         }
 
+        //public void PlaySound(string soundRequest)
+        //{
+        //    SoundEffectInstances[soundRequest].Play();
+        //}
+        
         /// <summary>
         /// Calculates the amount of force to apply for the object during each iteration of the game loop
         /// </summary>

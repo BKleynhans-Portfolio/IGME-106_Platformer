@@ -416,8 +416,6 @@ namespace Game1
 
         protected void TakeLife()
         {
-            Console.WriteLine("You lost a life, " + this.Lives + " lives left");
-
             bool heartTaken = false;
             int lifeCounter = Lives;
 
@@ -439,11 +437,15 @@ namespace Game1
 
             this.TookLife = true;            
             this.IsAlive = true;
-            base.Falling = true;
+
+            if (base.HitObstacle == HitObstacle.None)
+            {
+                base.Falling = true;
+                base.MovementVelocity = 0f;
+            }
+            
             base.JumpInProgress = false;
             this.HasJumped = false;
-            base.MovementVelocity = 0f;
-
             
             if (this.Lives <= 0)
             {

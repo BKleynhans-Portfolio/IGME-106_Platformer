@@ -42,7 +42,7 @@ namespace Game1
         public Option(string menuItem, Texture2D spriteTexture, int x, int y, int width, int height) : base(spriteTexture, x, y, width, height)
         {
             optionMenuDictionary.Add(menuItem, new Vector2(x, y));
-            name = menuItem;
+            this.Name = menuItem;
         }
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace Game1
                 base(spriteTexture, x, y, width, height, addGravity)
         {
             optionMenuDictionary.Add(menuItem, new Vector2(x, y));
-            name = menuItem;
+            this.Name = menuItem;
         }
 
         public string Name
@@ -70,18 +70,18 @@ namespace Game1
 
         protected override void Update(GameTime gameTime)
         {
-            if (this.Name == "SelectionFrame")
+             if (this.Name == "OptionsSelectionFrame")
             {
                 string currentPosition = null;
 
                 foreach (KeyValuePair<string, Vector2> keyValuePair in optionMenuDictionary)
                 {
                     if ((
-                            (keyValuePair.Value.X == this.Rectangle.X)
+                            (keyValuePair.Value.X - 20 == this.Rectangle.X)
                         ) && (
-                            (keyValuePair.Value.Y == this.Rectangle.Y)
+                            (keyValuePair.Value.Y - 15 == this.Rectangle.Y)
                         ) && (
-                            (keyValuePair.Key != "SelectionFrame")
+                            (keyValuePair.Key != "OptionSelectionFrame")
                         ))
                     {
                         currentPosition = keyValuePair.Key;
@@ -92,12 +92,12 @@ namespace Game1
                 {
                     switch (currentPosition)
                     {
-                        case "LoadGame":
-                            base.CreateRectangle(optionMenuDictionary["NewGame"]);
+                        case "Music":
+                            base.CreateRectangle((int)(optionMenuDictionary["SFX"].X - 20), (int)(optionMenuDictionary["SFX"].Y - 15));
 
                             break;
-                        case "NewGame":
-                            base.CreateRectangle(optionMenuDictionary["Options"]);
+                        case "SFX":
+                            base.CreateRectangle((int)(optionMenuDictionary["Difficulty"].X - 20), (int)(optionMenuDictionary["Difficulty"].Y - 15));
 
                             break;
                     }
@@ -106,29 +106,45 @@ namespace Game1
                 {
                     switch (currentPosition)
                     {
-                        case "NewGame":
-                            base.CreateRectangle(optionMenuDictionary["LoadGame"]);
+                        case "SFX":
+                            base.CreateRectangle((int)(optionMenuDictionary["Music"].X - 20), (int)(optionMenuDictionary["Music"].Y - 15));
 
                             break;
-                        case "Options":
-                            base.CreateRectangle(optionMenuDictionary["NewGame"]);
+                        case "Difficulty":
+                            base.CreateRectangle((int)(optionMenuDictionary["SFX"].X - 20), (int)(optionMenuDictionary["SFX"].Y - 15));
 
                             break;
                     }
                 }
-                else if (CurrentKeyboardState.IsKeyDown(Keys.Enter) && PreviousKeyboardState.IsKeyUp(Keys.Enter))
+                else if (CurrentKeyboardState.IsKeyDown(Keys.Right) && PreviousKeyboardState.IsKeyUp(Keys.Right))
                 {
                     switch (currentPosition)
                     {
-                        case "LoadGame":
+                        case "Music":
 
 
                             break;
-                        case "NewGame":
-                            gameState = GameState.InGame;
+                        case "SFX":
+                            
 
                             break;
-                        case "Options":
+                        case "Difficulty":
+                            break;
+                    }
+                }
+                else if (CurrentKeyboardState.IsKeyDown(Keys.Left) && PreviousKeyboardState.IsKeyUp(Keys.Left))
+                {
+                    switch (currentPosition)
+                    {
+                        case "Music":
+
+
+                            break;
+                        case "SFX":
+                            
+
+                            break;
+                        case "Difficulty":
                             break;
                     }
                 }

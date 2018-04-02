@@ -121,18 +121,6 @@
 /processorParam:TextureFormat=Color
 /build:MenuBackground.png
 
-#begin Title/SelectionFrame.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Title/SelectionFrame.png
-
 #begin TestEnemySprite.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -276,4 +264,34 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Options/SettingsSlider.png
+
+#begin Title/TitleSelectionFrame.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Title/TitleSelectionFrame.png
+
+#begin Options/OptionsSelectionFrame.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Options/OptionsSelectionFrame.png
+
+#begin Sounds/JumpSound.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/JumpSound.wav
 
