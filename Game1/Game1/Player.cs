@@ -65,8 +65,6 @@ namespace Game1
             set { this.jumpCount = value; }
         }
 
-        public event SoundHandler SoundEvent;
-
         public override Vector2 ApplyMovement()
         {
             Vector2 returnValue;
@@ -88,6 +86,11 @@ namespace Game1
                     base.MovementAppliedTo = MovementAppliedTo.Up;
 
                     base.HitObstacle = HitObstacle.None;
+
+                    if (this.PlatformVerticalAcceleration > 0)
+                    {
+                        base.GravitationalVelocity -= this.PlatformVerticalAcceleration;
+                    }
 
                     if (base.HasJumped == false)
                     {
@@ -175,6 +178,7 @@ namespace Game1
                         {
                             base.Falling = true;
                             base.HitObstacle = HitObstacle.None;
+                            base.GravitationalVelocity += (GlobalAcceleration * 2);
                         }
                         
                         if (base.intersectedBy[i].GetType() == typeof(Enemy))

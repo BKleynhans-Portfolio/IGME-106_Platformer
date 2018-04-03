@@ -183,7 +183,7 @@ namespace Game1
             set { titleElements = value; }
         }
 
-        private static List<Option> OptionElements
+        public static List<Option> OptionElements
         {
             get { return optionElements; }
             set { optionElements = value; }
@@ -245,8 +245,10 @@ namespace Game1
         /// </summary>
         protected override void Initialize()
         {
-            LoadSprites();
             LoadSoundEffects();
+            LoadSprites();
+
+            SoundEffectInstances["BackgroundMusic"].Play();
 
             graphics.PreferredBackBufferWidth = SCREENWIDTH;                                // Set desired width of window
             graphics.PreferredBackBufferHeight = SCREENHEIGHT;                              // Set desired height of window            
@@ -467,16 +469,38 @@ namespace Game1
         }
 
         private void LoadSoundEffects()
-        {
+        {            
             SoundEffects.Add("JumpSound", Content.Load<SoundEffect>("Sounds\\JumpSound"));
             SoundEffectInstances.Add("JumpSound", SoundEffects["JumpSound"].CreateInstance());
 
+            SoundEffects.Add("Error", Content.Load<SoundEffect>("Sounds\\Error"));
+            SoundEffectInstances.Add("Error", SoundEffects["Error"].CreateInstance());
+
+            SoundEffects.Add("GameOver", Content.Load<SoundEffect>("Sounds\\GameOver"));
+            SoundEffectInstances.Add("GameOver", SoundEffects["GameOver"].CreateInstance());
+
+            SoundEffects.Add("LevelComplete", Content.Load<SoundEffect>("Sounds\\LevelComplete"));
+            SoundEffectInstances.Add("LevelComplete", SoundEffects["LevelComplete"].CreateInstance());
+
+            SoundEffects.Add("MenuMove", Content.Load<SoundEffect>("Sounds\\MenuMove"));
+            SoundEffectInstances.Add("MenuMove", SoundEffects["MenuMove"].CreateInstance());
+
             foreach (KeyValuePair<string, SoundEffectInstance> keyValuePair in SoundEffectInstances)
             {
-                keyValuePair.Value.Volume = 1.0f;
+                keyValuePair.Value.Volume = 0.5f;
                 keyValuePair.Value.Pitch = 0.0f;
                 keyValuePair.Value.Pan = 0.0f;
             }
+
+            SoundEffects.Add("BackgroundMusic", Content.Load<SoundEffect>("Sounds\\BackgroundMusic"));
+            SoundEffectInstances.Add("BackgroundMusic", SoundEffects["BackgroundMusic"].CreateInstance());
+
+            SoundEffectInstances["BackgroundMusic"].Volume = 0.2f;
+            SoundEffectInstances["BackgroundMusic"].Pitch = 0.0f;
+            SoundEffectInstances["BackgroundMusic"].Pan = 0.0f;
+            SoundEffectInstances["BackgroundMusic"].IsLooped = true;
+
+            
         }
 
         private void InitializeGameObjects()
@@ -877,53 +901,6 @@ namespace Game1
             Enemies[2].ApplyGravity = true;
             Enemies[2].ObjectMovement = ObjectMovement.ToAndFroRightFirst;
             Enemies[2].ObjectXMoveDistance = 250;
-
-
-            //added new enemy code, spawned randomly
-
-            //Random rnd = new Random();
-
-            //for(int i = 0;i<rnd.Next(1,21);i++)
-            //{
-            //    Enemies.Add(
-            //    new Enemy(
-            //        spriteTexture: enemySprites["GeneralEnemy"],
-            //        x: 50+rnd.Next(0,1200),
-            //        y: 50+rnd.Next(0,800),
-            //        width: 50,
-            //        height: 50
-            //        )
-            //    );
-            //    int j = rnd.Next(1,5);
-            //Enemies[i].ApplyGravity = true;
-            //    switch(j)
-            //       {
-            //        case 1: Enemies[i].objectMovement = ObjectMovement.ToAndFroRightFirst;
-            //            break;
-            //        case 2: Enemies[i].objectMovement = ObjectMovement.ToAndFroLeftFirst;
-            //            break;
-            //        case 3: Enemies[i].objectMovement = ObjectMovement.ToAndFroUpFirst;
-            //            break;
-            //        case 4: Enemies[i].objectMovement = ObjectMovement.ToAndFroDownFirst;
-            //            break;
-            //       }
-
-            //Enemies[i].ObjectXMoveDistance = 50;
-            //}
-            //Enemies.Add(
-            //    new Enemy(
-            //        spriteTexture: enemySprites["GeneralEnemy"],
-            //        x: 1200,
-            //        y: 400,
-            //        width: 100,
-            //        height: 100
-            //    )
-            //);
-
-            //Enemies[1].ApplyGravity = true;
-            //Enemies[1].objectMovement = ObjectMovement.ToAndFroUpFirst;
-            //Enemies[1].ObjectXMoveDistance = 100;
-
         }
 
         private void LoadGeneralElements()
@@ -1078,8 +1055,8 @@ namespace Game1
 
             OptionElements.Add(
                 new Option(
-                    menuItem: "MusicOn",
-                    spriteTexture: MenuSprites["OnText"],
+                    menuItem: "MusicOff",
+                    spriteTexture: MenuSprites["OffText"],
                     x: (SCREENWIDTH / 2) + 100,
                     y: (SCREENHEIGHT / 2) - 70,
                     width: 50,
@@ -1090,8 +1067,8 @@ namespace Game1
 
             OptionElements.Add(
                 new Option(
-                    menuItem: "MusicOff",
-                    spriteTexture: MenuSprites["OffText"],
+                    menuItem: "MusicOn",
+                    spriteTexture: MenuSprites["OnText"],
                     x: (SCREENWIDTH / 2) + 310,
                     y: (SCREENHEIGHT / 2) - 70,
                     width: 75,
@@ -1116,7 +1093,7 @@ namespace Game1
                 new Option(
                     menuItem: "MusicSlider",
                     spriteTexture: MenuSprites["SettingsSlider"],
-                    x: (SCREENWIDTH / 2) + 180,
+                    x: (SCREENWIDTH / 2) + 200,
                     y: (SCREENHEIGHT / 2) - 76,
                     width: 10,
                     height: 40,
@@ -1138,8 +1115,8 @@ namespace Game1
 
             OptionElements.Add(
                 new Option(
-                    menuItem: "SFXOn",
-                    spriteTexture: MenuSprites["OnText"],
+                    menuItem: "SFXOff",
+                    spriteTexture: MenuSprites["OffText"],
                     x: (SCREENWIDTH / 2) + 100,
                     y: (SCREENHEIGHT / 2) + 20,
                     width: 50,
@@ -1150,8 +1127,8 @@ namespace Game1
 
             OptionElements.Add(
                 new Option(
-                    menuItem: "SFXOff",
-                    spriteTexture: MenuSprites["OffText"],
+                    menuItem: "SFXOn",
+                    spriteTexture: MenuSprites["OnText"],
                     x: (SCREENWIDTH / 2) + 310,
                     y: (SCREENHEIGHT / 2) + 20,
                     width: 75,
@@ -1176,7 +1153,7 @@ namespace Game1
                 new Option(
                     menuItem: "SFXSlider",
                     spriteTexture: MenuSprites["SettingsSlider"],
-                    x: (SCREENWIDTH / 2) + 180,
+                    x: (SCREENWIDTH / 2) + 230,
                     y: (SCREENHEIGHT / 2) + 14,
                     width: 10,
                     height: 40,

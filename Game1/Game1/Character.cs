@@ -191,7 +191,12 @@ namespace Game1
         {
             if (base.MovementAppliedTo == MovementAppliedTo.None)
             {
-                base.MovementVelocity = this.PlatformHorizontalAcceleration;                
+                base.MovementVelocity = this.PlatformHorizontalAcceleration;
+
+                if (this.PlatformVerticalAcceleration > 0)
+                {
+                    base.GravitationalVelocity += this.PlatformVerticalAcceleration;
+                }                
             }
 
             if ((base.MovementAppliedTo == MovementAppliedTo.Left) && (base.HitObstacle != HitObstacle.FromLeft))
@@ -408,7 +413,7 @@ namespace Game1
                             }
                         }
                     }
-                }
+                }                
             }
 
             return returnValue;
@@ -467,6 +472,8 @@ namespace Game1
             base.CreateRectangle(new Vector2(0, 800));
 
             gameState = GameState.GameOver;
+
+            SoundEffectInstances["GameOver"].Play();
         }
     }
 }

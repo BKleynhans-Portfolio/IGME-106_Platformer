@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Audio;
 
 /// <summary>
 /// IGME-106 - Game Development and Algorithmic Problem Solving
@@ -29,7 +30,7 @@ namespace Game1
     {
         private static Dictionary<string, Vector2> optionMenuDictionary = new Dictionary<string, Vector2>();
 
-        private string name;
+        public string Name { get; set; }
 
         /// <summary>
         /// Default constructor.  Creates a GameObject with default values.
@@ -62,16 +63,10 @@ namespace Game1
             this.Name = menuItem;
         }
 
-        public string Name
-        {
-            get { return this.name; }
-            set { this.name = value; }
-        }
-
         protected override void Update(GameTime gameTime)
         {
              if (this.Name == "OptionsSelectionFrame")
-            {
+             {
                 string currentPosition = null;
 
                 foreach (KeyValuePair<string, Vector2> keyValuePair in optionMenuDictionary)
@@ -90,28 +85,44 @@ namespace Game1
 
                 if (CurrentKeyboardState.IsKeyDown(Keys.Down) && PreviousKeyboardState.IsKeyUp(Keys.Down))
                 {
+                    SoundEffectInstances["MenuMove"].Play();
+
                     switch (currentPosition)
                     {
                         case "Music":
-                            base.CreateRectangle((int)(optionMenuDictionary["SFX"].X - 20), (int)(optionMenuDictionary["SFX"].Y - 15));
+                            base.CreateRectangle(
+                                (int)(optionMenuDictionary["SFX"].X - 20),
+                                (int)(optionMenuDictionary["SFX"].Y - 15)
+                            );
 
                             break;
                         case "SFX":
-                            base.CreateRectangle((int)(optionMenuDictionary["Difficulty"].X - 20), (int)(optionMenuDictionary["Difficulty"].Y - 15));
+                            base.CreateRectangle(
+                                (int)(optionMenuDictionary["Difficulty"].X - 20),
+                                (int)(optionMenuDictionary["Difficulty"].Y - 15)
+                            );
 
                             break;
                     }
                 }
                 else if (CurrentKeyboardState.IsKeyDown(Keys.Up) && PreviousKeyboardState.IsKeyUp(Keys.Up))
                 {
+                    SoundEffectInstances["MenuMove"].Play();
+
                     switch (currentPosition)
                     {
                         case "SFX":
-                            base.CreateRectangle((int)(optionMenuDictionary["Music"].X - 20), (int)(optionMenuDictionary["Music"].Y - 15));
+                            base.CreateRectangle(
+                                (int)(optionMenuDictionary["Music"].X - 20),
+                                (int)(optionMenuDictionary["Music"].Y - 15)
+                            );
 
                             break;
                         case "Difficulty":
-                            base.CreateRectangle((int)(optionMenuDictionary["SFX"].X - 20), (int)(optionMenuDictionary["SFX"].Y - 15));
+                            base.CreateRectangle(
+                                (int)(optionMenuDictionary["SFX"].X - 20),
+                                (int)(optionMenuDictionary["SFX"].Y - 15)
+                            );
 
                             break;
                     }
@@ -121,11 +132,74 @@ namespace Game1
                     switch (currentPosition)
                     {
                         case "Music":
+                            if (SoundEffectInstances["BackgroundMusic"].Volume < 0.9f) {
 
+                                SoundEffectInstances["BackgroundMusic"].Volume += 0.1f;                                
+
+                                foreach (Option menuOption in OptionElements)
+                                {
+                                    if (menuOption.Name == "MusicSlider")
+                                    {
+                                        menuOption.CreateRectangle(
+                                            (int)(optionMenuDictionary["MusicSlider"].X + 10),
+                                            (int)(optionMenuDictionary["MusicSlider"].Y)
+                                        );
+
+                                        optionMenuDictionary["MusicSlider"] = new Vector2(
+                                            (int)(optionMenuDictionary["MusicSlider"].X + 10),
+                                            (int)(optionMenuDictionary["MusicSlider"].Y)
+                                        );
+
+                                        SoundEffectInstances["MenuMove"].Play();
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                SoundEffectInstances["Error"].Play();
+                            }                            
 
                             break;
                         case "SFX":
-                            
+                            bool movedSlider = false;
+
+                            foreach (KeyValuePair<string, SoundEffectInstance> keyValuePair in SoundEffectInstances)
+                            {
+                                if (keyValuePair.Key != "BackgroundMusic")
+                                {
+                                    if (keyValuePair.Value.Volume < 0.9f)
+                                    {
+                                        keyValuePair.Value.Volume += 0.1f;
+
+                                        if (!movedSlider)
+                                        {
+                                            foreach (Option menuOption in OptionElements)
+                                            {
+                                                if (menuOption.Name == "SFXSlider")
+                                                {
+                                                    menuOption.CreateRectangle(
+                                                        (int)(optionMenuDictionary["SFXSlider"].X + 10),
+                                                        (int)(optionMenuDictionary["SFXSlider"].Y)
+                                                    );
+
+                                                    optionMenuDictionary["SFXSlider"] = new Vector2(
+                                                        (int)(optionMenuDictionary["SFXSlider"].X + 10),
+                                                        (int)(optionMenuDictionary["SFXSlider"].Y)
+                                                    );
+
+                                                    SoundEffectInstances["MenuMove"].Play();
+                                                }
+                                            }
+
+                                            movedSlider = true;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        SoundEffectInstances["Error"].Play();
+                                    }
+                                }
+                            }
 
                             break;
                         case "Difficulty":
@@ -137,11 +211,74 @@ namespace Game1
                     switch (currentPosition)
                     {
                         case "Music":
+                            if (SoundEffectInstances["BackgroundMusic"].Volume > 0.0f)
+                            {
+                                SoundEffectInstances["BackgroundMusic"].Volume -= 0.1f;
 
+                                foreach (Option menuOption in OptionElements)
+                                {
+                                    if (menuOption.Name == "MusicSlider")
+                                    {
+                                        menuOption.CreateRectangle(
+                                            (int)(optionMenuDictionary["MusicSlider"].X - 10),
+                                            (int)(optionMenuDictionary["MusicSlider"].Y)
+                                        );
+
+                                        optionMenuDictionary["MusicSlider"] = new Vector2(
+                                            (int)(optionMenuDictionary["MusicSlider"].X - 10),
+                                            (int)(optionMenuDictionary["MusicSlider"].Y)
+                                        );
+
+                                        SoundEffectInstances["MenuMove"].Play();
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                SoundEffectInstances["Error"].Play();
+                            }
 
                             break;
                         case "SFX":
-                            
+                            bool movedSlider = false;
+
+                            foreach (KeyValuePair<string, SoundEffectInstance> keyValuePair in SoundEffectInstances)
+                            {
+                                if (keyValuePair.Key != "BackgroundMusic")
+                                {
+                                    if (keyValuePair.Value.Volume > 0.1f)
+                                    {
+                                        keyValuePair.Value.Volume -= 0.1f;
+
+                                        if (!movedSlider)
+                                        {
+                                            foreach (Option menuOption in OptionElements)
+                                            {
+                                                if (menuOption.Name == "SFXSlider")
+                                                {
+                                                    menuOption.CreateRectangle(
+                                                        (int)(optionMenuDictionary["SFXSlider"].X - 10),
+                                                        (int)(optionMenuDictionary["SFXSlider"].Y)
+                                                    );
+
+                                                    optionMenuDictionary["SFXSlider"] = new Vector2(
+                                                        (int)(optionMenuDictionary["SFXSlider"].X - 10),
+                                                        (int)(optionMenuDictionary["SFXSlider"].Y)
+                                                    );
+
+                                                    SoundEffectInstances["MenuMove"].Play();
+                                                }
+                                            }
+
+                                            movedSlider = true;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        SoundEffectInstances["Error"].Play();
+                                    }
+                                }
+                            }
 
                             break;
                         case "Difficulty":

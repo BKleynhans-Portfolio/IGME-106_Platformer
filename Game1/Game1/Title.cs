@@ -90,6 +90,8 @@ namespace Game1
 
                 if (CurrentKeyboardState.IsKeyDown(Keys.Down) && PreviousKeyboardState.IsKeyUp(Keys.Down))                    
                 {
+                    SoundEffectInstances["MenuMove"].Play();
+
                     switch (currentPosition)
                     {
                         case "LoadGame":
@@ -104,6 +106,8 @@ namespace Game1
                 }
                 else if (CurrentKeyboardState.IsKeyDown(Keys.Up) && PreviousKeyboardState.IsKeyUp(Keys.Up))
                 {
+                    SoundEffectInstances["MenuMove"].Play();
+
                     switch (currentPosition)
                     {
                         case "NewGame":
