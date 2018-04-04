@@ -18,9 +18,9 @@ namespace LevelEditor
 {
     public partial class Form1 : Form
     {
-        //list of lists of PictureBoxs, functionally like 2d arrays.
-        //this is being done so that the PictureBoxs can be read from to save the map into a text file
-        List<List<PictureBox>> listofPcbRows = new List<List<PictureBox>>();
+        //list of lists of Labels, functionally like 2d arrays.
+        //this is being done so that the Labels can be read from to save the map into a text file
+        List<List<Label>> listofLblbRows;
 
         //enum for the tile thats being placed  
         enum TilePlacingState
@@ -41,48 +41,48 @@ namespace LevelEditor
         {
             InitializeComponent();
 
-            listofPcbRows = new List<List<PictureBox>>();
+            listofLblbRows = new List<List<Label>>();
             tpState = new TilePlacingState();
             levelWidth = 48;
             levelHeight = 9;
 
-            //create PictureBoxes for map and add to list in a loop
+            //create Labeles for map and add to list in a loop
             /*(i am using x and y here instead of i and j because i will be using these attributes 
-              for PictureBox placement as well, and it makes it a little bit clearer for both math and list placement)
+              for Label placement as well, and it makes it a little bit clearer for both math and list placement)
             */
             for (int y = 0; y < levelHeight; y++)
             {
-                //add a new "row" of PictureBoxs to the list
-                listofPcbRows.Add(new List<PictureBox>());
+                //add a new "row" of Labels to the list
+                listofLblbRows.Add(new List<Label>());
 
                 for (int x = 0; x < levelWidth; x++)
                 {
-                    PictureBox pcb = new PictureBox();
-                    pcb.Size = new Size(25, 25);
-                    pcb.Location = new Point(25 * x, 200 + 25 * y);
-                    pcb.Name = "n"; //initialize to n, meaning nothing in the cell
-                    pcb.BackColor = Color.Gray;
-                    pcb.Padding = new Padding(3, 3, 3, 3);
+                    Label lbl = new Label();
+                    lbl.Size = new Size(25, 25);
+                    lbl.Location = new Point(25 * x, 200 + 25 * y);
+                    lbl.Name = "n"; //initialize to n, meaning nothing in the cell
+                    lbl.BackColor = Color.Gray;
+                    lbl.Padding = new Padding(3, 3, 3, 3);
                     //there has to be a "placeholder" image that is just plain white, that combined with the padding makes the grid visible
-                    pcb.Image = LevelEditor.Properties.Resources.blank;
+                    lbl.Image = LevelEditor.Properties.Resources.blank;
 
-                    //need to tell the form that the PictureBoxes EXIST so it can actually put them in
-                    this.Controls.Add(pcb);
+                    //need to tell the form that the Labeles EXIST so it can actually put them in
+                    this.Controls.Add(lbl);
 
-                    //this hooks up the PictureBox click to the event handler
-                    //pcb.MouseDown += PictureBoxHandler;
-                    pcb.MouseDown += PictureBoxMouseDownHandler;
-                    pcb.MouseEnter += PictureBoxMouseDownHandler;
+                    //this hooks up the Label click to the event handler
+                    //pcb.MouseDown += LabelHandler;
+                    lbl.MouseDown += LabelMouseDownHandler;
+                    lbl.MouseEnter += LabelMouseDownHandler;
 
-                    //add the PictureBox to the "row" in the list
-                    listofPcbRows[y].Add(pcb);
+                    //add the Label to the "row" in the list
+                    listofLblbRows[y].Add(lbl);
                 }
             }
 
-            void PictureBoxMouseDownHandler(object sender, EventArgs e)//event handler for PictureBox click 
+            void LabelMouseDownHandler(object sender, EventArgs e)//event handler for Label click 
             {
 
-                PictureBox b = (PictureBox)sender;//cast sender to PictureBox object
+                Label b = (Label)sender;//cast sender to Label object
                 //if(mouse) { }
 
 
@@ -157,9 +157,9 @@ namespace LevelEditor
 
         private void tsiNew_Click(object sender, EventArgs e)
         {
-            foreach (List<PictureBox> rows in listofPcbRows)
+            foreach (List<Label> rows in listofLblbRows)
             {
-                foreach (PictureBox pcb in rows)
+                foreach (Label pcb in rows)
                 {
                     //resets each image to the "placeholder"
                     pcb.Image = LevelEditor.Properties.Resources.blank;
@@ -180,11 +180,11 @@ namespace LevelEditor
                 StreamWriter swSaveLevel = new StreamWriter(sfdSaveLevel.FileName);
 
                 // Code to write the stream goes here.
-                foreach (List<PictureBox> rows in listofPcbRows)
+                foreach (List<Label> rows in listofLblbRows)
                 {
                     //reset row
                     row = "";
-                    foreach (PictureBox pcb in rows)
+                    foreach (Label pcb in rows)
                     {
                         row += pcb.Name;
                     }
@@ -216,17 +216,17 @@ namespace LevelEditor
                     {
                         //Insert code to read the stream here.
                         
-                        foreach (List<PictureBox> rows in listofPcbRows)
+                        foreach (List<Label> rows in listofLblbRows)
                         {
                             string row = srReadFile.ReadLine();
 
                             loopCounter = 0;
-                            foreach (PictureBox pcb in rows)
+                            foreach (Label lbl in rows)
                             {
                                 //resets each image to the "placeholder"
                                 char tile = row[loopCounter];
-                                pcb.Name = tile.ToString();
-                                InterperetText(pcb, tile);
+                                lbl.Name = tile.ToString();
+                                InterperetText(lbl, tile);
                                 loopCounter++;
                             }
                         }
@@ -241,7 +241,7 @@ namespace LevelEditor
 
 
         //convert the text into the level tiles in the pic boxes
-        public void InterperetText(PictureBox pcb, char tile)
+        public void InterperetText(Label pcb, char tile)
         {
             switch (tile)
             {
