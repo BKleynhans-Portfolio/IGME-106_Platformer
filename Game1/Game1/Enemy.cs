@@ -49,9 +49,9 @@ namespace Game1
         /// <param name="width">Width of object</param>
         /// <param name="height">Height of object</param>
         /// <param name="addGravity">Does this object require immediate gravity implementation</param>
-        public Enemy(Texture2D spriteTexture, int x, int y, int width, int height,
+        public Enemy(Texture2D spriteTexture, int spritesInSheet, int x, int y, int width, int height,
                           bool addGravity) :
-                base(spriteTexture, x, y, width, height, addGravity)
+                base(spriteTexture, spritesInSheet, x, y, width, height, addGravity)
         {
             base.IsAlive = true;
         }

@@ -54,9 +54,9 @@ namespace Game1
         /// <param name="width">Width of object</param>
         /// <param name="height">Height of object</param>
         /// <param name="addGravity">Does this object require immediate gravity implementation</param>
-        public Title(string menuItem, Texture2D spriteTexture, int x, int y, int width, int height,
+        public Title(string menuItem, Texture2D spriteTexture, int spritesInSheet, int x, int y, int width, int height,
                           bool addGravity) :
-                base(spriteTexture, x, y, width, height, addGravity)
+                base(spriteTexture, spritesInSheet, x, y, width, height, addGravity)
         {
             titleMenuDictionary.Add(menuItem, new Vector2(x, y));
             this.Name = menuItem;
@@ -77,9 +77,9 @@ namespace Game1
                 foreach (KeyValuePair<string, Vector2> keyValuePair in titleMenuDictionary)
                 {
                     if ((
-                            (keyValuePair.Value.X == this.Rectangle.X)
+                            (keyValuePair.Value.X == this.DrawLocation.X)
                         ) && (
-                            (keyValuePair.Value.Y == this.Rectangle.Y)
+                            (keyValuePair.Value.Y == this.DrawLocation.Y)
                         ) && (
                             (keyValuePair.Key != "TitleSelectionFrame")
                         ))

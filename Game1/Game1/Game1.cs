@@ -436,36 +436,36 @@ namespace Game1
         private void LoadSprites()
         {
             // Add player sprites
-            PlayerSprites.Add("PlayerCharacter", Content.Load<Texture2D>("TestImage"));
+            PlayerSprites.Add("PlayerCharacter", Content.Load<Texture2D>("Images\\SpriteSheets\\Player_400x400"));
 
             // Add platform sprites
-            PlatformSprites.Add("FlatPlatform", Content.Load<Texture2D>("Platform"));
+            PlatformSprites.Add("FlatPlatform", Content.Load<Texture2D>("Images\\TestImages\\Platform"));
 
             // Add enemy sprites
-            EnemySprites.Add("GeneralEnemy", Content.Load<Texture2D>("TestEnemySprite"));
+            EnemySprites.Add("GeneralEnemy", Content.Load<Texture2D>("Images\\SpriteSheets\\Enemy_400x400"));
 
             // Add random other graphics sprites
-            GeneralSprites.Add("LifeIcon", Content.Load<Texture2D>("GeneralElements\\LifeIcon"));
+            GeneralSprites.Add("LifeIcon", Content.Load<Texture2D>("Images\\GeneralElements\\LifeIcon"));
 
             // Add menu sprites
-            MenuSprites.Add("MenuBackground", Content.Load<Texture2D>("MenuBackground"));
-            MenuSprites.Add("Title", Content.Load<Texture2D>("Title\\Title"));
-            MenuSprites.Add("TitleSelectionFrame", Content.Load<Texture2D>("Title\\TitleSelectionFrame"));
-            MenuSprites.Add("LoadGame", Content.Load<Texture2D>("Title\\LoadGame"));
-            MenuSprites.Add("NewGame", Content.Load<Texture2D>("Title\\NewGame"));
-            MenuSprites.Add("Options", Content.Load<Texture2D>("Title\\Options"));
+            MenuSprites.Add("MenuBackground", Content.Load<Texture2D>("Images\\Backgrounds\\MenuBackground"));
+            MenuSprites.Add("Title", Content.Load<Texture2D>("Menus\\Title\\Title"));
+            MenuSprites.Add("TitleSelectionFrame", Content.Load<Texture2D>("Menus\\Title\\TitleSelectionFrame"));
+            MenuSprites.Add("LoadGame", Content.Load<Texture2D>("Menus\\Title\\LoadGame"));
+            MenuSprites.Add("NewGame", Content.Load<Texture2D>("Menus\\Title\\NewGame"));
+            MenuSprites.Add("Options", Content.Load<Texture2D>("Menus\\Title\\Options"));
 
-            MenuSprites.Add("OptionsTitle", Content.Load<Texture2D>("Options\\OptionsTitle"));
-            MenuSprites.Add("Music", Content.Load<Texture2D>("Options\\Music"));
-            MenuSprites.Add("SFX", Content.Load<Texture2D>("Options\\SFX"));
-            MenuSprites.Add("Difficulty", Content.Load<Texture2D>("Options\\Difficulty"));
-            MenuSprites.Add("OnButton", Content.Load<Texture2D>("Options\\OnButton"));
-            MenuSprites.Add("OffButton", Content.Load<Texture2D>("Options\\OffButton"));
-            MenuSprites.Add("OnText", Content.Load<Texture2D>("Options\\OnText"));
-            MenuSprites.Add("OffText", Content.Load<Texture2D>("Options\\OffText"));
-            MenuSprites.Add("SettingsBar", Content.Load<Texture2D>("Options\\SettingsBar"));
-            MenuSprites.Add("SettingsSlider", Content.Load<Texture2D>("Options\\SettingsSlider"));
-            MenuSprites.Add("OptionsSelectionFrame", Content.Load<Texture2D>("Options\\OptionsSelectionFrame"));
+            MenuSprites.Add("OptionsTitle", Content.Load<Texture2D>("Menus\\Options\\OptionsTitle"));
+            MenuSprites.Add("Music", Content.Load<Texture2D>("Menus\\Options\\Music"));
+            MenuSprites.Add("SFX", Content.Load<Texture2D>("Menus\\Options\\SFX"));
+            MenuSprites.Add("Difficulty", Content.Load<Texture2D>("Menus\\Options\\Difficulty"));
+            MenuSprites.Add("OnButton", Content.Load<Texture2D>("Menus\\Options\\OnButton"));
+            MenuSprites.Add("OffButton", Content.Load<Texture2D>("Menus\\Options\\OffButton"));
+            MenuSprites.Add("OnText", Content.Load<Texture2D>("Menus\\Options\\OnText"));
+            MenuSprites.Add("OffText", Content.Load<Texture2D>("Menus\\Options\\OffText"));
+            MenuSprites.Add("SettingsBar", Content.Load<Texture2D>("Menus\\Options\\SettingsBar"));
+            MenuSprites.Add("SettingsSlider", Content.Load<Texture2D>("Menus\\Options\\SettingsSlider"));
+            MenuSprites.Add("OptionsSelectionFrame", Content.Load<Texture2D>("Menus\\Options\\OptionsSelectionFrame"));
         }
 
         private void LoadSoundEffects()
@@ -546,10 +546,10 @@ namespace Game1
         private void LoadPlayerElements()
         {
             Player = new Player(
-                            PlayerSprites["PlayerCharacter"],
+                            PlayerSprites["PlayerCharacter"],                            
                             x: 0,
                             y: 800,
-                            width: 40,
+                            width: 160,
                             height: 40
                          );
 
@@ -861,14 +861,16 @@ namespace Game1
             Enemies.Add(
                  new Enemy(
                      spriteTexture: enemySprites["GeneralEnemy"],
+                     spritesInSheet: 4,
                      x: 350,
                      y: 800,
-                     width: 50,
-                     height: 50
+                     width: 160,
+                     height: 40,
+                     addGravity: true
                  )
              );
 
-            Enemies[0].ApplyGravity = true;
+            //Enemies[0].ApplyGravity = true;
             Enemies[0].ObjectMovement = ObjectMovement.ToAndFroLeftFirst;
             Enemies[0].ObjectXMoveDistance = 150;
 
@@ -876,14 +878,16 @@ namespace Game1
             Enemies.Add(
                 new Enemy(
                     spriteTexture: enemySprites["GeneralEnemy"],
+                    spritesInSheet: 4,
                     x: 800,
                     y: 800,
-                    width: 50,
-                    height: 50
+                    width: 160,
+                    height: 40,
+                    addGravity: true
                 )
             );
 
-            Enemies[1].ApplyGravity = true;
+            //Enemies[1].ApplyGravity = true;
             Enemies[1].ObjectMovement = ObjectMovement.ToAndFroRightFirst;
             Enemies[1].ObjectXMoveDistance = 150;
 
@@ -891,14 +895,16 @@ namespace Game1
             Enemies.Add(
                 new Enemy(
                     spriteTexture: enemySprites["GeneralEnemy"],
+                    spritesInSheet: 4,
                     x: 200,
                     y: 460,
-                    width: 50,
-                    height: 50
+                    width: 160,
+                    height: 40,
+                    addGravity: true
                 )
             );
 
-            Enemies[2].ApplyGravity = true;
+            //Enemies[2].ApplyGravity = true;
             Enemies[2].ObjectMovement = ObjectMovement.ToAndFroRightFirst;
             Enemies[2].ObjectXMoveDistance = 250;
         }
@@ -947,6 +953,7 @@ namespace Game1
                 new Title(
                     menuItem: "MenuBackground",
                     spriteTexture: MenuSprites["MenuBackground"],
+                    spritesInSheet: 1,
                     x: (SCREENWIDTH / 2) - 400,
                     y: (SCREENHEIGHT / 2) - 400,
                     width: 800,
@@ -959,6 +966,7 @@ namespace Game1
                 new Title(
                     menuItem: "Title",
                     spriteTexture: MenuSprites["Title"],
+                    spritesInSheet: 1,
                     x: (SCREENWIDTH / 2) - 300,
                     y: (SCREENHEIGHT / 2) - 400,
                     width: 600,
@@ -971,6 +979,7 @@ namespace Game1
                 new Title(
                     menuItem: "LoadGame",
                     spriteTexture: MenuSprites["LoadGame"],
+                    spritesInSheet: 1,
                     x: (SCREENWIDTH / 2) - 200,
                     y: (SCREENHEIGHT / 2) - 100,
                     width: 400,
@@ -983,6 +992,7 @@ namespace Game1
                 new Title(
                     menuItem: "NewGame",
                     spriteTexture: MenuSprites["NewGame"],
+                    spritesInSheet: 1,
                     x: (SCREENWIDTH / 2) - 200,
                     y: (SCREENHEIGHT / 2) + 50,
                     width: 400,
@@ -995,6 +1005,7 @@ namespace Game1
                 new Title(
                     menuItem: "Options",
                     spriteTexture: MenuSprites["Options"],
+                    spritesInSheet: 1,
                     x: (SCREENWIDTH / 2) - 200,
                     y: (SCREENHEIGHT / 2) + 200,
                     width: 400,
@@ -1007,6 +1018,7 @@ namespace Game1
                 new Title(
                     menuItem: "TitleSelectionFrame",
                     spriteTexture: MenuSprites["TitleSelectionFrame"],
+                    spritesInSheet: 1,
                     x: (SCREENWIDTH / 2) - 200,
                     y: (SCREENHEIGHT / 2) - 100,
                     width: 400,
@@ -1021,6 +1033,7 @@ namespace Game1
                 new Option(
                     menuItem: "MenuBackground",
                     spriteTexture: MenuSprites["MenuBackground"],
+                    spritesInSheet: 1,
                     x: (SCREENWIDTH / 2) - 400,
                     y: (SCREENHEIGHT / 2) - 400,
                     width: 800,
@@ -1033,6 +1046,7 @@ namespace Game1
                 new Option(
                     menuItem: "OptionsTitle",
                     spriteTexture: MenuSprites["OptionsTitle"],
+                    spritesInSheet: 1,
                     x: (SCREENWIDTH / 2) - 300,
                     y: (SCREENHEIGHT / 2) - 400,
                     width: 600,
@@ -1045,6 +1059,7 @@ namespace Game1
                 new Option(
                     menuItem: "Music",
                     spriteTexture: MenuSprites["Music"],
+                    spritesInSheet: 1,
                     x: (SCREENWIDTH / 2) - 200,
                     y: (SCREENHEIGHT / 2) - 100,
                     width: 200,
@@ -1057,6 +1072,7 @@ namespace Game1
                 new Option(
                     menuItem: "MusicOff",
                     spriteTexture: MenuSprites["OffText"],
+                    spritesInSheet: 1,
                     x: (SCREENWIDTH / 2) + 100,
                     y: (SCREENHEIGHT / 2) - 70,
                     width: 50,
@@ -1069,6 +1085,7 @@ namespace Game1
                 new Option(
                     menuItem: "MusicOn",
                     spriteTexture: MenuSprites["OnText"],
+                    spritesInSheet: 1,
                     x: (SCREENWIDTH / 2) + 310,
                     y: (SCREENHEIGHT / 2) - 70,
                     width: 75,
@@ -1081,6 +1098,7 @@ namespace Game1
                 new Option(
                     menuItem: "MusicBar",
                     spriteTexture: MenuSprites["SettingsBar"],
+                    spritesInSheet: 1,
                     x: (SCREENWIDTH / 2) + 175,
                     y: (SCREENHEIGHT / 2) - 60,
                     width: 110,
@@ -1093,6 +1111,7 @@ namespace Game1
                 new Option(
                     menuItem: "MusicSlider",
                     spriteTexture: MenuSprites["SettingsSlider"],
+                    spritesInSheet: 1,
                     x: (SCREENWIDTH / 2) + 200,
                     y: (SCREENHEIGHT / 2) - 76,
                     width: 10,
@@ -1105,6 +1124,7 @@ namespace Game1
                 new Option(
                     menuItem: "SFX",
                     spriteTexture: MenuSprites["SFX"],
+                    spritesInSheet: 1,
                     x: (SCREENWIDTH / 2) - 200,
                     y: (SCREENHEIGHT / 2),
                     width: 200,
@@ -1117,6 +1137,7 @@ namespace Game1
                 new Option(
                     menuItem: "SFXOff",
                     spriteTexture: MenuSprites["OffText"],
+                    spritesInSheet: 1,
                     x: (SCREENWIDTH / 2) + 100,
                     y: (SCREENHEIGHT / 2) + 20,
                     width: 50,
@@ -1129,6 +1150,7 @@ namespace Game1
                 new Option(
                     menuItem: "SFXOn",
                     spriteTexture: MenuSprites["OnText"],
+                    spritesInSheet: 1,
                     x: (SCREENWIDTH / 2) + 310,
                     y: (SCREENHEIGHT / 2) + 20,
                     width: 75,
@@ -1141,6 +1163,7 @@ namespace Game1
                 new Option(
                     menuItem: "SFXBar",
                     spriteTexture: MenuSprites["SettingsBar"],
+                    spritesInSheet: 1,
                     x: (SCREENWIDTH / 2) + 175,
                     y: (SCREENHEIGHT / 2) + 30,
                     width: 110,
@@ -1153,6 +1176,7 @@ namespace Game1
                 new Option(
                     menuItem: "SFXSlider",
                     spriteTexture: MenuSprites["SettingsSlider"],
+                    spritesInSheet: 1,
                     x: (SCREENWIDTH / 2) + 230,
                     y: (SCREENHEIGHT / 2) + 14,
                     width: 10,
@@ -1165,6 +1189,7 @@ namespace Game1
                 new Option(
                     menuItem: "Difficulty",
                     spriteTexture: MenuSprites["Difficulty"],
+                    spritesInSheet: 1,
                     x: (SCREENWIDTH / 2) - 200,
                     y: (SCREENHEIGHT / 2) + 100,
                     width: 200,
@@ -1177,6 +1202,7 @@ namespace Game1
                 new Option(
                     menuItem: "OptionsSelectionFrame",
                     spriteTexture: MenuSprites["OptionsSelectionFrame"],
+                    spritesInSheet: 1,
                     x: (SCREENWIDTH / 2) - 220,
                     y: (SCREENHEIGHT / 2) - 115,
                     width: 240,

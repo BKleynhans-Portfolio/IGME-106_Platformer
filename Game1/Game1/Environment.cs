@@ -50,9 +50,9 @@ namespace Game1
         /// <param name="width">Width of object</param>
         /// <param name="height">Height of object</param>
         /// <param name="addGravity">Does this object require immediate gravity implementation</param>
-        public Environment(Texture2D spriteTexture, int x, int y, int width, int height,
+        public Environment(Texture2D spriteTexture, int spritesInSheet, int x, int y, int width, int height,
                           bool addGravity) :
-                base(spriteTexture, x, y, width, height, addGravity)
+                base(spriteTexture, spritesInSheet, x, y, width, height, addGravity)
         {
             this.ObjectXMoveDistance = 50;
             this.ObjectYMoveDistance = 50;
@@ -65,8 +65,8 @@ namespace Game1
             this.CalculateGravity();
 
             returnValue = new Vector2(
-                this.Rectangle.X + base.MovementVelocity,
-                this.Rectangle.Y + base.GravitationalVelocity
+                this.DrawLocation.X + base.MovementVelocity,
+                this.DrawLocation.Y + base.GravitationalVelocity
             );
 
             return returnValue;
@@ -103,15 +103,15 @@ namespace Game1
             if (passedGameObject.GetType().BaseType == typeof(Character))
                 Console.ReadLine();
 
-            if (this.Rectangle.Intersects(passedGameObject.Rectangle))                      // Does this object's rectangle intersect with the passed in object's rectangle
+            if (this.DrawLocation.Intersects(passedGameObject.DrawLocation))                      // Does this object's drawLocation intersect with the passed in object's drawLocation
             {
                 returnValue = true;
 
                 if ((// From Top
-                        (this.Rectangle.Bottom > passedGameObject.Rectangle.Top) &&         // If the lower border of this object has a larger Y coordinate than the upper border
-                        (this.Rectangle.Bottom < (passedGameObject.Rectangle.Top + 20))     // of the passed in object but a lower Y coordinate than the passed in objects
+                        (this.DrawLocation.Bottom > passedGameObject.DrawLocation.Top) &&         // If the lower border of this object has a larger Y coordinate than the upper border
+                        (this.DrawLocation.Bottom < (passedGameObject.DrawLocation.Top + 20))     // of the passed in object but a lower Y coordinate than the passed in objects
                     ) && (                                                                  // Y coordinate + 10
-                        (this.Rectangle.Bottom != passedGameObject.Rectangle.Bottom)
+                        (this.DrawLocation.Bottom != passedGameObject.DrawLocation.Bottom)
                     ))
                 {
                     if (passedGameObject.GetType().BaseType == typeof(Environment))
@@ -125,10 +125,10 @@ namespace Game1
                     }
                 }
                 else if ((// From Bottom
-                            (this.Rectangle.Top < passedGameObject.Rectangle.Bottom) &&     // If the upper border of this object has a smaller Y coordinate than the lower border
-                            (this.Rectangle.Top > (passedGameObject.Rectangle.Bottom - 20)) // of the passed in object but a higher Y coordinate than the passed in objects
+                            (this.DrawLocation.Top < passedGameObject.DrawLocation.Bottom) &&     // If the upper border of this object has a smaller Y coordinate than the lower border
+                            (this.DrawLocation.Top > (passedGameObject.DrawLocation.Bottom - 20)) // of the passed in object but a higher Y coordinate than the passed in objects
                         ) && (                                                              // Y coordinate - 10
-                            (this.Rectangle.Bottom != passedGameObject.Rectangle.Bottom)
+                            (this.DrawLocation.Bottom != passedGameObject.DrawLocation.Bottom)
                         ))
                 {
                     // If this object is of type Character and the passed in object is of type Platform
@@ -144,10 +144,10 @@ namespace Game1
                     }
                 }
                 else if ((// From Right
-                            (this.Rectangle.Left < passedGameObject.Rectangle.Right) &&     // If the left border of this object has a smaller X coordinate than the right border
-                            (this.Rectangle.Left > (passedGameObject.Rectangle.Right - 20)) // of the passed in object but a higher X coordinate than the passed in objects
+                            (this.DrawLocation.Left < passedGameObject.DrawLocation.Right) &&     // If the left border of this object has a smaller X coordinate than the right border
+                            (this.DrawLocation.Left > (passedGameObject.DrawLocation.Right - 20)) // of the passed in object but a higher X coordinate than the passed in objects
                         ) && (                                                              // X coordinate - 10
-                            (this.Rectangle.Right != passedGameObject.Rectangle.Right)
+                            (this.DrawLocation.Right != passedGameObject.DrawLocation.Right)
                         ))
                 {                                                                           // If this object is of type Character and the passed in object is of type Platform
                                                                                             // *** Each continuation of the BaseType keyword goes up one additional level in the derived classes
@@ -162,10 +162,10 @@ namespace Game1
                     }
                 }
                 else if ((// From Left
-                            (this.Rectangle.Right > passedGameObject.Rectangle.Left) &&     // If the left border of this object has a smaller X coordinate than the right border
-                            (this.Rectangle.Right < (passedGameObject.Rectangle.Left + 20)) // of the passed in object but a higher X coordinate than the passed in objects
+                            (this.DrawLocation.Right > passedGameObject.DrawLocation.Left) &&     // If the left border of this object has a smaller X coordinate than the right border
+                            (this.DrawLocation.Right < (passedGameObject.DrawLocation.Left + 20)) // of the passed in object but a higher X coordinate than the passed in objects
                         ) && (                                                              // X coordinate - 10
-                            (this.Rectangle.Right != passedGameObject.Rectangle.Right)
+                            (this.DrawLocation.Right != passedGameObject.DrawLocation.Right)
                         ))
                 {                    
                     if (passedGameObject.GetType().BaseType == typeof(Environment))

@@ -82,33 +82,37 @@ namespace Game1
 
     public abstract class GameObject : Game1
     {
-        private GravityDirection gravityDirection;
-        private MovementAppliedTo movementAppliedTo;
-        private HitObstacle hitObstacle;
-        private HitNpc hitNpc;
-        private GravityOnProximityFrom gravityOnProximityFrom;
-        private ObjectMovement objectMovement;
+        public GravityDirection GravityDirection { get; set; }
+        public MovementAppliedTo MovementAppliedTo { get; set; }
+        public HitObstacle HitObstacle { get; set; }
+        public HitNpc HitNpc { get; set; }
+        public GravityOnProximityFrom GravityOnProximityFrom { get; set; }
+        public ObjectMovement ObjectMovement { get; set; }
 
-        private float objectXMoveDistance;
-        private float objectYMoveDistance;
-        private float initialXPlacement;
-        private float initialYPlacement;
-
+        public float ObjectXMoveDistance { get; set; }
+        public float ObjectYMoveDistance { get; set; }
+        public float InitialXPlacement { get; set; }
+        public float InitialYPlacement { get; set; }
+        
         public abstract bool Intersects(GameObject passedGameObject);
         protected abstract override void Update(GameTime gameTime);
 
-        private int cyclesToThreshold;                                                      // The amount of times the game loop runs during on acceleration / deceleration
-        private int accelerationCoefficientStartingPoint = 0;
-        private int accelerationCoefficientEndingPoint = 0;
-        private bool accelerationCoefficientStartingXSet = false;
-        private bool accelerationCoefficientEndingXSet = false;
-        private bool calculateCoefficient = true;
-        private float accelerationCoefficient = 0;                                          // Calculate pixels covered during acceleration
+        public int CyclesToThreshold { get; set; }                                                      // The amount of times the game loop runs during on acceleration / deceleration
+        public int AccelerationCoefficientStartingPoint { get; set; }
+        public int AccelerationCoefficientEndingPoint { get; set; }
+        public bool AccelerationCoefficientStartingXSet { get; set; }
+        public bool AccelerationCoefficientEndingXSet { get; set; }
+        public bool CalculateCoefficient { get; set; }
+        public float AccelerationCoefficient { get; set; }                        // Calculate pixels covered during acceleration
 
-        private Texture2D objectTexture;                                                    // Texture and rectangle
-        private Rectangle rectangle;
-        private SpriteEffects spriteEffect;
-        private bool visible;                                                               // Is this object visible in the scene
+        public Texture2D SpriteSheet { get; set; }                                                    // Texture and drawLocation
+        public Rectangle DrawLocation { get; set; }        
+        public Rectangle SelectionArea { get; set; }
+        public int SpritesInSheet { get; set; }
+        public int SpriteWidth { get; set; }
+        public int SpriteHeight { get; set; }
+        public SpriteEffects SpriteEffect { get; set; }
+        public bool Visible { get; set; }                                                               // Is this object visible in the scene
 
         private float globalGlobalAcceleration;                                             // Acceleration to apply to characters during each iteration
         private float environmentalAcceleration;                                              // Acceleration to apply to platforms
@@ -133,8 +137,8 @@ namespace Game1
         /// <param name="height">Height of object</param>
         public GameObject(Texture2D spriteTexture, int x, int y, int width, int height)
         {
-            this.ObjectTexture = spriteTexture;
-            this.Rectangle = new Rectangle(x, y, width, height);
+            this.SpriteSheet = spriteTexture;
+            this.DrawLocation = new Rectangle(x, y, width, height);
 
             this.Visible = true;
 
@@ -144,7 +148,7 @@ namespace Game1
 
             this.GlobalAcceleration = 0.25f;
             this.EnvironmentalAcceleration = 0.05f;
-            this.spriteEffect = SpriteEffects.None;
+            this.SpriteEffect = SpriteEffects.None;
 
             this.InitialXPlacement = x;
             this.InitialYPlacement = y;
@@ -158,7 +162,13 @@ namespace Game1
             HitObstacle = HitObstacle.None;
             HitNpc = HitNpc.None;
             GravityOnProximityFrom = GravityOnProximityFrom.None;
-            ObjectMovement = ObjectMovement.OneDirection;
+            ObjectMovement = ObjectMovement.OneDirection;            
+            CalculateCoefficient = true;
+            AccelerationCoefficient = 0;
+
+            SpritesInSheet = 4;
+            SpriteWidth = width / SpritesInSheet;
+            SpriteHeight = height;
         }
 
         /// <summary>
@@ -170,11 +180,11 @@ namespace Game1
         /// <param name="width">Width of object</param>
         /// <param name="height">Height of object</param>
         /// <param name="addGravity">Does this object require immediate gravity implementation</param>
-        public GameObject(Texture2D spriteTexture, int x, int y, int width, int height,
+        public GameObject(Texture2D spriteTexture, int spritesInSheet, int x, int y, int width, int height,
                           bool addGravity)
         {
-            this.ObjectTexture = spriteTexture;
-            this.Rectangle = new Rectangle(x, y, width, height);
+            this.SpriteSheet = spriteTexture;
+            this.DrawLocation = new Rectangle(x, y, width, height);
 
             this.Visible = true;
 
@@ -196,6 +206,10 @@ namespace Game1
             HitNpc = HitNpc.None;
             GravityOnProximityFrom = GravityOnProximityFrom.None;
             ObjectMovement = ObjectMovement.OneDirection;
+
+            SpritesInSheet = spritesInSheet;
+            SpriteWidth = width / spritesInSheet;
+            SpriteHeight = height;
         }
 
         /// <summary>
@@ -212,118 +226,6 @@ namespace Game1
         public float DefaultVerticalVelocity
         {
             get { return defaultVerticalVelocity; }
-        }
-
-        /// <summary>
-        /// Properties for variable containing the texture used for the object
-        /// </summary>
-        public Texture2D ObjectTexture
-        {
-            get { return this.objectTexture; }
-            set { this.objectTexture = value; }
-        }
-
-        /// <summary>
-        /// Properties for variable containing the rectangle (X, Y, Width and Height) of the object
-        /// </summary>
-        public Rectangle Rectangle
-        {
-            get { return this.rectangle; }
-            set { this.rectangle = value; }
-        }
-
-        /// <summary>
-        /// Object containing sprite effects used for flipping
-        /// </summary>
-        public SpriteEffects SpriteEffect
-        {
-            get { return this.spriteEffect; }
-            set { this.spriteEffect = value; }
-        }
-
-        public GravityDirection GravityDirection
-        {
-            get { return this.gravityDirection; }
-            set { this.gravityDirection = value; }
-        }
-
-        public MovementAppliedTo MovementAppliedTo
-        {
-            get { return this.movementAppliedTo; }
-            set { this.movementAppliedTo = value; }
-        }
-
-        public HitObstacle HitObstacle
-        {
-            get { return this.hitObstacle; }
-            set { this.hitObstacle = value; }
-        }
-
-        public HitNpc HitNpc
-        {
-            get { return this.hitNpc; }
-            set { this.hitNpc = value; }
-        }
-
-        public GravityOnProximityFrom GravityOnProximityFrom
-        {
-            get { return this.gravityOnProximityFrom; }
-            set { this.gravityOnProximityFrom = value; }
-        }
-
-        public ObjectMovement ObjectMovement
-        {
-            get { return this.objectMovement; }
-            set { this.objectMovement = value; }
-        }
-
-        public int CyclesToThreshold
-        {
-            get { return this.cyclesToThreshold; }
-            set { this.cyclesToThreshold = value; }
-        }
-
-        public int AccelerationCoefficientStartingPoint
-        {
-            get { return accelerationCoefficientStartingPoint; }
-            set { this.accelerationCoefficientStartingPoint = value; }
-        }
-
-        public int AccelerationCoefficientEndingPoint
-        {
-            get { return this.accelerationCoefficientEndingPoint; }
-            set { this.accelerationCoefficientEndingPoint = value; }
-        }
-
-        public bool AccelerationCoefficientStartingXSet
-        {
-            get { return this.accelerationCoefficientStartingXSet; }
-            set { this.accelerationCoefficientStartingXSet = value; }
-        }
-
-        public bool AccelerationCoefficientEndingXSet
-        {
-            get { return this.accelerationCoefficientEndingXSet; }
-            set { this.accelerationCoefficientEndingXSet = value; }
-        }
-        
-
-        public bool CalculateCoefficient
-        {
-            get { return this.calculateCoefficient; }
-            set { this.calculateCoefficient = value; }
-        }
-
-        public float AccelerationCoefficient
-        {
-            get { return accelerationCoefficient; }
-            set { this.accelerationCoefficient = value; }
-        }
-
-        public bool Visible
-        {
-            get { return this.visible; }
-            set { this.visible = value; }
         }
 
         /// <summary>
@@ -388,57 +290,28 @@ namespace Game1
             set { this.applyGravity = value; }
         }
 
-        public float ObjectXMoveDistance
-        {
-            get { return this.objectXMoveDistance; }
-            set { this.objectXMoveDistance = value; }
-        }
-
-        public float ObjectYMoveDistance
-        {
-            get { return this.objectYMoveDistance; }
-            set { this.objectYMoveDistance = value; }
-        }
-
-        public float InitialXPlacement
-        {
-            get { return this.initialXPlacement; }
-            private set { this.initialXPlacement = value; }
-        }
-
-        public float InitialYPlacement
-        {
-            get { return this.initialYPlacement; }
-            private set { this.initialYPlacement = value; }
-        }
-
         /// <summary>
-        /// Method used to recreate the rectangle containing the location and dimensions of the object.
-        /// This is required because the rectangle is a struct datatype and we cannot change the values
+        /// Method used to recreate the drawLocation containing the location and dimensions of the object.
+        /// This is required because the drawLocation is a struct datatype and we cannot change the values
         /// within the object.
         /// </summary>
         /// <param name="x">New X coordinate to draw object</param>
         /// <param name="y">New Y coordinate to draw object</param>
         public void CreateRectangle(int x, int y)
         {
-            this.Rectangle = new Rectangle(x, y, this.Rectangle.Width, this.Rectangle.Height);
+            this.DrawLocation = new Rectangle(x, y, this.DrawLocation.Width, this.DrawLocation.Height);
         }
 
         /// <summary>
-        /// Method used to recreate the rectangle containing the location and dimensions of the object.
-        /// This is required because the rectangle is a struct datatype and we cannot change the values
+        /// Method used to recreate the drawLocation containing the location and dimensions of the object.
+        /// This is required because the drawLocation is a struct datatype and we cannot change the values
         /// within the object.
         /// </summary>
         /// <param name="vector2">New vector containing new X and Y coordinates</param>
         public void CreateRectangle(Vector2 vector2)
         {
-            this.Rectangle = new Rectangle((int)vector2.X, (int)vector2.Y, this.Rectangle.Width, this.Rectangle.Height);            
+            this.DrawLocation = new Rectangle((int)vector2.X, (int)vector2.Y, this.DrawLocation.Width, this.DrawLocation.Height);            
         }
-
-        //public void PlaySound(string soundRequest)
-        //{
-        //    SoundEffectInstances[soundRequest].Play();
-        //}
         
         /// <summary>
         /// Calculates the amount of force to apply for the object during each iteration of the game loop
@@ -447,7 +320,7 @@ namespace Game1
         {
             if (this.ApplyGravity)                                                          // If the object requires gravity to be implemented
             {
-                switch (gravityDirection)                                                   // Based on which direction the gravity is implemented in
+                switch (GravityDirection)                                                   // Based on which direction the gravity is implemented in
                 {
                     case GravityDirection.Up:
                         this.GravitationalVelocity -= this.GlobalAcceleration;
@@ -472,25 +345,25 @@ namespace Game1
 
         public void UpdateMovementParameters()
         {
-            switch (hitObstacle)
+            switch (HitObstacle)
             {
                 case HitObstacle.FromLeft:
-                    if (gravityOnProximityFrom == GravityOnProximityFrom.Left)
+                    if (GravityOnProximityFrom == GravityOnProximityFrom.Left)
                         this.ApplyGravity = true;
 
                     break;
                 case HitObstacle.FromTop:
-                    if (gravityOnProximityFrom == GravityOnProximityFrom.Top)
+                    if (GravityOnProximityFrom == GravityOnProximityFrom.Top)
                         this.ApplyGravity = true;
 
                     break;
                 case HitObstacle.FromRight:
-                    if (gravityOnProximityFrom == GravityOnProximityFrom.Right)
+                    if (GravityOnProximityFrom == GravityOnProximityFrom.Right)
                         this.ApplyGravity = true;
 
                     break;
                 case HitObstacle.FromBottom:
-                    if (gravityOnProximityFrom == GravityOnProximityFrom.Bottom)
+                    if (GravityOnProximityFrom == GravityOnProximityFrom.Bottom)
                         this.ApplyGravity = true;
 
                     break;
@@ -498,41 +371,41 @@ namespace Game1
 
             if (this.ApplyGravity == true)
             {
-                switch (objectMovement)
+                switch (ObjectMovement)
                 {
                     case ObjectMovement.ToAndFroUpFirst:
-                        this.gravityDirection = GravityDirection.Up;
+                        this.GravityDirection = GravityDirection.Up;
 
                         break;
                     case ObjectMovement.ToAndFroDownFirst:
-                        this.gravityDirection = GravityDirection.Down;
+                        this.GravityDirection = GravityDirection.Down;
 
                         break;
                     case ObjectMovement.ToAndFroLeftFirst:
-                        this.gravityDirection = GravityDirection.Left;
+                        this.GravityDirection = GravityDirection.Left;
 
                         break;
                     case ObjectMovement.ToAndFroRightFirst:
-                        this.gravityDirection = GravityDirection.Right;
+                        this.GravityDirection = GravityDirection.Right;
 
                         break;
                 }
                 
-                switch (objectMovement)
+                switch (ObjectMovement)
                 {
                     case ObjectMovement.ToAndFroRightFirst:
 
-                        switch (gravityDirection)
+                        switch (GravityDirection)
                         {
                             case GravityDirection.Right:
-                                if (this.Rectangle.X >= (this.InitialXPlacement + (this.ObjectXMoveDistance / 2)))
+                                if (this.DrawLocation.X >= (this.InitialXPlacement + (this.ObjectXMoveDistance / 2)))
                                 {                                    
                                     SwitchDirections();
                                 }
 
                                 break;
                             case GravityDirection.Left:
-                                if (this.Rectangle.X <= (this.InitialXPlacement + (this.ObjectXMoveDistance / 2)))
+                                if (this.DrawLocation.X <= (this.InitialXPlacement + (this.ObjectXMoveDistance / 2)))
                                 {
                                     SwitchDirections();
                                 }
@@ -543,17 +416,17 @@ namespace Game1
                         break;
                     case ObjectMovement.ToAndFroLeftFirst:
 
-                        switch (gravityDirection)
+                        switch (GravityDirection)
                         {
                             case GravityDirection.Left:
-                                if (this.Rectangle.X <= (this.InitialXPlacement - (this.ObjectXMoveDistance / 2)))
+                                if (this.DrawLocation.X <= (this.InitialXPlacement - (this.ObjectXMoveDistance / 2)))
                                 {
                                     SwitchDirections();
                                 }
 
                                 break;
                             case GravityDirection.Right:
-                                if (this.Rectangle.X >= (this.InitialXPlacement - (this.ObjectXMoveDistance / 2)))
+                                if (this.DrawLocation.X >= (this.InitialXPlacement - (this.ObjectXMoveDistance / 2)))
                                 {
                                     SwitchDirections();
                                 }
@@ -564,17 +437,17 @@ namespace Game1
                         break;
                     case ObjectMovement.ToAndFroDownFirst:
 
-                        switch (gravityDirection)
+                        switch (GravityDirection)
                         {
                             case GravityDirection.Down:
-                                if (this.Rectangle.Y >= (this.InitialYPlacement + (this.ObjectYMoveDistance / 2)))
+                                if (this.DrawLocation.Y >= (this.InitialYPlacement + (this.ObjectYMoveDistance / 2)))
                                 {
                                     SwitchDirections();
                                 }
 
                                 break;
                             case GravityDirection.Up:
-                                if (this.Rectangle.Y <= (this.InitialYPlacement + (this.ObjectYMoveDistance / 2)))
+                                if (this.DrawLocation.Y <= (this.InitialYPlacement + (this.ObjectYMoveDistance / 2)))
                                 {
                                     SwitchDirections();
                                 }
@@ -584,17 +457,17 @@ namespace Game1
 
                         break;
                     case ObjectMovement.ToAndFroUpFirst:
-                        switch (gravityDirection)
+                        switch (GravityDirection)
                         {
                             case GravityDirection.Up:
-                                if (this.Rectangle.Y <= (this.InitialYPlacement - (this.ObjectYMoveDistance / 2)))
+                                if (this.DrawLocation.Y <= (this.InitialYPlacement - (this.ObjectYMoveDistance / 2)))
                                 {
                                     SwitchDirections();
                                 }
 
                                 break;
                             case GravityDirection.Down:
-                                if (this.Rectangle.Y >= (this.InitialYPlacement - (this.ObjectYMoveDistance / 2)))
+                                if (this.DrawLocation.Y >= (this.InitialYPlacement - (this.ObjectYMoveDistance / 2)))
                                 {
                                     SwitchDirections();
                                 }
@@ -610,21 +483,21 @@ namespace Game1
 
         private void SwitchDirections()
         {
-            if (this.gravityDirection == GravityDirection.Down)
+            if (this.GravityDirection == GravityDirection.Down)
             {
-                this.gravityDirection = GravityDirection.Up;
+                this.GravityDirection = GravityDirection.Up;
             }
-            else if (this.gravityDirection == GravityDirection.Up)
+            else if (this.GravityDirection == GravityDirection.Up)
             {
-                this.gravityDirection = GravityDirection.Down;
+                this.GravityDirection = GravityDirection.Down;
             }
-            else if (this.gravityDirection == GravityDirection.Left)
+            else if (this.GravityDirection == GravityDirection.Left)
             {
-                this.gravityDirection = GravityDirection.Right;
+                this.GravityDirection = GravityDirection.Right;
             }
-            else if (this.gravityDirection == GravityDirection.Right)
+            else if (this.GravityDirection == GravityDirection.Right)
             {
-                this.gravityDirection = GravityDirection.Left;
+                this.GravityDirection = GravityDirection.Left;
             }
         }
 
@@ -632,16 +505,16 @@ namespace Game1
         /// Draw the sprite
         /// </summary>
         /// <param name="spriteBatch">Spritebatch Image</param>
-        public void Draw(SpriteBatch spriteBatch)
+        public virtual void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(
-                this.ObjectTexture,
-                this.Rectangle,
+                this.SpriteSheet,
+                this.DrawLocation,
                 null,
                 Color.White,
                 0f,
                 Vector2.Zero,
-                spriteEffect,
+                this.SpriteEffect,
                 0
             );
         }

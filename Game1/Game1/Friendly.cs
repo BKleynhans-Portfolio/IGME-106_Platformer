@@ -33,9 +33,9 @@ namespace Game1
             base.IsAlive = true;
         }
 
-        public Friendly(Texture2D spriteTexture, int x, int y, int width, int height,
+        public Friendly(Texture2D spriteTexture, int spritesInSheet, int x, int y, int width, int height,
                           bool addGravity) :
-                base(spriteTexture, x, y, width, height, addGravity)
+                base(spriteTexture, spritesInSheet, x, y, width, height, addGravity)
         {
             base.IsAlive = true;
         }
@@ -47,7 +47,7 @@ namespace Game1
 
         protected override void Update(GameTime gameTime)
         {
-            if ((this.Rectangle.Y + this.Rectangle.Height) > SCREENHEIGHT)
+            if ((this.DrawLocation.Y + this.DrawLocation.Height) > SCREENHEIGHT)
             {
                 this.IsAlive = false;
             }

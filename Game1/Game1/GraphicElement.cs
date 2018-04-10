@@ -39,9 +39,9 @@ namespace Game1
             }
         }
 
-        public GraphicElement(string elementName, Texture2D spriteTexture, int x, int y, int width, int height,
+        public GraphicElement(string elementName, Texture2D spriteTexture, int SpritesInSheet, int x, int y, int width, int height,
                           bool addGravity) :
-                base(spriteTexture, x, y, width, height, addGravity)
+                base(spriteTexture, SpritesInSheet, x, y, width, height, addGravity)
         {            
             this.Name = elementName;
 

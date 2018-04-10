@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
+
 /// <summary>
 /// IGME-106 - Game Development and Algorithmic Problem Solving
 /// Group Project
@@ -19,29 +20,35 @@ using Microsoft.Xna.Framework.Input;
 ///                       
 ///                       
 /// Last Modified By    : Benjamin Kleynhans
-/// Last Modified Date  : March 22, 2018
-/// Filename            : Obstacle.cs
+/// Last Modified Date  : April 3, 2018
+/// Filename            : Game1.cs
 /// </summary>
 
 namespace Game1
 {
-    class Obstacle : Environment
+    public class Camera : Game1
     {
-        public Obstacle(Texture2D spriteTexture, int x, int y, int width, int height) : base(spriteTexture, x, y, width, height)
-        {
+        public Vector2 Position { get; set; }
+        public float Rotation { get; set; }
+        public float Zoom { get; set; }
 
+        public Camera()
+        {
+            Position = Vector2.Zero;
+            Zoom = 1f;
+        }
+        
+        public void Move(Vector2 amount)
+        {
+            Position += amount;
         }
 
-        public Obstacle(Texture2D spriteTexture, int spritesInSheet, int x, int y, int width, int height,
-                          bool addGravity) :
-                base(spriteTexture, spritesInSheet, x, y, width, height, addGravity)
+        public Matrix TransformMatrix
         {
-
-        }
-
-        protected override void Update(GameTime gameTime)
-        {
-
+            get
+            {
+                return Matrix.CreateRotationZ(Rotation) * Matrix.CreateScale(Zoom) * Matrix.CreateTranslation(Position.X, Position.Y, 0);
+            }
         }
     }
 }

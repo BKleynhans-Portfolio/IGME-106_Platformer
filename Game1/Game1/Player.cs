@@ -52,9 +52,9 @@ namespace Game1
         /// <param name="width">Width of object</param>
         /// <param name="height">Height of object</param>
         /// <param name="addGravity">Does this object require immediate gravity implementation</param>
-        public Player(Texture2D spriteTexture, int x, int y, int width, int height,
+        public Player(Texture2D spriteTexture, int spritesInSheet, int x, int y, int width, int height,
                           bool addGravity) :
-                base(spriteTexture, x, y, width, height, addGravity)
+                base(spriteTexture, spritesInSheet, x, y, width, height, addGravity)
         {
             base.IsAlive = true;
         }
@@ -68,6 +68,8 @@ namespace Game1
         public override Vector2 ApplyMovement()
         {
             Vector2 returnValue;
+
+            this.SelectSprite(0);
 
             if ((CurrentKeyboardState.IsKeyDown(Keys.A)) && (PreviousKeyboardState.IsKeyUp(Keys.A)))
             {
@@ -136,8 +138,8 @@ namespace Game1
             base.CalculateMovement();
 
             returnValue = new Vector2(
-                this.Rectangle.X + base.MovementVelocity,
-                this.Rectangle.Y + base.GravitationalVelocity
+                this.DrawLocation.X + base.MovementVelocity,
+                this.DrawLocation.Y + base.GravitationalVelocity
             );
 
             return returnValue;
@@ -145,7 +147,7 @@ namespace Game1
 
         protected override void Update(GameTime gameTime)
         {
-            if ((this.Rectangle.Y + this.Rectangle.Height) > SCREENHEIGHT)
+            if ((this.DrawLocation.Y + this.DrawLocation.Height) > SCREENHEIGHT)
             {
                 base.TakeLife();
 
@@ -153,17 +155,17 @@ namespace Game1
                 base.MovementVelocity = 0f;
                 base.GravitationalVelocity = 0f;
             }
-            else if (this.Rectangle.Y < 0)
+            else if (this.DrawLocation.Y < 0)
             {
-                CreateRectangle(this.Rectangle.X, 1);
+                CreateRectangle(this.DrawLocation.X, 1);
             }
-            else if (this.Rectangle.X < 0)
+            else if (this.DrawLocation.X < 0)
             {
-                CreateRectangle(1, this.Rectangle.Y);
+                CreateRectangle(1, this.DrawLocation.Y);
             }
-            else if (this.Rectangle.X > 1600)
+            else if (this.DrawLocation.X > 1600)
             {
-                CreateRectangle(1599, this.Rectangle.Y);
+                CreateRectangle(1599, this.DrawLocation.Y);
             }
 
             if (this.IsAlive)

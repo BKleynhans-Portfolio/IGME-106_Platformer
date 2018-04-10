@@ -66,9 +66,9 @@ namespace Game1
         /// <param name="width">Width of object</param>
         /// <param name="height">Height of object</param>
         /// <param name="addGravity">Does this object require immediate gravity implementation</param>
-        public Character(Texture2D spriteTexture, int x, int y, int width, int height,
+        public Character(Texture2D spriteTexture, int spritesInSheet, int x, int y, int width, int height,
                           bool addGravity) :
-                base(spriteTexture, x, y, width, height, addGravity)
+                base(spriteTexture, spritesInSheet, x, y, width, height, addGravity)
         {
             this.HasJumped = false;
             base.JumpInProgress = false;
@@ -136,12 +136,13 @@ namespace Game1
         {
             Vector2 returnValue;
 
+            this.SelectSprite(0);
             this.CalculateGravity();
             this.CalculateMovement();
 
             returnValue = new Vector2(
-                this.Rectangle.X + base.MovementVelocity,
-                this.Rectangle.Y + base.GravitationalVelocity
+                this.DrawLocation.X + base.MovementVelocity,
+                this.DrawLocation.Y + base.GravitationalVelocity
             );
 
             return returnValue;
@@ -246,7 +247,7 @@ namespace Game1
         {
             bool returnValue = false;
 
-            if (this.Rectangle.Intersects(passedGameObject.Rectangle))                      // Does this object's rectangle intersect with the passed in object's rectangle
+            if (this.DrawLocation.Intersects(passedGameObject.DrawLocation))                      // Does this object's drawLocation intersect with the passed in object's drawLocation
             {
                 returnValue = true;
 
@@ -254,10 +255,10 @@ namespace Game1
                 float newY;
 
                 if ((// From Top
-                        (this.Rectangle.Bottom > passedGameObject.Rectangle.Top) &&         // If the lower border of this object has a larger Y coordinate than the upper border
-                        (this.Rectangle.Bottom < (passedGameObject.Rectangle.Top + 20))     // of the passed in object but a lower Y coordinate than the passed in objects
+                        (this.DrawLocation.Bottom > passedGameObject.DrawLocation.Top) &&         // If the lower border of this object has a larger Y coordinate than the upper border
+                        (this.DrawLocation.Bottom < (passedGameObject.DrawLocation.Top + 20))     // of the passed in object but a lower Y coordinate than the passed in objects
                     ) && (                                                                  // Y coordinate + 10
-                        (this.Rectangle.Bottom != passedGameObject.Rectangle.Bottom)
+                        (this.DrawLocation.Bottom != passedGameObject.DrawLocation.Bottom)
                     ))
                 {
                     if (passedGameObject.GetType() == typeof(Platform))
@@ -267,10 +268,10 @@ namespace Game1
                         this.PlatformHorizontalAcceleration = passedGameObject.MovementVelocity;
                         this.PlatformVerticalAcceleration = passedGameObject.GravitationalVelocity;
 
-                        newX = this.Rectangle.X;                                     // Define new X and Y coordinates and create a new rectangle                        
-                        newY = passedGameObject.Rectangle.Y - this.Rectangle.Height + 1;
+                        newX = this.DrawLocation.X;                                     // Define new X and Y coordinates and create a new drawLocation                        
+                        newY = passedGameObject.DrawLocation.Y - this.DrawLocation.Height + 1;
 
-                        if (newX != this.Rectangle.X || newY != this.Rectangle.Y)
+                        if (newX != this.DrawLocation.X || newY != this.DrawLocation.Y)
                         {
                             CreateRectangle(new Vector2(newX, newY));
                         }
@@ -292,10 +293,10 @@ namespace Game1
                     }
                 }
                 else if ((// From Bottom
-                            (this.Rectangle.Top < passedGameObject.Rectangle.Bottom) &&     // If the upper border of this object has a smaller Y coordinate than the lower border
-                            (this.Rectangle.Top > (passedGameObject.Rectangle.Bottom - 20)) // of the passed in object but a higher Y coordinate than the passed in objects
+                            (this.DrawLocation.Top < passedGameObject.DrawLocation.Bottom) &&     // If the upper border of this object has a smaller Y coordinate than the lower border
+                            (this.DrawLocation.Top > (passedGameObject.DrawLocation.Bottom - 20)) // of the passed in object but a higher Y coordinate than the passed in objects
                         ) && (                                                              // Y coordinate - 10
-                            (this.Rectangle.Bottom != passedGameObject.Rectangle.Bottom)
+                            (this.DrawLocation.Bottom != passedGameObject.DrawLocation.Bottom)
                         ))
                 {
                     // If this object is of type Character and the passed in object is of type Platform
@@ -309,10 +310,10 @@ namespace Game1
                         base.HitObstacle = HitObstacle.None;
                         base.GravitationalVelocity += 1;
 
-                        newX = this.Rectangle.X;                                            // Define new X and Y coordinates and create a new rectangle
-                        newY = passedGameObject.Rectangle.Y + passedGameObject.Rectangle.Height - 1;
+                        newX = this.DrawLocation.X;                                            // Define new X and Y coordinates and create a new drawLocation
+                        newY = passedGameObject.DrawLocation.Y + passedGameObject.DrawLocation.Height - 1;
 
-                        if (newX != this.Rectangle.X || newY != this.Rectangle.Y)
+                        if (newX != this.DrawLocation.X || newY != this.DrawLocation.Y)
                         {
                             CreateRectangle(new Vector2(newX, newY));
                         }
@@ -333,10 +334,10 @@ namespace Game1
                     }
                 }
                 else if ((// From Right
-                            (this.Rectangle.Left < passedGameObject.Rectangle.Right) &&     // If the left border of this object has a smaller X coordinate than the right border
-                            (this.Rectangle.Left > (passedGameObject.Rectangle.Right - 20)) // of the passed in object but a higher X coordinate than the passed in objects
+                            (this.DrawLocation.Left < passedGameObject.DrawLocation.Right) &&     // If the left border of this object has a smaller X coordinate than the right border
+                            (this.DrawLocation.Left > (passedGameObject.DrawLocation.Right - 20)) // of the passed in object but a higher X coordinate than the passed in objects
                         ) && (                                                              // X coordinate - 10
-                            (this.Rectangle.Right != passedGameObject.Rectangle.Right)
+                            (this.DrawLocation.Right != passedGameObject.DrawLocation.Right)
                         ))
                 {                                                                           // If this object is of type Character and the passed in object is of type Platform
                                                                                             // *** Each continuation of the BaseType keyword goes up one additional level in the derived classes
@@ -349,10 +350,10 @@ namespace Game1
 
                         this.JumpInProgress = false;
 
-                        newX = passedGameObject.Rectangle.X + passedGameObject.Rectangle.Width - 1;
-                        newY = this.Rectangle.Y;
+                        newX = passedGameObject.DrawLocation.X + passedGameObject.DrawLocation.Width - 1;
+                        newY = this.DrawLocation.Y;
 
-                        if (newX != this.Rectangle.X || newY != this.Rectangle.Y)           // Define new X and Y coordinates and create a new rectangle
+                        if (newX != this.DrawLocation.X || newY != this.DrawLocation.Y)           // Define new X and Y coordinates and create a new drawLocation
                         {
                             CreateRectangle(new Vector2(newX, newY));
                         }
@@ -374,10 +375,10 @@ namespace Game1
                     }
                 }
                 else if ((// From Left
-                            (this.Rectangle.Right > passedGameObject.Rectangle.Left) &&     // If the left border of this object has a smaller X coordinate than the right border
-                            (this.Rectangle.Right < (passedGameObject.Rectangle.Left + 20)) // of the passed in object but a higher X coordinate than the passed in objects
+                            (this.DrawLocation.Right > passedGameObject.DrawLocation.Left) &&     // If the left border of this object has a smaller X coordinate than the right border
+                            (this.DrawLocation.Right < (passedGameObject.DrawLocation.Left + 20)) // of the passed in object but a higher X coordinate than the passed in objects
                         ) && (                                                              // X coordinate - 10
-                            (this.Rectangle.Right != passedGameObject.Rectangle.Right)
+                            (this.DrawLocation.Right != passedGameObject.DrawLocation.Right)
                         ))
                 {                                                                           // If this object is of type Character and the passed in object is of type Platform
                                                                                             // *** Each continuation of the BaseType keyword goes up one additional level in the derived classes
@@ -390,10 +391,10 @@ namespace Game1
 
                         this.JumpInProgress = false;
 
-                        newX = passedGameObject.Rectangle.X - this.Rectangle.Width + 1;     // Define new X and Y coordinates and create a new rectangle
-                        newY = this.Rectangle.Y;
+                        newX = passedGameObject.DrawLocation.X - this.DrawLocation.Width + 1;     // Define new X and Y coordinates and create a new drawLocation
+                        newY = this.DrawLocation.Y;
 
-                        if (newX != this.Rectangle.X || newY != this.Rectangle.Y)
+                        if (newX != this.DrawLocation.X || newY != this.DrawLocation.Y)
                         {
                             CreateRectangle(new Vector2(newX, newY));
                         }
@@ -475,5 +476,36 @@ namespace Game1
 
             SoundEffectInstances["GameOver"].Play();
         }
+
+        public void SelectSprite(int spriteIndex)
+        {
+            base.SelectionArea = new Rectangle(
+                                        (spriteIndex * SpriteWidth),
+                                        0,
+                                        SpriteWidth,
+                                        SpriteHeight
+                                    );
+
+            Console.WriteLine();
+        }
+
+        /// <summary>
+        /// Draw the sprite
+        /// </summary>
+        /// <param name="spriteBatch">Spritebatch Image</param>
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(
+                base.SpriteSheet,
+                new Vector2(base.DrawLocation.X, base.DrawLocation.Y),
+                new Rectangle(0,0,400,400),
+                Color.White,
+                0.0f,
+                Vector2.Zero,
+                0.1f,
+                base.SpriteEffect,
+                0.0f
+            );
+        }        
     }
 }
