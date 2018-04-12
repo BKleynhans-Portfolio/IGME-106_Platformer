@@ -26,7 +26,7 @@ using Microsoft.Xna.Framework.Input;
 namespace Game1
 {
     public abstract class NPC : Character
-    {
+    {        
         /// <summary>
         /// Default constructor.  Creates a GameObject with default values.
         /// </summary>
@@ -58,11 +58,12 @@ namespace Game1
             this.ObjectYMoveDistance = 50;
         }
 
-        public override Vector2 ApplyMovement()
+        public override Vector2 ApplyMovement(GameTime gameTime)
         {
             Vector2 returnValue;
 
-            this.CalculateGravity();
+            base.UpdateMovementParameters();
+            this.CalculateGravity(gameTime);            
 
             returnValue = new Vector2(
                 this.DrawLocation.X + base.MovementVelocity,
@@ -74,6 +75,8 @@ namespace Game1
 
         protected override void Update(GameTime gameTime)
         {
+            base.TimeSinceLastUpdate += gameTime.ElapsedGameTime.Milliseconds;
+
             for (int i = 0; i < base.intersectedBy.Count; i++)
             {
                 bool stillIntersecting = this.Intersects(intersectedBy[i]);
@@ -86,9 +89,16 @@ namespace Game1
                 }
             }
 
-            UpdateMovementParameters();
+            if (base.TimeSinceLastUpdate > 100)
+            {
+                UpdateMovementParameters();
+                base.UpdateSprite();
+                base.SelectSprite(base.CurrentSpriteIndex);
 
-            CreateRectangle(ApplyMovement());
+                base.TimeSinceLastUpdate = 0;
+            }
+
+            CreateRectangle(ApplyMovement(gameTime));
         }
 
         ///summary>
@@ -183,7 +193,7 @@ namespace Game1
 
         /// Calculates the amount of force to apply for the object during each iteration of the game loop
         /// </summary>
-        public override void CalculateGravity()
+        public override void CalculateGravity(GameTime gameTime)
         {
             if (base.ApplyGravity)
             {
@@ -256,6 +266,25 @@ namespace Game1
                         break;
                 }
             }
+        }
+
+        /// <summary>
+        /// Draw the sprite
+        /// </summary>
+        /// <param name="spriteBatch">Spritebatch Image</param>
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(
+                base.SpriteSheet,
+                new Vector2(base.DrawLocation.X, (float)(base.DrawLocation.Y - 40)),
+                base.SelectionArea,
+                Color.White,
+                0.0f,
+                Vector2.Zero,
+                0.2f,
+                base.SpriteEffect,
+                0.0f
+            );
         }
     }
 }

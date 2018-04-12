@@ -58,11 +58,11 @@ namespace Game1
             this.ObjectYMoveDistance = 50;
         }
 
-        public virtual Vector2 ApplyMovement()
+        public virtual Vector2 ApplyMovement(GameTime gameTime)
         {
             Vector2 returnValue;
 
-            this.CalculateGravity();
+            this.CalculateGravity(gameTime);
 
             returnValue = new Vector2(
                 this.DrawLocation.X + base.MovementVelocity,
@@ -88,7 +88,7 @@ namespace Game1
 
             UpdateMovementParameters();
             
-            CreateRectangle(ApplyMovement());
+            CreateRectangle(ApplyMovement(gameTime));
         }
 
         ///summary>
@@ -186,7 +186,7 @@ namespace Game1
         
         /// Calculates the amount of force to apply for the object during each iteration of the game loop
         /// </summary>
-        public override void CalculateGravity()
+        public override void CalculateGravity(GameTime gameTime)
         {
             if (base.ApplyGravity)
             {

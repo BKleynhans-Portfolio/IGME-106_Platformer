@@ -97,13 +97,13 @@ namespace Game1
         public abstract bool Intersects(GameObject passedGameObject);
         protected abstract override void Update(GameTime gameTime);
 
-        public int CyclesToThreshold { get; set; }                                                      // The amount of times the game loop runs during on acceleration / deceleration
-        public int AccelerationCoefficientStartingPoint { get; set; }
-        public int AccelerationCoefficientEndingPoint { get; set; }
-        public bool AccelerationCoefficientStartingXSet { get; set; }
-        public bool AccelerationCoefficientEndingXSet { get; set; }
-        public bool CalculateCoefficient { get; set; }
-        public float AccelerationCoefficient { get; set; }                        // Calculate pixels covered during acceleration
+        //public int CyclesToThreshold { get; set; }                                                      // The amount of times the game loop runs during on acceleration / deceleration
+        //public int AccelerationCoefficientStartingPoint { get; set; }
+        //public int AccelerationCoefficientEndingPoint { get; set; }
+        //public bool AccelerationCoefficientStartingXSet { get; set; }
+        //public bool AccelerationCoefficientEndingXSet { get; set; }
+        //public bool CalculateCoefficient { get; set; }
+        //public float AccelerationCoefficient { get; set; }                        // Calculate pixels covered during acceleration
 
         public Texture2D SpriteSheet { get; set; }                                                    // Texture and drawLocation
         public Rectangle DrawLocation { get; set; }        
@@ -113,6 +113,10 @@ namespace Game1
         public int SpriteHeight { get; set; }
         public SpriteEffects SpriteEffect { get; set; }
         public bool Visible { get; set; }                                                               // Is this object visible in the scene
+        public int CurrentSpriteIndex { get; set; }
+        public int PreviousSpriteIndex { get; set; }
+        public float PreviousMovementVelocity { get; set; }
+        public int TimeSinceLastUpdate { get; set; }
 
         private float globalGlobalAcceleration;                                             // Acceleration to apply to characters during each iteration
         private float environmentalAcceleration;                                              // Acceleration to apply to platforms
@@ -126,7 +130,8 @@ namespace Game1
 
         private bool falling;                                                               // Is the object falling?
         private bool jumpInProgress;                                                        // Is the object in a jump process?
-        
+        public string PlatformType { get; set; }
+
         /// <summary>
         /// Default constructor.  Creates a GameObject with default values.
         /// </summary>
@@ -153,22 +158,24 @@ namespace Game1
             this.InitialXPlacement = x;
             this.InitialYPlacement = y;
 
-            this.AccelerationCoefficientStartingPoint = 0;
-            this.AccelerationCoefficientEndingPoint = 0;
-            this.AccelerationCoefficientStartingXSet = false;
-            this.AccelerationCoefficientEndingXSet = false;
+            //this.AccelerationCoefficientStartingPoint = 0;
+            //this.AccelerationCoefficientEndingPoint = 0;
+            //this.AccelerationCoefficientStartingXSet = false;
+            //this.AccelerationCoefficientEndingXSet = false;
             GravityDirection = GravityDirection.Down;
             MovementAppliedTo = MovementAppliedTo.None;
             HitObstacle = HitObstacle.None;
             HitNpc = HitNpc.None;
             GravityOnProximityFrom = GravityOnProximityFrom.None;
             ObjectMovement = ObjectMovement.OneDirection;            
-            CalculateCoefficient = true;
-            AccelerationCoefficient = 0;
+            //CalculateCoefficient = true;
+            //AccelerationCoefficient = 0;
 
             SpritesInSheet = 4;
-            SpriteWidth = width / SpritesInSheet;
-            SpriteHeight = height;
+            SpriteWidth = 400;
+            SpriteHeight = 400;
+
+            this.CurrentSpriteIndex = 0;
         }
 
         /// <summary>
@@ -190,16 +197,16 @@ namespace Game1
 
             this.ApplyGravity = addGravity;
 
-            this.GlobalAcceleration = 2f;// 0.25f;
+            this.GlobalAcceleration = /*2f;//*/ 0.25f;
             this.EnvironmentalAcceleration = 0.05f;
 
             this.InitialXPlacement = x;
             this.InitialYPlacement = y;
 
-            this.AccelerationCoefficientStartingPoint = 0;
-            this.AccelerationCoefficientEndingPoint = 0;
-            this.AccelerationCoefficientStartingXSet = false;
-            this.AccelerationCoefficientEndingXSet = false;
+            //this.AccelerationCoefficientStartingPoint = 0;
+            //this.AccelerationCoefficientEndingPoint = 0;
+            //this.AccelerationCoefficientStartingXSet = false;
+            //this.AccelerationCoefficientEndingXSet = false;
             GravityDirection = GravityDirection.Down;
             MovementAppliedTo = MovementAppliedTo.None;
             HitObstacle = HitObstacle.None;
@@ -208,8 +215,10 @@ namespace Game1
             ObjectMovement = ObjectMovement.OneDirection;
 
             SpritesInSheet = spritesInSheet;
-            SpriteWidth = width / spritesInSheet;
-            SpriteHeight = height;
+            SpriteWidth = 400;
+            SpriteHeight = 400;
+
+            this.CurrentSpriteIndex = 0;
         }
 
         /// <summary>
@@ -316,7 +325,7 @@ namespace Game1
         /// <summary>
         /// Calculates the amount of force to apply for the object during each iteration of the game loop
         /// </summary>
-        public virtual void CalculateGravity()
+        public virtual void CalculateGravity(GameTime gameTime)
         {
             if (this.ApplyGravity)                                                          // If the object requires gravity to be implemented
             {

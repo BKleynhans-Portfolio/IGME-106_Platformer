@@ -35,9 +35,9 @@ namespace Game1
         /// <param name="y">Starting Y coordinate of object</param>
         /// <param name="width">Width of object</param>
         /// <param name="height">Height of object</param>
-        public Platform(Texture2D spriteTexture, int x, int y, int width, int height) : base(spriteTexture, x, y, width, height)
+        public Platform(string platformType, Texture2D spriteTexture, int x, int y, int width, int height) : base(spriteTexture, x, y, width, height)
         {
-
+            base.PlatformType = platformType;
         }
 
         /// <summary>
@@ -49,11 +49,11 @@ namespace Game1
         /// <param name="width">Width of object</param>
         /// <param name="height">Height of object</param>
         /// <param name="addGravity">Does this object require immediate gravity implementation</param>
-        public Platform(Texture2D spriteTexture, int spritesInSheet, int x, int y, int width, int height,
+        public Platform(string platformType, Texture2D spriteTexture, int spritesInSheet, int x, int y, int width, int height,
                           bool addGravity) :
                 base(spriteTexture, spritesInSheet, x, y, width, height, addGravity)
         {
-
+            base.PlatformType = platformType;
         }
     }
 }

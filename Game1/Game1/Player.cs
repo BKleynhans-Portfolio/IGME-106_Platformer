@@ -28,7 +28,8 @@ namespace Game1
 {
     class Player : Character
     {
-        private int jumpCount;
+        private int JumpCount { get; set; }
+        private int SlidesToCycle { get; set; }
 
         /// <summary>
         /// Default constructor.  Creates a GameObject with default values.
@@ -38,9 +39,12 @@ namespace Game1
         /// <param name="y">Starting Y coordinate of object</param>
         /// <param name="width">Width of object</param>
         /// <param name="height">Height of object</param>
-        public Player(Texture2D spriteTexture, int x, int y, int width, int height) : base(spriteTexture, x, y, width, height)
+        public Player(Texture2D spriteTexture, int spritesInSheet, int slidesToCycle, int x, int y, int width,
+                        int height) :
+            base(spriteTexture, x, y, width, height)
         {
             base.IsAlive = true;
+            this.SlidesToCycle = slidesToCycle;
         }
 
         /// <summary>
@@ -52,32 +56,44 @@ namespace Game1
         /// <param name="width">Width of object</param>
         /// <param name="height">Height of object</param>
         /// <param name="addGravity">Does this object require immediate gravity implementation</param>
-        public Player(Texture2D spriteTexture, int spritesInSheet, int x, int y, int width, int height,
+        public Player(Texture2D spriteTexture, int spritesInSheet, int slidesToCycle, int x, int y, int width, int height,
                           bool addGravity) :
                 base(spriteTexture, spritesInSheet, x, y, width, height, addGravity)
         {
             base.IsAlive = true;
+            this.SlidesToCycle = slidesToCycle;
         }
 
-        public int JumpCount
-        {
-            get { return this.jumpCount; }
-            set { this.jumpCount = value; }
-        }
-
-        public override Vector2 ApplyMovement()
+        public override Vector2 ApplyMovement(GameTime gameTime)
         {
             Vector2 returnValue;
 
-            this.SelectSprite(0);
+            //this.SelectSprite(0);
 
             if ((CurrentKeyboardState.IsKeyDown(Keys.A)) && (PreviousKeyboardState.IsKeyUp(Keys.A)))
             {
                 base.MovementAppliedTo = MovementAppliedTo.Left;
+                base.SpriteEffect = SpriteEffects.FlipHorizontally;
             }
             else if ((CurrentKeyboardState.IsKeyDown(Keys.D)) && (PreviousKeyboardState.IsKeyUp(Keys.D)))
             {
                 base.MovementAppliedTo = MovementAppliedTo.Right;
+                base.SpriteEffect = SpriteEffects.None;
+            }
+            else if ((CurrentKeyboardState.IsKeyUp(Keys.A)) && (PreviousKeyboardState.IsKeyDown(Keys.A)))
+            {
+                if ((!base.JumpInProgress) && (!base.HasJumped))
+                {
+                    base.MovementAppliedTo = MovementAppliedTo.None;
+                }                
+            }
+            else if ((CurrentKeyboardState.IsKeyUp(Keys.D)) && (PreviousKeyboardState.IsKeyDown(Keys.D)))
+            {
+                if ((!base.JumpInProgress) && (!base.HasJumped))
+                {
+                    base.MovementAppliedTo = MovementAppliedTo.None;
+                    base.SpriteEffect = SpriteEffects.None;
+                }
             }
 
             if (base.GravityDirection == GravityDirection.Down)
@@ -85,6 +101,8 @@ namespace Game1
                 if (((CurrentKeyboardState.IsKeyDown(Keys.Space)) && (PreviousKeyboardState.IsKeyUp(Keys.Space))) &&
                     ((base.HitObstacle == HitObstacle.FromTop) || (this.JumpCount == 1)))
                 {
+                    base.TimeSinceJump = gameTime.ElapsedGameTime.Milliseconds;
+
                     base.MovementAppliedTo = MovementAppliedTo.Up;
 
                     base.HitObstacle = HitObstacle.None;
@@ -134,8 +152,17 @@ namespace Game1
                 base.MovementAppliedTo = MovementAppliedTo.None;
             }
 
-            base.CalculateGravity();
-            base.CalculateMovement();
+            if (base.TimeSinceLastUpdate > 100)
+            {
+                UpdateMovementParameters();
+                this.UpdateSprite();
+                base.SelectSprite(base.CurrentSpriteIndex);
+
+                base.TimeSinceLastUpdate = 0;
+            }
+
+            base.CalculateGravity(gameTime);            
+            base.CalculateMovement(gameTime);
 
             returnValue = new Vector2(
                 this.DrawLocation.X + base.MovementVelocity,
@@ -147,9 +174,12 @@ namespace Game1
 
         protected override void Update(GameTime gameTime)
         {
+            base.TimeSinceLastUpdate += gameTime.ElapsedGameTime.Milliseconds;
+
             if ((this.DrawLocation.Y + this.DrawLocation.Height) > SCREENHEIGHT)
             {
                 base.TakeLife();
+                base.TookLife = false;
 
                 CreateRectangle(new Vector2(0, 800));
                 base.MovementVelocity = 0f;
@@ -203,12 +233,68 @@ namespace Game1
                     }
                 }
 
-                CreateRectangle(ApplyMovement());
+                CreateRectangle(ApplyMovement(gameTime));
             }
             else
             {
                 base.TakeLife();
             }
+        }
+
+        public override void UpdateSprite()
+        {
+            if ((CurrentSpriteIndex < SpritesInSheet) && (Math.Abs(MovementVelocity) > Math.Abs(PreviousMovementVelocity)))
+            {
+                if (CurrentSpriteIndex == (SpritesInSheet - 1))
+                {
+                    PreviousSpriteIndex = CurrentSpriteIndex;
+
+                    CurrentSpriteIndex = (SpritesInSheet - 2);
+                }
+                else
+                {
+                    PreviousSpriteIndex = CurrentSpriteIndex;
+
+                    CurrentSpriteIndex++;
+                }
+            }
+            else if (Math.Abs(MovementVelocity) < Math.Abs(PreviousMovementVelocity))
+            {
+                if (CurrentSpriteIndex != 0)
+                {
+                    PreviousSpriteIndex = CurrentSpriteIndex;
+
+                    CurrentSpriteIndex--;
+                }
+            }
+
+            PreviousMovementVelocity = MovementVelocity;
+        }
+
+        /// <summary>
+        /// Draw the sprite
+        /// </summary>
+        /// <param name="spriteBatch">Spritebatch Image</param>
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+            Color drawColor = Color.White;
+
+            if (base.TookLife)
+            {
+                drawColor = (Color.Red * 0.5f);                
+            }
+
+            spriteBatch.Draw(
+                base.SpriteSheet,
+                new Vector2(base.DrawLocation.X, base.DrawLocation.Y),
+                base.SelectionArea,
+                drawColor,
+                0.0f,
+                Vector2.Zero,
+                0.1f,
+                base.SpriteEffect,
+                0.0f
+            );
         }
     }
 }

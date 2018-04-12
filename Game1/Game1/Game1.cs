@@ -60,6 +60,9 @@ namespace Game1
         // Dictionary of sound effect instances - required to adjust sound without recreation
         private static Dictionary<string, SoundEffectInstance> soundEffectInstances = new Dictionary<string, SoundEffectInstance>();
 
+        // Dictionary of levelbackgrounds
+        private static Dictionary<string, Texture2D> backgroundSprites = new Dictionary<string, Texture2D>();
+
         // Dictionary of player sprites
         private static Dictionary<string, Texture2D> playerSprites = new Dictionary<string, Texture2D>();
 
@@ -138,6 +141,12 @@ namespace Game1
         {
             get { return soundEffectInstances; }
             set { soundEffectInstances = value; }
+        }
+
+        private static Dictionary<string, Texture2D> BackgroundSprites
+        {
+            get { return backgroundSprites; }
+            set { backgroundSprites = value; }
         }
 
         private static Dictionary<string, Texture2D> PlayerSprites
@@ -395,6 +404,19 @@ namespace Game1
 
             spriteBatch.Begin();
 
+            // Draw background
+            spriteBatch.Draw(
+                BackgroundSprites["GameBackground"],
+                new Vector2(0, 0),
+                null,
+                (Color.White * 0.5f),
+                0.0f,
+                Vector2.Zero,
+                1.0f,
+                SpriteEffects.None,
+                0.0f
+            );
+
             switch (GameState)
             {
                 case GameState.Title:
@@ -435,16 +457,22 @@ namespace Game1
 
         private void LoadSprites()
         {
+            // Add level sprites
+            BackgroundSprites.Add("GameBackground", Content.Load<Texture2D>("Images\\Backgrounds\\GameBackground"));
+
             // Add player sprites
             PlayerSprites.Add("PlayerCharacter", Content.Load<Texture2D>("Images\\SpriteSheets\\Player_400x400"));
 
             // Add platform sprites
-            PlatformSprites.Add("FlatPlatform", Content.Load<Texture2D>("Images\\TestImages\\Platform"));
+            PlatformSprites.Add("Grass", Content.Load<Texture2D>("Images\\SpriteSheets\\Grass_400x400"));
+            PlatformSprites.Add("Water", Content.Load<Texture2D>("Images\\SpriteSheets\\Water_400x400"));
+            PlatformSprites.Add("Stone", Content.Load<Texture2D>("Images\\SpriteSheets\\Stone_400x400"));
+            PlatformSprites.Add("Wood", Content.Load<Texture2D>("Images\\SpriteSheets\\Wood_400x400"));
 
             // Add enemy sprites
             EnemySprites.Add("GeneralEnemy", Content.Load<Texture2D>("Images\\SpriteSheets\\Enemy_400x400"));
 
-            // Add random other graphics sprites
+            // Add random other graphics sprites            
             GeneralSprites.Add("LifeIcon", Content.Load<Texture2D>("Images\\GeneralElements\\LifeIcon"));
 
             // Add menu sprites
@@ -505,6 +533,7 @@ namespace Game1
 
         private void InitializeGameObjects()
         {
+            LoadBackgroundElements();
             LoadPlayerElements();
             LoadFloorElements();
             LoadEnemyElements();            
@@ -514,7 +543,7 @@ namespace Game1
             {
                 LoadMenuElements();
             }
-
+            
             // All objects need to be added to the GameObject list
             GameObject.Add(player);                                                         // Add player to GameObject
 
@@ -543,17 +572,81 @@ namespace Game1
             LivesLeft.Clear();
         }
 
+        private void LoadBackgroundElements()
+        {
+            new GraphicElement(
+                elementName: "GameBackground",
+                spriteTexture: BackgroundSprites["GameBackground"],
+                x: 0,
+                y: 0,
+                width: SCREENWIDTH,
+                height: SCREENHEIGHT
+            );
+        }
+
         private void LoadPlayerElements()
         {
             Player = new Player(
-                            PlayerSprites["PlayerCharacter"],                            
+                            PlayerSprites["PlayerCharacter"],
+                            spritesInSheet: 3,
+                            slidesToCycle: 3,
                             x: 0,
-                            y: 800,
-                            width: 160,
-                            height: 40
+                            y: 810,
+                            width: 40,
+                            height: 40,
+                            addGravity: true
                          );
+        }
 
-            Player.ApplyGravity = true;
+        private void LoadEnemyElements()
+        {
+            //000
+            Enemies.Add(
+                 new Enemy(
+                     spriteTexture: enemySprites["GeneralEnemy"],
+                     spritesInSheet: 4,
+                     x: 350,
+                     y: 810,
+                     width: 40,
+                     height: 40,
+                     addGravity: true
+                 )
+             );
+            
+            Enemies[0].ObjectMovement = ObjectMovement.ToAndFroLeftFirst;
+            Enemies[0].ObjectXMoveDistance = 150;
+
+            //001
+            Enemies.Add(
+                new Enemy(
+                    spriteTexture: enemySprites["GeneralEnemy"],
+                    spritesInSheet: 4,
+                    x: 800,
+                    y: 810,
+                    width: 40,
+                    height: 40,
+                    addGravity: true
+                )
+            );
+
+            Enemies[1].ObjectMovement = ObjectMovement.ToAndFroRightFirst;
+            Enemies[1].ObjectXMoveDistance = 150;
+
+            //002
+            Enemies.Add(
+                new Enemy(
+                    spriteTexture: enemySprites["GeneralEnemy"],
+                    spritesInSheet: 4,
+                    x: 200,
+                    y: 470,
+                    width: 40,
+                    height: 40,
+                    addGravity: true
+                )
+            );
+
+            Enemies[2].ObjectMovement = ObjectMovement.ToAndFroRightFirst;
+            Enemies[2].ObjectXMoveDistance = 250;
         }
 
         private void LoadFloorElements()
@@ -561,7 +654,8 @@ namespace Game1
             //000
             Platforms.Add(                                                                  // Ceiling platform
                 new Platform(
-                    spriteTexture: PlatformSprites["FlatPlatform"],
+                    platformType: "Grass",
+                    spriteTexture: PlatformSprites["Grass"],
                     x: 0,
                     y: 860,
                     width: 400,
@@ -572,7 +666,8 @@ namespace Game1
             //001
             Platforms.Add(
                 new Platform(
-                    spriteTexture: PlatformSprites["FlatPlatform"],
+                    platformType: "Grass",
+                    spriteTexture: PlatformSprites["Grass"],
                     x: 490,
                     y: 860,
                     width: 110,
@@ -583,7 +678,8 @@ namespace Game1
             //002
             Platforms.Add(
                 new Platform(
-                    spriteTexture: PlatformSprites["FlatPlatform"],
+                    platformType: "Grass",
+                    spriteTexture: PlatformSprites["Grass"],
                     x: 800,
                     y: 860,
                     width: 200,
@@ -594,7 +690,8 @@ namespace Game1
             //003
             Platforms.Add(
                 new Platform(
-                    spriteTexture: PlatformSprites["FlatPlatform"],
+                    platformType: "Grass",
+                    spriteTexture: PlatformSprites["Grass"],
                     x: 1400,
                     y: 860,
                     width: 200,
@@ -605,11 +702,12 @@ namespace Game1
             //004
             Platforms.Add(
                 new Platform(
-                    spriteTexture: PlatformSprites["FlatPlatform"],
+                    platformType: "Wood",
+                    spriteTexture: PlatformSprites["Wood"],
                     x: 1100,
                     y: 800,
                     width: 100,
-                    height: 50
+                    height: 10
                 )
             );
 
@@ -620,11 +718,12 @@ namespace Game1
             //005
             Platforms.Add(
                 new Platform(
-                    spriteTexture: PlatformSprites["FlatPlatform"],
+                    platformType: "Wood",
+                    spriteTexture: PlatformSprites["Wood"],
                     x: 600,
                     y: 700,
                     width: 100,
-                    height: 50
+                    height: 10
                 )
             );
 
@@ -635,7 +734,8 @@ namespace Game1
             //006
             Platforms.Add(
                 new Platform(
-                    spriteTexture: PlatformSprites["FlatPlatform"],
+                    platformType: "Grass",
+                    spriteTexture: PlatformSprites["Grass"],
                     x: 300,
                     y: 700,
                     width: 200,
@@ -646,7 +746,8 @@ namespace Game1
             //007
             Platforms.Add(
                 new Platform(
-                    spriteTexture: PlatformSprites["FlatPlatform"],
+                    platformType: "Grass",
+                    spriteTexture: PlatformSprites["Grass"],
                     x: 0,
                     y: 510,
                     width: 510,
@@ -657,11 +758,12 @@ namespace Game1
             //008
             Platforms.Add(
                 new Platform(
-                    spriteTexture: PlatformSprites["FlatPlatform"],
+                    platformType: "Wood",
+                    spriteTexture: PlatformSprites["Wood"],
                     x: 50,
                     y: 400,
                     width: 100,
-                    height: 50
+                    height: 10
                 )
             );
 
@@ -672,11 +774,12 @@ namespace Game1
             //009
             Platforms.Add(
                 new Platform(
-                    spriteTexture: PlatformSprites["FlatPlatform"],
+                    platformType: "Wood",
+                    spriteTexture: PlatformSprites["Wood"],
                     x: 1000,
                     y: 500,
                     width: 100,
-                    height: 50
+                    height: 10
                 )
             );
 
@@ -687,7 +790,8 @@ namespace Game1
             //010
             Platforms.Add(
                 new Platform(
-                    spriteTexture: PlatformSprites["FlatPlatform"],
+                    platformType: "Stone",
+                    spriteTexture: PlatformSprites["Stone"],
                     x: 1200,
                     y: 150,
                     width: 50,
@@ -698,7 +802,8 @@ namespace Game1
             //011
             Platforms.Add(
                 new Platform(
-                    spriteTexture: PlatformSprites["FlatPlatform"],
+                    platformType: "Grass",
+                    spriteTexture: PlatformSprites["Grass"],
                     x: 800,
                     y: 250,
                     width: 200,
@@ -709,7 +814,8 @@ namespace Game1
             //012
             Platforms.Add(
                 new Platform(
-                    spriteTexture: PlatformSprites["FlatPlatform"],
+                    platformType: "Grass",
+                    spriteTexture: PlatformSprites["Grass"],
                     x: 700,
                     y: 250,
                     width: 100,
@@ -725,7 +831,8 @@ namespace Game1
             //013
             Platforms.Add(
                 new Platform(
-                    spriteTexture: PlatformSprites["FlatPlatform"],
+                    platformType: "Grass",
+                    spriteTexture: PlatformSprites["Grass"],
                     x: 600,
                     y: 250,
                     width: 100,
@@ -736,22 +843,24 @@ namespace Game1
             //014
             Platforms.Add(
                 new Platform(
-                    spriteTexture: PlatformSprites["FlatPlatform"],
+                    platformType: "Stone",
+                    spriteTexture: PlatformSprites["Stone"],
                     x: 450,
                     y: 150,
                     width: 50,
-                    height: 300
+                    height: 260
                 )
             );
 
             //015
             Platforms.Add(
                 new Platform(
-                    spriteTexture: PlatformSprites["FlatPlatform"],
+                    platformType: "Wood",
+                    spriteTexture: PlatformSprites["Wood"],
                     x: 400,
                     y: 250,
                     width: 50,
-                    height: 50
+                    height: 10
                 )
             );
 
@@ -762,7 +871,8 @@ namespace Game1
             //016
             Platforms.Add(
                 new Platform(
-                    spriteTexture: PlatformSprites["FlatPlatform"],
+                    platformType: "Grass",
+                    spriteTexture: PlatformSprites["Grass"],
                     x: 150,
                     y: 250,
                     width: 100,
@@ -773,11 +883,12 @@ namespace Game1
             //017
             Platforms.Add(
                 new Platform(
-                    spriteTexture: PlatformSprites["FlatPlatform"],
+                    platformType: "Wood",
+                    spriteTexture: PlatformSprites["Wood"],
                     x: 0,
                     y: 150,
                     width: 100,
-                    height: 50
+                    height: 10
                 )
             );
 
@@ -790,7 +901,8 @@ namespace Game1
             //018
             Platforms.Add(
                 new Platform(
-                    spriteTexture: PlatformSprites["FlatPlatform"],
+                    platformType: "Grass",
+                    spriteTexture: PlatformSprites["Grass"],
                     x: 100,
                     y: 150,
                     width: 300,
@@ -801,7 +913,8 @@ namespace Game1
             //019
             Platforms.Add(
                 new Platform(
-                    spriteTexture: PlatformSprites["FlatPlatform"],
+                    platformType: "Grass",
+                    spriteTexture: PlatformSprites["Grass"],
                     x: 100,
                     y: 50,
                     width: 350,
@@ -812,7 +925,8 @@ namespace Game1
             //020
             Platforms.Add(
                 new Platform(
-                    spriteTexture: PlatformSprites["FlatPlatform"],
+                    platformType: "Grass",
+                    spriteTexture: PlatformSprites["Grass"],
                     x: 450,
                     y: 100,
                     width: 550,
@@ -823,7 +937,8 @@ namespace Game1
             //021
             Platforms.Add(
                 new Platform(
-                    spriteTexture: PlatformSprites["FlatPlatform"],
+                    platformType: "Grass",
+                    spriteTexture: PlatformSprites["Grass"],
                     x: 1000,
                     y: 100,
                     width: 100,
@@ -839,7 +954,8 @@ namespace Game1
             //022
             Platforms.Add(
                 new Platform(
-                    spriteTexture: PlatformSprites["FlatPlatform"],
+                    platformType: "Grass",
+                    spriteTexture: PlatformSprites["Grass"],
                     x: 1100,
                     y: 100,
                     width: 100,
@@ -852,61 +968,41 @@ namespace Game1
             Platforms[22].ObjectMovement = ObjectMovement.OneDirection;
             Platforms[22].GravityOnProximityFrom = GravityOnProximityFrom.Top;
 
-
-        }
-
-        private void LoadEnemyElements()
-        {
-            //000
-            Enemies.Add(
-                 new Enemy(
-                     spriteTexture: enemySprites["GeneralEnemy"],
-                     spritesInSheet: 4,
-                     x: 350,
-                     y: 800,
-                     width: 160,
-                     height: 40,
-                     addGravity: true
-                 )
-             );
-
-            //Enemies[0].ApplyGravity = true;
-            Enemies[0].ObjectMovement = ObjectMovement.ToAndFroLeftFirst;
-            Enemies[0].ObjectXMoveDistance = 150;
-
-            //001
-            Enemies.Add(
-                new Enemy(
-                    spriteTexture: enemySprites["GeneralEnemy"],
-                    spritesInSheet: 4,
-                    x: 800,
-                    y: 800,
-                    width: 160,
-                    height: 40,
-                    addGravity: true
+            //023
+            Platforms.Add(
+                new Platform(
+                    platformType: "Water",
+                    spriteTexture: PlatformSprites["Water"],
+                    x: 400,
+                    y: 860,
+                    width: 100,
+                    height: 50
                 )
             );
 
-            //Enemies[1].ApplyGravity = true;
-            Enemies[1].ObjectMovement = ObjectMovement.ToAndFroRightFirst;
-            Enemies[1].ObjectXMoveDistance = 150;
-
-            //002
-            Enemies.Add(
-                new Enemy(
-                    spriteTexture: enemySprites["GeneralEnemy"],
-                    spritesInSheet: 4,
-                    x: 200,
-                    y: 460,
-                    width: 160,
-                    height: 40,
-                    addGravity: true
+            //024
+            Platforms.Add(
+                new Platform(
+                    platformType: "Water",
+                    spriteTexture: PlatformSprites["Water"],
+                    x: 600,
+                    y: 860,
+                    width: 200,
+                    height: 50
                 )
             );
 
-            //Enemies[2].ApplyGravity = true;
-            Enemies[2].ObjectMovement = ObjectMovement.ToAndFroRightFirst;
-            Enemies[2].ObjectXMoveDistance = 250;
+            //025
+            Platforms.Add(
+                new Platform(
+                    platformType: "Water",
+                    spriteTexture: PlatformSprites["Water"],
+                    x: 1000,
+                    y: 860,
+                    width: 400,
+                    height: 50
+                )
+            );
         }
 
         private void LoadGeneralElements()

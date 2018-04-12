@@ -28,17 +28,20 @@ namespace Game1
     public abstract class Character : GameObject
     {
         protected abstract override void Update(GameTime gameTime);
+        public abstract Vector2 ApplyMovement(GameTime gameTime);
 
-        private float platformHorizontalAcceleration;
-        private float platformVerticalAcceleration;
+        public float PlatformHorizontalAcceleration { get; set; }
+        public float PlatformVerticalAcceleration { get; set; }
 
-        private int lives;
+        public int Lives { get; set; }
 
-        private bool tookLife;
-        private bool isAlive;
-        private bool hasJumped;
+        public bool TookLife { get; set; }
+        public bool IsAlive { get; set; }
+        public bool HasJumped { get; set; }
+        public int TimeSinceJump { get; set; }
+        public int TimeSinceGravity { get; set; }
 
-        private int jumpVelocity;
+        public int JumpVelocity { get; set; }
 
         /// <summary>
         /// Default constructor.  Creates a GameObject with default values.
@@ -52,9 +55,10 @@ namespace Game1
         {
             this.HasJumped = false;
             base.JumpInProgress = false;
-            
+            this.TimeSinceGravity = 0;
+
             this.Lives = 3;
-            this.JumpVelocity = 12;
+            this.JumpVelocity = 6;
         }
 
         /// <summary>
@@ -72,113 +76,43 @@ namespace Game1
         {
             this.HasJumped = false;
             base.JumpInProgress = false;
+            this.TimeSinceGravity = 0;
 
             this.Lives = 3;
-            this.JumpVelocity = 10;
-        }
-
-        public int JumpVelocity
-        {
-            get { return this.jumpVelocity; }
-            set { this.jumpVelocity = value; }
-        }
-
-        public float PlatformHorizontalAcceleration
-        {
-            get { return this.platformHorizontalAcceleration; }
-            set { this.platformHorizontalAcceleration = value; }
-        }
-
-        public float PlatformVerticalAcceleration
-        {
-            get { return this.platformVerticalAcceleration; }
-            set { this.platformVerticalAcceleration = value; }
-        }
-
-        /// <summary>
-        /// Properties for variable which indicates whether the character is alive or not
-        /// </summary>
-        public bool IsAlive
-        {
-            get { return this.isAlive; }
-            set { this.isAlive = value; }
-        }
-
-        /// <summary>
-        /// Properties for variable keeps track of whether the player has jumped (not current jump status)
-        /// </summary>
-        public bool HasJumped
-        {
-            get { return this.hasJumped; }
-            set { this.hasJumped = value; }
-        }
-
-        /// <summary>
-        /// Number of lives the player has left
-        /// </summary>
-        public int Lives
-        {
-            get { return this.lives; }
-            set { this.lives = value; }
-        }
-
-        public bool TookLife
-        {
-            get { return this.tookLife; }
-            set { this.tookLife = value; }
-        }
-
-        /// <summary>
-        /// Calls and applies the methods required to move the character
-        /// </summary>
-        /// <returns>A vector with the new X-Y coordinates of the character</returns>
-        public virtual Vector2 ApplyMovement()
-        {
-            Vector2 returnValue;
-
-            this.SelectSprite(0);
-            this.CalculateGravity();
-            this.CalculateMovement();
-
-            returnValue = new Vector2(
-                this.DrawLocation.X + base.MovementVelocity,
-                this.DrawLocation.Y + base.GravitationalVelocity
-            );
-
-            return returnValue;
+            this.JumpVelocity = 6;
         }
 
         /// <summary>
         /// Calculate the gravity that needs to be applied to the character
         /// </summary>
-        public override void CalculateGravity()
-        {   
+        public override void CalculateGravity(GameTime gameTime)
+        {            
             if (this.ApplyGravity)                                                          // If this character needs to have gravity applied
-            {                
+            {
                 switch (base.GravityDirection)                                                   // Determine in which direction the gravity needs to be applied
-                {                    
+                {
                     case GravityDirection.Up:                                               // If gravity needs to be applied in a upward direction
-                        // If we have time
+                                                                                            // If we have time
 
                         break;
-                    case GravityDirection.Down:                        
+                    case GravityDirection.Down:
                         if (base.HitObstacle == HitObstacle.FromTop)                             // If this object hit another object on it's top
-                        {                            
+                        {
                             base.Falling = false;                                           // Stop falling
                             this.GravitationalVelocity = 0;
-                        }           
+                        }
                         else if (!HasJumped)                                                // If this object did not hit another object on its top and is not
                         {                                                                   // busy with a jump action                            
                             this.GravitationalVelocity += this.GlobalAcceleration;                // Continue to implement gravity
                         }
 
-                        break;                    
+                        break;
                     case GravityDirection.Left:                                             // If gravity needs to be applied in a left direction
-                        // If we have time
+                                                                                            // If we have time
 
                         break;
                     case GravityDirection.Right:                                            // If gravity needs to be applied in a right direction
-                        // If we have time
+                                                                                            // If we have time
 
                         break;
                 }
@@ -188,7 +122,7 @@ namespace Game1
         /// <summary>
         /// Calculate the movement velocity for the object
         /// </summary>
-        public void CalculateMovement()
+        public void CalculateMovement(GameTime gameTime)
         {
             if (base.MovementAppliedTo == MovementAppliedTo.None)
             {
@@ -210,26 +144,39 @@ namespace Game1
                 base.MovementVelocity = DefaultHorizonalVelocity + this.PlatformHorizontalAcceleration;
             }
 
+            
             if ((base.MovementAppliedTo == MovementAppliedTo.Up) && (base.HitObstacle != HitObstacle.FromTop))
             {
                 if ((HasJumped) && (GravitationalVelocity == 0))
                 {
                     this.GravitationalVelocity -= this.JumpVelocity;
                 }
-                else if ((HasJumped) && (GravitationalVelocity > -5))
+
+                if (this.TimeSinceJump < 1)
                 {
-                    this.GravitationalVelocity -= this.GlobalAcceleration;
+                    if ((HasJumped) && (GravitationalVelocity > -5))
+                    {
+                        this.GravitationalVelocity -= this.GlobalAcceleration;
+                    }
+                    else if ((HasJumped) && (GravitationalVelocity <= -5))
+                    {
+                        this.GravitationalVelocity += this.GlobalAcceleration; 
+                        HasJumped = false;
+                    }
+                    else if ((!HasJumped) && (JumpInProgress) && (GravitationalVelocity <= -5))
+                    {
+                        this.GravitationalVelocity += this.GlobalAcceleration;
+                    }
+
+                    this.TimeSinceJump = gameTime.ElapsedGameTime.Milliseconds;
                 }
-                else if ((HasJumped) && (GravitationalVelocity <= -5))
+                else
                 {
-                    this.GravitationalVelocity += this.GlobalAcceleration;
-                    HasJumped = false;
-                }
-                else if ((!HasJumped) && (JumpInProgress) && (GravitationalVelocity <= -5))
-                {
-                    this.GravitationalVelocity += this.GlobalAcceleration;
+                    this.TimeSinceJump--;
                 }
             }
+            
+            
 
             if ((base.MovementAppliedTo == MovementAppliedTo.Up) && (base.HitObstacle == HitObstacle.FromBottom))
             {
@@ -261,7 +208,7 @@ namespace Game1
                         (this.DrawLocation.Bottom != passedGameObject.DrawLocation.Bottom)
                     ))
                 {
-                    if (passedGameObject.GetType() == typeof(Platform))
+                    if ((passedGameObject.GetType() == typeof(Platform)) && (!passedGameObject.PlatformType.Equals("Water")))
                     {
                         base.HitObstacle = HitObstacle.FromTop;
                         this.JumpInProgress = false;
@@ -301,14 +248,22 @@ namespace Game1
                 {
                     // If this object is of type Character and the passed in object is of type Platform
                     // *** Each continuation of the BaseType keyword goes up one additional level in the derived classes
-                    if (passedGameObject.GetType() == typeof(Platform))
+                    if ((passedGameObject.GetType() == typeof(Platform)) && (!passedGameObject.PlatformType.Equals("Water")))
                     {
                         base.HitObstacle = HitObstacle.FromBottom;
                         this.JumpInProgress = false;
                         this.HasJumped = false;
                         base.Falling = true;
                         base.HitObstacle = HitObstacle.None;
-                        base.GravitationalVelocity += 1;
+
+                        if (base.GravitationalVelocity < 0)
+                        {
+                            base.GravitationalVelocity += 2;
+                        }
+                        else
+                        {
+                            base.GravitationalVelocity += GlobalAcceleration;
+                        }
 
                         newX = this.DrawLocation.X;                                            // Define new X and Y coordinates and create a new drawLocation
                         newY = passedGameObject.DrawLocation.Y + passedGameObject.DrawLocation.Height - 1;
@@ -341,7 +296,7 @@ namespace Game1
                         ))
                 {                                                                           // If this object is of type Character and the passed in object is of type Platform
                                                                                             // *** Each continuation of the BaseType keyword goes up one additional level in the derived classes
-                    if (passedGameObject.GetType() == typeof(Platform))
+                    if ((passedGameObject.GetType() == typeof(Platform)) && (!passedGameObject.PlatformType.Equals("Water")))
                     {
                         if (((JumpInProgress) || (Falling)) && (base.HitObstacle != HitObstacle.FromTop))
                         {
@@ -382,7 +337,7 @@ namespace Game1
                         ))
                 {                                                                           // If this object is of type Character and the passed in object is of type Platform
                                                                                             // *** Each continuation of the BaseType keyword goes up one additional level in the derived classes
-                    if (passedGameObject.GetType() == typeof(Platform))
+                    if ((passedGameObject.GetType() == typeof(Platform)) && (!passedGameObject.PlatformType.Equals("Water")))
                     {
                         if (((JumpInProgress) || (Falling)) && (base.HitObstacle != HitObstacle.FromTop))
                         {
@@ -477,6 +432,36 @@ namespace Game1
             SoundEffectInstances["GameOver"].Play();
         }
 
+        public virtual void UpdateSprite()
+        {
+            if ((CurrentSpriteIndex < SpritesInSheet) && (Math.Abs(MovementVelocity) > Math.Abs(PreviousMovementVelocity)))
+            {
+                if (CurrentSpriteIndex == (SpritesInSheet - 1))
+                {
+                    PreviousSpriteIndex = CurrentSpriteIndex;
+
+                    CurrentSpriteIndex = (SpritesInSheet - 2);
+                }
+                else
+                {
+                    PreviousSpriteIndex = CurrentSpriteIndex;
+
+                    CurrentSpriteIndex++;
+                }                
+            }
+            else if (Math.Abs(MovementVelocity) < Math.Abs(PreviousMovementVelocity))            
+            {
+                if (CurrentSpriteIndex != 0)
+                {
+                    PreviousSpriteIndex = CurrentSpriteIndex;
+
+                    CurrentSpriteIndex--;
+                }                
+            }
+
+            PreviousMovementVelocity = MovementVelocity;            
+        }
+
         public void SelectSprite(int spriteIndex)
         {
             base.SelectionArea = new Rectangle(
@@ -486,7 +471,8 @@ namespace Game1
                                         SpriteHeight
                                     );
 
-            Console.WriteLine();
+            if (this.GetType() == typeof(Enemy))
+                Console.WriteLine();
         }
 
         /// <summary>
@@ -498,7 +484,7 @@ namespace Game1
             spriteBatch.Draw(
                 base.SpriteSheet,
                 new Vector2(base.DrawLocation.X, base.DrawLocation.Y),
-                new Rectangle(0,0,400,400),
+                base.SelectionArea,
                 Color.White,
                 0.0f,
                 Vector2.Zero,
