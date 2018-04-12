@@ -20,6 +20,10 @@ namespace newLevelEditor
         int pointY;
         int gridPointX;
         int gridPointY;
+
+        int lastPlacedX;
+        int lastPlacedY;
+
         Color boxColor;
 
         //enum PlacingState
@@ -127,6 +131,8 @@ namespace newLevelEditor
 
             pnlLevel_Paint(this, null);
             DrawGrid();
+            lastPlacedX = gridPointX;
+            lastPlacedY = gridPointY;
 
             //switch to check which radio button is on
 
