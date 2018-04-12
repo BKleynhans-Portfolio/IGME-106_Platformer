@@ -193,7 +193,7 @@
 /processorParam:TextureFormat=Color
 /build:Menus/Options/OffButton.png
 
-#begin Menus/Options/OffText.png
+#begin Menus/Options/LowText.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -203,7 +203,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Menus/Options/OffText.png
+/build:Menus/Options/LowText.png
 
 #begin Menus/Options/OnButton.png
 /importer:TextureImporter
@@ -217,7 +217,7 @@
 /processorParam:TextureFormat=Color
 /build:Menus/Options/OnButton.png
 
-#begin Menus/Options/OnText.png
+#begin Menus/Options/HiText.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -227,7 +227,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Menus/Options/OnText.png
+/build:Menus/Options/HiText.png
 
 #begin Menus/Options/OptionsSelectionFrame.png
 /importer:TextureImporter
@@ -456,4 +456,28 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Images/SpriteSheets/Wood_400x400.png
+
+#begin Menus/Options/HiText.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Menus/Options/HiText.png
+
+#begin Menus/Options/LowText.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Menus/Options/LowText.png
 

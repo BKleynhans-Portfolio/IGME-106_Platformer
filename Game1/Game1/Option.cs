@@ -197,7 +197,7 @@ namespace Game1
                     switch (currentPosition)
                     {
                         case "Music":
-                            if (SoundEffectInstances["BackgroundMusic"].Volume > 0.0f)
+                            if (SoundEffectInstances["BackgroundMusic"].Volume > 0.1f)
                             {
                                 SoundEffectInstances["BackgroundMusic"].Volume -= 0.1f;
 

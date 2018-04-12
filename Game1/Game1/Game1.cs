@@ -498,8 +498,8 @@ namespace Game1
             MenuSprites.Add("SFX", Content.Load<Texture2D>("Menus\\Options\\SFX"));
             MenuSprites.Add("OnButton", Content.Load<Texture2D>("Menus\\Options\\OnButton"));
             MenuSprites.Add("OffButton", Content.Load<Texture2D>("Menus\\Options\\OffButton"));
-            MenuSprites.Add("OnText", Content.Load<Texture2D>("Menus\\Options\\OnText"));
-            MenuSprites.Add("OffText", Content.Load<Texture2D>("Menus\\Options\\OffText"));
+            MenuSprites.Add("HiText", Content.Load<Texture2D>("Menus\\Options\\HiText"));
+            MenuSprites.Add("LowText", Content.Load<Texture2D>("Menus\\Options\\LowText"));
             MenuSprites.Add("SettingsBar", Content.Load<Texture2D>("Menus\\Options\\SettingsBar"));
             MenuSprites.Add("SettingsSlider", Content.Load<Texture2D>("Menus\\Options\\SettingsSlider"));
             MenuSprites.Add("OptionsSelectionFrame", Content.Load<Texture2D>("Menus\\Options\\OptionsSelectionFrame"));
@@ -1176,11 +1176,11 @@ namespace Game1
             OptionElements.Add(
                 new Option(
                     menuItem: "MusicOff",
-                    spriteTexture: MenuSprites["OffText"],
+                    spriteTexture: MenuSprites["LowText"],
                     spritesInSheet: 1,
-                    x: (SCREENWIDTH / 2) + 100,
+                    x: (SCREENWIDTH / 2) + 90,
                     y: (SCREENHEIGHT / 2) - 20,
-                    width: 50,
+                    width: 75,
                     height: 30,
                     addGravity: false
                 )
@@ -1189,11 +1189,11 @@ namespace Game1
             OptionElements.Add(
                 new Option(
                     menuItem: "MusicOn",
-                    spriteTexture: MenuSprites["OnText"],
+                    spriteTexture: MenuSprites["HiText"],
                     spritesInSheet: 1,
-                    x: (SCREENWIDTH / 2) + 310,
+                    x: (SCREENWIDTH / 2) + 300,
                     y: (SCREENHEIGHT / 2) - 20,
-                    width: 75,
+                    width: 40,
                     height: 30,
                     addGravity: false
                 )
@@ -1241,11 +1241,11 @@ namespace Game1
             OptionElements.Add(
                 new Option(
                     menuItem: "SFXOff",
-                    spriteTexture: MenuSprites["OffText"],
+                    spriteTexture: MenuSprites["LowText"],
                     spritesInSheet: 1,
-                    x: (SCREENWIDTH / 2) + 100,
+                    x: (SCREENWIDTH / 2) + 90,
                     y: (SCREENHEIGHT / 2) + 70,
-                    width: 50,
+                    width: 75,
                     height: 30,
                     addGravity: false
                 )
@@ -1254,11 +1254,11 @@ namespace Game1
             OptionElements.Add(
                 new Option(
                     menuItem: "SFXOn",
-                    spriteTexture: MenuSprites["OnText"],
+                    spriteTexture: MenuSprites["HiText"],
                     spritesInSheet: 1,
-                    x: (SCREENWIDTH / 2) + 310,
+                    x: (SCREENWIDTH / 2) + 300,
                     y: (SCREENHEIGHT / 2) + 70,
-                    width: 75,
+                    width: 40,
                     height: 30,
                     addGravity: false
                 )
