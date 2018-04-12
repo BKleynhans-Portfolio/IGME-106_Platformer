@@ -96,13 +96,6 @@ namespace Game1
                             );
 
                             break;
-                        case "SFX":
-                            base.CreateRectangle(
-                                (int)(optionMenuDictionary["Difficulty"].X - 20),
-                                (int)(optionMenuDictionary["Difficulty"].Y - 15)
-                            );
-
-                            break;
                     }
                 }
                 else if (CurrentKeyboardState.IsKeyDown(Keys.Up) && PreviousKeyboardState.IsKeyUp(Keys.Up))
@@ -115,13 +108,6 @@ namespace Game1
                             base.CreateRectangle(
                                 (int)(optionMenuDictionary["Music"].X - 20),
                                 (int)(optionMenuDictionary["Music"].Y - 15)
-                            );
-
-                            break;
-                        case "Difficulty":
-                            base.CreateRectangle(
-                                (int)(optionMenuDictionary["SFX"].X - 20),
-                                (int)(optionMenuDictionary["SFX"].Y - 15)
                             );
 
                             break;
@@ -280,8 +266,6 @@ namespace Game1
                                 }
                             }
 
-                            break;
-                        case "Difficulty":
                             break;
                     }
                 }

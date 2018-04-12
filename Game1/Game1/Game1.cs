@@ -496,7 +496,6 @@ namespace Game1
             MenuSprites.Add("OptionsTitle", Content.Load<Texture2D>("Menus\\Options\\OptionsTitle"));
             MenuSprites.Add("Music", Content.Load<Texture2D>("Menus\\Options\\Music"));
             MenuSprites.Add("SFX", Content.Load<Texture2D>("Menus\\Options\\SFX"));
-            MenuSprites.Add("Difficulty", Content.Load<Texture2D>("Menus\\Options\\Difficulty"));
             MenuSprites.Add("OnButton", Content.Load<Texture2D>("Menus\\Options\\OnButton"));
             MenuSprites.Add("OffButton", Content.Load<Texture2D>("Menus\\Options\\OffButton"));
             MenuSprites.Add("OnText", Content.Load<Texture2D>("Menus\\Options\\OnText"));
@@ -1167,7 +1166,7 @@ namespace Game1
                     spriteTexture: MenuSprites["Music"],
                     spritesInSheet: 1,
                     x: (SCREENWIDTH / 2) - 200,
-                    y: (SCREENHEIGHT / 2) - 100,
+                    y: (SCREENHEIGHT / 2) - 50,
                     width: 200,
                     height: 80,
                     addGravity: false
@@ -1180,7 +1179,7 @@ namespace Game1
                     spriteTexture: MenuSprites["OffText"],
                     spritesInSheet: 1,
                     x: (SCREENWIDTH / 2) + 100,
-                    y: (SCREENHEIGHT / 2) - 70,
+                    y: (SCREENHEIGHT / 2) - 20,
                     width: 50,
                     height: 30,
                     addGravity: false
@@ -1193,7 +1192,7 @@ namespace Game1
                     spriteTexture: MenuSprites["OnText"],
                     spritesInSheet: 1,
                     x: (SCREENWIDTH / 2) + 310,
-                    y: (SCREENHEIGHT / 2) - 70,
+                    y: (SCREENHEIGHT / 2) - 20,
                     width: 75,
                     height: 30,
                     addGravity: false
@@ -1206,7 +1205,7 @@ namespace Game1
                     spriteTexture: MenuSprites["SettingsBar"],
                     spritesInSheet: 1,
                     x: (SCREENWIDTH / 2) + 175,
-                    y: (SCREENHEIGHT / 2) - 60,
+                    y: (SCREENHEIGHT / 2) - 10,
                     width: 110,
                     height: 10,
                     addGravity: false
@@ -1219,7 +1218,7 @@ namespace Game1
                     spriteTexture: MenuSprites["SettingsSlider"],
                     spritesInSheet: 1,
                     x: (SCREENWIDTH / 2) + 200,
-                    y: (SCREENHEIGHT / 2) - 76,
+                    y: (SCREENHEIGHT / 2) - 26,
                     width: 10,
                     height: 40,
                     addGravity: false
@@ -1232,7 +1231,7 @@ namespace Game1
                     spriteTexture: MenuSprites["SFX"],
                     spritesInSheet: 1,
                     x: (SCREENWIDTH / 2) - 200,
-                    y: (SCREENHEIGHT / 2),
+                    y: (SCREENHEIGHT / 2) + 50,
                     width: 200,
                     height: 80,
                     addGravity: false
@@ -1245,7 +1244,7 @@ namespace Game1
                     spriteTexture: MenuSprites["OffText"],
                     spritesInSheet: 1,
                     x: (SCREENWIDTH / 2) + 100,
-                    y: (SCREENHEIGHT / 2) + 20,
+                    y: (SCREENHEIGHT / 2) + 70,
                     width: 50,
                     height: 30,
                     addGravity: false
@@ -1258,7 +1257,7 @@ namespace Game1
                     spriteTexture: MenuSprites["OnText"],
                     spritesInSheet: 1,
                     x: (SCREENWIDTH / 2) + 310,
-                    y: (SCREENHEIGHT / 2) + 20,
+                    y: (SCREENHEIGHT / 2) + 70,
                     width: 75,
                     height: 30,
                     addGravity: false
@@ -1271,7 +1270,7 @@ namespace Game1
                     spriteTexture: MenuSprites["SettingsBar"],
                     spritesInSheet: 1,
                     x: (SCREENWIDTH / 2) + 175,
-                    y: (SCREENHEIGHT / 2) + 30,
+                    y: (SCREENHEIGHT / 2) + 80,
                     width: 110,
                     height: 10,
                     addGravity: false
@@ -1284,22 +1283,9 @@ namespace Game1
                     spriteTexture: MenuSprites["SettingsSlider"],
                     spritesInSheet: 1,
                     x: (SCREENWIDTH / 2) + 230,
-                    y: (SCREENHEIGHT / 2) + 14,
+                    y: (SCREENHEIGHT / 2) + 64,
                     width: 10,
                     height: 40,
-                    addGravity: false
-                )
-            );
-
-            OptionElements.Add(
-                new Option(
-                    menuItem: "Difficulty",
-                    spriteTexture: MenuSprites["Difficulty"],
-                    spritesInSheet: 1,
-                    x: (SCREENWIDTH / 2) - 200,
-                    y: (SCREENHEIGHT / 2) + 100,
-                    width: 200,
-                    height: 80,
                     addGravity: false
                 )
             );
@@ -1310,7 +1296,7 @@ namespace Game1
                     spriteTexture: MenuSprites["OptionsSelectionFrame"],
                     spritesInSheet: 1,
                     x: (SCREENWIDTH / 2) - 220,
-                    y: (SCREENHEIGHT / 2) - 115,
+                    y: (SCREENHEIGHT / 2) - 65,
                     width: 240,
                     height: 100,
                     addGravity: false
