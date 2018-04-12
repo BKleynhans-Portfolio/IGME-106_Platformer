@@ -48,17 +48,11 @@
             this.rbnWood = new System.Windows.Forms.RadioButton();
             this.rbnStone = new System.Windows.Forms.RadioButton();
             this.rbnWater = new System.Windows.Forms.RadioButton();
-            this.grbGroundProperties = new System.Windows.Forms.GroupBox();
-            this.radioButton6 = new System.Windows.Forms.RadioButton();
-            this.rbnMoving = new System.Windows.Forms.RadioButton();
-            this.rbnFalling = new System.Windows.Forms.RadioButton();
-            this.rbnNone = new System.Windows.Forms.RadioButton();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.comboBox2 = new System.Windows.Forms.ComboBox();
-            this.comboBox3 = new System.Windows.Forms.ComboBox();
+            this.cbbMovementAppliedTo = new System.Windows.Forms.ComboBox();
+            this.cbbObjectMovement = new System.Windows.Forms.ComboBox();
+            this.cbbGravityOnProximityFrom = new System.Windows.Forms.ComboBox();
             this.menuStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
-            this.grbGroundProperties.SuspendLayout();
             this.SuspendLayout();
             // 
             // pnlLevel
@@ -164,6 +158,7 @@
             this.rbnRemove.TabStop = true;
             this.rbnRemove.Text = "Remove Tile";
             this.rbnRemove.UseVisualStyleBackColor = true;
+            this.rbnRemove.CheckedChanged += new System.EventHandler(this.rbnRemove_CheckedChanged);
             // 
             // rbnBirdHouse
             // 
@@ -249,97 +244,39 @@
             this.rbnWater.UseVisualStyleBackColor = true;
             this.rbnWater.CheckedChanged += new System.EventHandler(this.rbnWater_CheckedChanged);
             // 
-            // grbGroundProperties
+            // cbbMovementAppliedTo
             // 
-            this.grbGroundProperties.Controls.Add(this.radioButton6);
-            this.grbGroundProperties.Controls.Add(this.rbnMoving);
-            this.grbGroundProperties.Controls.Add(this.rbnFalling);
-            this.grbGroundProperties.Controls.Add(this.rbnNone);
-            this.grbGroundProperties.Location = new System.Drawing.Point(219, 413);
-            this.grbGroundProperties.Name = "grbGroundProperties";
-            this.grbGroundProperties.Size = new System.Drawing.Size(120, 124);
-            this.grbGroundProperties.TabIndex = 6;
-            this.grbGroundProperties.TabStop = false;
-            this.grbGroundProperties.Text = "Platform Properties:";
+            this.cbbMovementAppliedTo.FormattingEnabled = true;
+            this.cbbMovementAppliedTo.Location = new System.Drawing.Point(411, 413);
+            this.cbbMovementAppliedTo.Name = "cbbMovementAppliedTo";
+            this.cbbMovementAppliedTo.Size = new System.Drawing.Size(121, 21);
+            this.cbbMovementAppliedTo.TabIndex = 7;
+            this.cbbMovementAppliedTo.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             // 
-            // radioButton6
+            // cbbObjectMovement
             // 
-            this.radioButton6.AutoSize = true;
-            this.radioButton6.Location = new System.Drawing.Point(6, 88);
-            this.radioButton6.Name = "radioButton6";
-            this.radioButton6.Size = new System.Drawing.Size(65, 17);
-            this.radioButton6.TabIndex = 7;
-            this.radioButton6.TabStop = true;
-            this.radioButton6.Text = "Damage";
-            this.radioButton6.UseVisualStyleBackColor = true;
+            this.cbbObjectMovement.FormattingEnabled = true;
+            this.cbbObjectMovement.Location = new System.Drawing.Point(411, 500);
+            this.cbbObjectMovement.Name = "cbbObjectMovement";
+            this.cbbObjectMovement.Size = new System.Drawing.Size(121, 21);
+            this.cbbObjectMovement.TabIndex = 8;
             // 
-            // rbnMoving
+            // cbbGravityOnProximityFrom
             // 
-            this.rbnMoving.AutoSize = true;
-            this.rbnMoving.Location = new System.Drawing.Point(6, 65);
-            this.rbnMoving.Name = "rbnMoving";
-            this.rbnMoving.Size = new System.Drawing.Size(60, 17);
-            this.rbnMoving.TabIndex = 6;
-            this.rbnMoving.TabStop = true;
-            this.rbnMoving.Text = "Moving";
-            this.rbnMoving.UseVisualStyleBackColor = true;
-            // 
-            // rbnFalling
-            // 
-            this.rbnFalling.AutoSize = true;
-            this.rbnFalling.Location = new System.Drawing.Point(6, 42);
-            this.rbnFalling.Name = "rbnFalling";
-            this.rbnFalling.Size = new System.Drawing.Size(55, 17);
-            this.rbnFalling.TabIndex = 5;
-            this.rbnFalling.TabStop = true;
-            this.rbnFalling.Text = "Falling";
-            this.rbnFalling.UseVisualStyleBackColor = true;
-            // 
-            // rbnNone
-            // 
-            this.rbnNone.AutoSize = true;
-            this.rbnNone.Location = new System.Drawing.Point(6, 19);
-            this.rbnNone.Name = "rbnNone";
-            this.rbnNone.Size = new System.Drawing.Size(51, 17);
-            this.rbnNone.TabIndex = 4;
-            this.rbnNone.TabStop = true;
-            this.rbnNone.Text = "None";
-            this.rbnNone.UseVisualStyleBackColor = true;
-            // 
-            // comboBox1
-            // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(411, 413);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(121, 21);
-            this.comboBox1.TabIndex = 7;
-            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
-            // 
-            // comboBox2
-            // 
-            this.comboBox2.FormattingEnabled = true;
-            this.comboBox2.Location = new System.Drawing.Point(411, 500);
-            this.comboBox2.Name = "comboBox2";
-            this.comboBox2.Size = new System.Drawing.Size(121, 21);
-            this.comboBox2.TabIndex = 8;
-            // 
-            // comboBox3
-            // 
-            this.comboBox3.FormattingEnabled = true;
-            this.comboBox3.Location = new System.Drawing.Point(411, 455);
-            this.comboBox3.Name = "comboBox3";
-            this.comboBox3.Size = new System.Drawing.Size(121, 21);
-            this.comboBox3.TabIndex = 9;
+            this.cbbGravityOnProximityFrom.FormattingEnabled = true;
+            this.cbbGravityOnProximityFrom.Location = new System.Drawing.Point(411, 455);
+            this.cbbGravityOnProximityFrom.Name = "cbbGravityOnProximityFrom";
+            this.cbbGravityOnProximityFrom.Size = new System.Drawing.Size(121, 21);
+            this.cbbGravityOnProximityFrom.TabIndex = 9;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(838, 562);
-            this.Controls.Add(this.comboBox3);
-            this.Controls.Add(this.comboBox2);
-            this.Controls.Add(this.comboBox1);
-            this.Controls.Add(this.grbGroundProperties);
+            this.Controls.Add(this.cbbGravityOnProximityFrom);
+            this.Controls.Add(this.cbbObjectMovement);
+            this.Controls.Add(this.cbbMovementAppliedTo);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.radioButton1);
             this.Controls.Add(this.pnlLevel);
@@ -351,8 +288,6 @@
             this.menuStrip1.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            this.grbGroundProperties.ResumeLayout(false);
-            this.grbGroundProperties.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -374,19 +309,14 @@
         private System.Windows.Forms.RadioButton rbnWood;
         private System.Windows.Forms.RadioButton rbnStone;
         private System.Windows.Forms.RadioButton rbnWater;
-        private System.Windows.Forms.GroupBox grbGroundProperties;
-        private System.Windows.Forms.RadioButton radioButton6;
-        private System.Windows.Forms.RadioButton rbnMoving;
-        private System.Windows.Forms.RadioButton rbnFalling;
-        private System.Windows.Forms.RadioButton rbnNone;
         private System.Windows.Forms.RadioButton rbnBirdHouse;
         private System.Windows.Forms.RadioButton rbnSeed;
         private System.Windows.Forms.RadioButton rbnWorm;
         private System.Windows.Forms.RadioButton rbnEnemy;
         private System.Windows.Forms.RadioButton rbnRemove;
-        private System.Windows.Forms.ComboBox comboBox1;
-        private System.Windows.Forms.ComboBox comboBox2;
-        private System.Windows.Forms.ComboBox comboBox3;
+        private System.Windows.Forms.ComboBox cbbMovementAppliedTo;
+        private System.Windows.Forms.ComboBox cbbObjectMovement;
+        private System.Windows.Forms.ComboBox cbbGravityOnProximityFrom;
     }
 }
 

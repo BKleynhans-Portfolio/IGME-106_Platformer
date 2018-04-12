@@ -40,30 +40,7 @@ namespace newLevelEditor
         //PlacingState pState;
 
 
-        //2d array to hold the level info in text form
-        //string[,] level= {
-        // // y, x  0,  1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31
-        //   /*0*/{ "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",},
-        //   /*1*/{ "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",},
-        //   /*2*/{ "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",},
-        //   /*3*/{ "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",},
-        //   /*4*/{ "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",},
-        //   /*5*/{ "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",},
-        //   /*6*/{ "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",},
-        //   /*7*/{ "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",},
-        //   /*8*/{ "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",},
-        //   /*9*/{ "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",},
-        //  /*10*/{ "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",},
-        //  /*11*/{ "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",},
-        //  /*12*/{ "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",},
-        //  /*13*/{ "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",},
-        //  /*14*/{ "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",},
-        //  /*15*/{ "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",},
-        //  /*16*/{ "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",},
-        //  /*17*/{ "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",},
-
-
-        //    };
+       
 
         List<GameTile> gameTiles;
 
@@ -79,7 +56,15 @@ namespace newLevelEditor
             rbnGrass.Select();
 
             gameTiles = new List<GameTile>();
-            //pState = new PlacingState();
+
+            cbbMovementAppliedTo.DataSource = Enum.GetValues(typeof(MovementAppliedTo));
+            cbbMovementAppliedTo.SelectedIndex = 4;
+
+            cbbGravityOnProximityFrom.DataSource = Enum.GetValues(typeof(GravityOnProximityFrom));
+            cbbGravityOnProximityFrom.SelectedIndex = 5;
+
+            cbbObjectMovement.DataSource = Enum.GetValues(typeof(ObjectMovement));
+            cbbObjectMovement.SelectedIndex = 0;
         }
 
         private void pnlLevel_Paint(object sender, PaintEventArgs e)
@@ -92,51 +77,57 @@ namespace newLevelEditor
 
         private void pnlLevel_MouseClick(object sender, MouseEventArgs e)
         {
-            //tiles
-            if (rbnGrass.Checked)
-            {
-                gameTiles.Add(new GameTile(gridPointX, gridPointY));
-            }
-            else if (rbnWater.Checked)
-            {
-                gameTiles.Add(new GameTile(gridPointX, gridPointY));
-            }
-            else if (rbnStone.Checked)
-            {
-                gameTiles.Add(new GameTile(gridPointX, gridPointY));
-            }
-            else if (rbnWood.Checked)
-            {
-                gameTiles.Add(new GameTile(gridPointX, gridPointY));
-            }
-            else if (rbnEnemy.Checked)
-            {
-                gameTiles.Add(new GameTile(gridPointX, gridPointY));
-            }
-            else if (rbnWorm.Checked)
-            {
-                gameTiles.Add(new GameTile(gridPointX, gridPointY));
-            }
-            else if (rbnSeed.Checked)
-            {
-                gameTiles.Add(new GameTile(gridPointX, gridPointY));
-            }
-            else if (rbnBirdHouse.Checked)
-            {
-                gameTiles.Add(new GameTile(gridPointX, gridPointY));
-            }
-            else if (rbnRemove.Checked)
-            {
-                gameTiles.Add(new GameTile(gridPointX, gridPointY));
+            string name = null;
 
-            }
-
-            //properties
-            else if (rbnNone.Checked)
+            if (rbnRemove.Checked != true)
             {
-                
-            }
+                //tiles
+                if (rbnGrass.Checked)
+                {
+                    name = "Grass";
+                }
+                else if (rbnWater.Checked)
+                {
+                    name = "Water";
+                }
+                else if (rbnStone.Checked)
+                {
+                    name = "Stone";
+                }
+                else if (rbnWood.Checked)
+                {
+                    name = "Wood";
+                }
+                else if (rbnEnemy.Checked)
+                {
+                    name = "Enemy";
+                }
+                else if (rbnWorm.Checked)
+                {
+                    name = "Worm";
+                }
+                else if (rbnSeed.Checked)
+                {
+                    name = "Seed";
+                }
+                else if (rbnBirdHouse.Checked)
+                {
+                    name = "BirdHouse";
+                }
 
+                //gameTiles.Add(new GameTile(gridPointX, gridPointY, name cbbGravityOnProximityFrom.SelectedValue, cbbMovementAppliedTo, cbbObjectMovement));
+            }
+            else
+            {
+                foreach (GameTile gameTile in gameTiles)
+                {
+                    if (gameTile.X == gridPointX && gameTile.Y == gridPointY)
+                    {
+                        gameTiles.Remove(gameTile);
+                    }
+            }
+            }
+            
 
 
             pnlLevel_Paint(this, null);
@@ -190,54 +181,46 @@ namespace newLevelEditor
         private void rbnGrass_CheckedChanged(object sender, EventArgs e)
         {
             boxColor = Color.Green;
-            rbnNone.Select();
 
         }
 
         private void rbnWater_CheckedChanged(object sender, EventArgs e)
         {
             boxColor = Color.Blue;
-            rbnNone.Select();
 
         }
 
         private void rbnStone_CheckedChanged(object sender, EventArgs e)
         {
             boxColor = Color.Gray;
-            rbnNone.Select();
 
         }
 
         private void rbnWood_CheckedChanged(object sender, EventArgs e)
         {
             boxColor = Color.Brown;
-            rbnNone.Select();
 
         }
 
         private void rbnEnemy_CheckedChanged(object sender, EventArgs e)
         {
             boxColor = Color.Red;
-            rbnNone.Select();
 
         }
 
         private void rbnWorm_CheckedChanged(object sender, EventArgs e)
         {
             boxColor = Color.Pink;
-            rbnNone.Select();
         }
 
         private void rbnSeed_CheckedChanged(object sender, EventArgs e)
         {
             boxColor = Color.LightGray;
-            rbnNone.Select();
         }
 
         private void rbnBirdHouse_CheckedChanged(object sender, EventArgs e)
         {
             boxColor = Color.DarkGreen;
-            rbnNone.Select();
         }
 
         private void pnlLevel_MouseMove(object sender, MouseEventArgs e)
@@ -282,6 +265,11 @@ namespace newLevelEditor
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void rbnRemove_CheckedChanged(object sender, EventArgs e)
+        {
+            
         }
     }
 }

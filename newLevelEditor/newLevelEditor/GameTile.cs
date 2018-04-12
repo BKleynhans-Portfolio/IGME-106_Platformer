@@ -43,10 +43,12 @@ namespace newLevelEditor
         public MovementAppliedTo MovementAppliedTo { get; set; }
         public GravityOnProximityFrom GravityOnProximityFrom { get; set; }
         public ObjectMovement ObjectMovement { get; set; }
-        private int X { get; set; }
-        private int Y { get; set; }
+        public int X { get; set; }
+        public int Y { get; set; }
         private const int WIDTH = 50;
         private const int HEIGHT = 50;
+        string Name { get; set; }
+        
 
         public int Width
         {
@@ -58,10 +60,17 @@ namespace newLevelEditor
             get { return HEIGHT; }
         }
 
-        public GameTile(int x, int y)
+        
+
+        
+
+        //constructor
+        public GameTile(int x, int y, string name, MovementAppliedTo movementAppliedTo, GravityOnProximityFrom gravityOnProximityFrom, ObjectMovement objectMovement)
         {
             this.X = x * WIDTH;
             this.Y = y * HEIGHT;
+            Name = name;
+
         }
 
         public override string ToString()
