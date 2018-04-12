@@ -40,6 +40,7 @@
             this.radioButton1 = new System.Windows.Forms.RadioButton();
             this.rbnGrass = new System.Windows.Forms.RadioButton();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.rbnRemove = new System.Windows.Forms.RadioButton();
             this.rbnBirdHouse = new System.Windows.Forms.RadioButton();
             this.rbnSeed = new System.Windows.Forms.RadioButton();
             this.rbnWorm = new System.Windows.Forms.RadioButton();
@@ -52,7 +53,9 @@
             this.rbnMoving = new System.Windows.Forms.RadioButton();
             this.rbnFalling = new System.Windows.Forms.RadioButton();
             this.rbnNone = new System.Windows.Forms.RadioButton();
-            this.rbnRemove = new System.Windows.Forms.RadioButton();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.comboBox2 = new System.Windows.Forms.ComboBox();
+            this.comboBox3 = new System.Windows.Forms.ComboBox();
             this.menuStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.grbGroundProperties.SuspendLayout();
@@ -150,6 +153,17 @@
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Placing:";
+            // 
+            // rbnRemove
+            // 
+            this.rbnRemove.AutoSize = true;
+            this.rbnRemove.Location = new System.Drawing.Point(40, 114);
+            this.rbnRemove.Name = "rbnRemove";
+            this.rbnRemove.Size = new System.Drawing.Size(85, 17);
+            this.rbnRemove.TabIndex = 7;
+            this.rbnRemove.TabStop = true;
+            this.rbnRemove.Text = "Remove Tile";
+            this.rbnRemove.UseVisualStyleBackColor = true;
             // 
             // rbnBirdHouse
             // 
@@ -292,22 +306,39 @@
             this.rbnNone.Text = "None";
             this.rbnNone.UseVisualStyleBackColor = true;
             // 
-            // rbnRemove
+            // comboBox1
             // 
-            this.rbnRemove.AutoSize = true;
-            this.rbnRemove.Location = new System.Drawing.Point(40, 114);
-            this.rbnRemove.Name = "rbnRemove";
-            this.rbnRemove.Size = new System.Drawing.Size(85, 17);
-            this.rbnRemove.TabIndex = 7;
-            this.rbnRemove.TabStop = true;
-            this.rbnRemove.Text = "Remove Tile";
-            this.rbnRemove.UseVisualStyleBackColor = true;
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Location = new System.Drawing.Point(411, 413);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(121, 21);
+            this.comboBox1.TabIndex = 7;
+            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
+            // 
+            // comboBox2
+            // 
+            this.comboBox2.FormattingEnabled = true;
+            this.comboBox2.Location = new System.Drawing.Point(411, 500);
+            this.comboBox2.Name = "comboBox2";
+            this.comboBox2.Size = new System.Drawing.Size(121, 21);
+            this.comboBox2.TabIndex = 8;
+            // 
+            // comboBox3
+            // 
+            this.comboBox3.FormattingEnabled = true;
+            this.comboBox3.Location = new System.Drawing.Point(411, 455);
+            this.comboBox3.Name = "comboBox3";
+            this.comboBox3.Size = new System.Drawing.Size(121, 21);
+            this.comboBox3.TabIndex = 9;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(838, 562);
+            this.Controls.Add(this.comboBox3);
+            this.Controls.Add(this.comboBox2);
+            this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.grbGroundProperties);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.radioButton1);
@@ -353,6 +384,9 @@
         private System.Windows.Forms.RadioButton rbnWorm;
         private System.Windows.Forms.RadioButton rbnEnemy;
         private System.Windows.Forms.RadioButton rbnRemove;
+        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.ComboBox comboBox2;
+        private System.Windows.Forms.ComboBox comboBox3;
     }
 }
 

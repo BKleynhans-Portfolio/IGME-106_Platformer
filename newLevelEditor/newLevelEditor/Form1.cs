@@ -132,6 +132,10 @@ namespace newLevelEditor
             }
 
             //properties
+            else if (rbnNone.Checked)
+            {
+                
+            }
 
 
 
@@ -273,6 +277,11 @@ namespace newLevelEditor
 
                 swSaveLevel.Close();
             }
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

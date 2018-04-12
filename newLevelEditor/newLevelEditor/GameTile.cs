@@ -6,13 +6,7 @@ using System.Threading.Tasks;
 
 namespace newLevelEditor
 {
-    public enum GravityDirection                                                            // Gravity can be applied in these directions
-    {
-        Up,
-        Down,
-        Left,
-        Right
-    }
+    
 
     public enum MovementAppliedTo                                                           // Movement parameters used for all object movement
     {
@@ -23,23 +17,6 @@ namespace newLevelEditor
         None
     }
 
-    public enum HitObstacle                                                                 // These are the intersection parameters used for gravity calculation
-    {
-        FromLeft,
-        FromRight,
-        FromTop,
-        FromBottom,
-        None
-    }
-
-    public enum HitNPC                                                                      // These are the intersection parameters used for gravity calculation
-    {
-        FromLeft,
-        FromRight,
-        FromTop,
-        FromBottom,
-        None
-    }
 
     public enum GravityOnProximityFrom
     {
@@ -63,6 +40,9 @@ namespace newLevelEditor
 
     public class GameTile
     {
+        public MovementAppliedTo MovementAppliedTo { get; set; }
+        public GravityOnProximityFrom GravityOnProximityFrom { get; set; }
+        public ObjectMovement ObjectMovement { get; set; }
         private int X { get; set; }
         private int Y { get; set; }
         private const int WIDTH = 50;
