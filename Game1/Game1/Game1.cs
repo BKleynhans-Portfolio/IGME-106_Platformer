@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Collections;
@@ -53,6 +54,10 @@ namespace Game1
         // Define input devices
         private static KeyboardState currentKeyboardState;
         private static KeyboardState previousKeyboardState;
+
+        // Write File
+        protected static FileStream WriteStream { get; set; }
+        protected static StreamWriter MyWriter { get; set; }
 
         // Dictionary of sounds
         private static Dictionary<string, SoundEffect> soundEffects = new Dictionary<string, SoundEffect>();
@@ -254,6 +259,10 @@ namespace Game1
         /// </summary>
         protected override void Initialize()
         {
+            //WriteStream = File.OpenWrite("D:/Users/bkleynhans/Source/Repos/team-project/Game1/Game1/Content/testFile.txt");
+            WriteStream = File.OpenWrite("testFile.txt");
+            MyWriter = new StreamWriter(WriteStream);
+
             LoadSoundEffects();
             LoadSprites();
 
@@ -296,8 +305,7 @@ namespace Game1
         /// </summary>
         protected override void UnloadContent()
         {
-            // TODO: Unload any non ContentManager content here
-            
+            // TODO: Unload any non ContentManager content here            
         }
 
         /// <summary>
@@ -385,6 +393,8 @@ namespace Game1
 
                     InitializeGameObjects();
                     GameState = GameState.Title;
+
+                    MyWriter.Close();
 
                     break;
             }
@@ -588,7 +598,7 @@ namespace Game1
         {
             Player = new Player(
                             PlayerSprites["PlayerCharacter"],
-                            spritesInSheet: 3,
+                            spritesInSheet: 4,
                             slidesToCycle: 3,
                             x: 0,
                             y: 810,

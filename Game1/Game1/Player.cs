@@ -68,8 +68,6 @@ namespace Game1
         {
             Vector2 returnValue;
 
-            //this.SelectSprite(0);
-
             if ((CurrentKeyboardState.IsKeyDown(Keys.A)) && (PreviousKeyboardState.IsKeyUp(Keys.A)))
             {
                 base.MovementAppliedTo = MovementAppliedTo.Left;
@@ -154,7 +152,7 @@ namespace Game1
 
             if (base.TimeSinceLastUpdate > 100)
             {
-                UpdateMovementParameters();
+                //UpdateMovementParameters();
                 this.UpdateSprite();
                 base.SelectSprite(base.CurrentSpriteIndex);
 
@@ -243,32 +241,36 @@ namespace Game1
 
         public override void UpdateSprite()
         {
-            if ((CurrentSpriteIndex < SpritesInSheet) && (Math.Abs(MovementVelocity) > Math.Abs(PreviousMovementVelocity)))
+            if ((CurrentSpriteIndex == 0 && PreviousSpriteIndex == 0) &&
+                (base.MovementAppliedTo != MovementAppliedTo.None))
             {
-                if (CurrentSpriteIndex == (SpritesInSheet - 1))
-                {
-                    PreviousSpriteIndex = CurrentSpriteIndex;
-
-                    CurrentSpriteIndex = (SpritesInSheet - 2);
-                }
-                else
-                {
-                    PreviousSpriteIndex = CurrentSpriteIndex;
-
-                    CurrentSpriteIndex++;
-                }
+                CurrentSpriteIndex++;
             }
-            else if (Math.Abs(MovementVelocity) < Math.Abs(PreviousMovementVelocity))
+            else if (((CurrentSpriteIndex == 1 && PreviousSpriteIndex == 0) ||
+                    (CurrentSpriteIndex == 2 && PreviousSpriteIndex == 1)) &&
+                    (base.MovementAppliedTo != MovementAppliedTo.None))
             {
-                if (CurrentSpriteIndex != 0)
-                {
-                    PreviousSpriteIndex = CurrentSpriteIndex;
-
-                    CurrentSpriteIndex--;
-                }
+                PreviousSpriteIndex = CurrentSpriteIndex;
+                CurrentSpriteIndex++;
             }
-
-            PreviousMovementVelocity = MovementVelocity;
+            else if (((CurrentSpriteIndex == 3 && PreviousSpriteIndex == 2) ||
+                      (CurrentSpriteIndex == 2 && PreviousSpriteIndex == 3)) &&
+                    (base.MovementAppliedTo != MovementAppliedTo.None))
+            {
+                PreviousSpriteIndex = CurrentSpriteIndex;
+                CurrentSpriteIndex--;
+            }
+            else if ((CurrentSpriteIndex == 1 && PreviousSpriteIndex == 2) &&
+                    (base.MovementAppliedTo != MovementAppliedTo.None))
+            {
+                PreviousSpriteIndex = CurrentSpriteIndex;
+                CurrentSpriteIndex++;
+            }
+            else if (base.MovementAppliedTo == MovementAppliedTo.None)
+            {
+                CurrentSpriteIndex = 0;
+                PreviousSpriteIndex = 0;
+            }
         }
 
         /// <summary>
