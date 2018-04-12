@@ -36,7 +36,7 @@
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
-            this.ofdSaveLevel = new System.Windows.Forms.SaveFileDialog();
+            this.sfdSaveLevel = new System.Windows.Forms.SaveFileDialog();
             this.radioButton1 = new System.Windows.Forms.RadioButton();
             this.rbnGrass = new System.Windows.Forms.RadioButton();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -52,6 +52,7 @@
             this.rbnMoving = new System.Windows.Forms.RadioButton();
             this.rbnFalling = new System.Windows.Forms.RadioButton();
             this.rbnNone = new System.Windows.Forms.RadioButton();
+            this.rbnRemove = new System.Windows.Forms.RadioButton();
             this.menuStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.grbGroundProperties.SuspendLayout();
@@ -60,9 +61,9 @@
             // pnlLevel
             // 
             this.pnlLevel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pnlLevel.Location = new System.Drawing.Point(18, 27);
+            this.pnlLevel.Location = new System.Drawing.Point(12, 27);
             this.pnlLevel.Name = "pnlLevel";
-            this.pnlLevel.Size = new System.Drawing.Size(1040, 340);
+            this.pnlLevel.Size = new System.Drawing.Size(640, 360);
             this.pnlLevel.TabIndex = 0;
             this.pnlLevel.DragOver += new System.Windows.Forms.DragEventHandler(this.pnlLevel_DragOver);
             this.pnlLevel.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlLevel_Paint);
@@ -82,7 +83,7 @@
             this.openToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1133, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(838, 24);
             this.menuStrip1.TabIndex = 1;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -97,6 +98,7 @@
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
             this.saveToolStripMenuItem.Size = new System.Drawing.Size(43, 20);
             this.saveToolStripMenuItem.Text = "Save";
+            this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
             // openToolStripMenuItem
             // 
@@ -133,6 +135,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.rbnRemove);
             this.groupBox1.Controls.Add(this.rbnBirdHouse);
             this.groupBox1.Controls.Add(this.rbnSeed);
             this.groupBox1.Controls.Add(this.rbnWorm);
@@ -141,9 +144,9 @@
             this.groupBox1.Controls.Add(this.rbnStone);
             this.groupBox1.Controls.Add(this.rbnWater);
             this.groupBox1.Controls.Add(this.rbnGrass);
-            this.groupBox1.Location = new System.Drawing.Point(12, 380);
+            this.groupBox1.Location = new System.Drawing.Point(12, 413);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(165, 124);
+            this.groupBox1.Size = new System.Drawing.Size(165, 137);
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Placing:";
@@ -238,7 +241,7 @@
             this.grbGroundProperties.Controls.Add(this.rbnMoving);
             this.grbGroundProperties.Controls.Add(this.rbnFalling);
             this.grbGroundProperties.Controls.Add(this.rbnNone);
-            this.grbGroundProperties.Location = new System.Drawing.Point(219, 380);
+            this.grbGroundProperties.Location = new System.Drawing.Point(219, 413);
             this.grbGroundProperties.Name = "grbGroundProperties";
             this.grbGroundProperties.Size = new System.Drawing.Size(120, 124);
             this.grbGroundProperties.TabIndex = 6;
@@ -250,10 +253,10 @@
             this.radioButton6.AutoSize = true;
             this.radioButton6.Location = new System.Drawing.Point(6, 88);
             this.radioButton6.Name = "radioButton6";
-            this.radioButton6.Size = new System.Drawing.Size(54, 17);
+            this.radioButton6.Size = new System.Drawing.Size(65, 17);
             this.radioButton6.TabIndex = 7;
             this.radioButton6.TabStop = true;
-            this.radioButton6.Text = "Wood";
+            this.radioButton6.Text = "Damage";
             this.radioButton6.UseVisualStyleBackColor = true;
             // 
             // rbnMoving
@@ -289,11 +292,22 @@
             this.rbnNone.Text = "None";
             this.rbnNone.UseVisualStyleBackColor = true;
             // 
+            // rbnRemove
+            // 
+            this.rbnRemove.AutoSize = true;
+            this.rbnRemove.Location = new System.Drawing.Point(40, 114);
+            this.rbnRemove.Name = "rbnRemove";
+            this.rbnRemove.Size = new System.Drawing.Size(85, 17);
+            this.rbnRemove.TabIndex = 7;
+            this.rbnRemove.TabStop = true;
+            this.rbnRemove.Text = "Remove Tile";
+            this.rbnRemove.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1133, 516);
+            this.ClientSize = new System.Drawing.Size(838, 562);
             this.Controls.Add(this.grbGroundProperties);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.radioButton1);
@@ -322,7 +336,7 @@
         private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
-        private System.Windows.Forms.SaveFileDialog ofdSaveLevel;
+        private System.Windows.Forms.SaveFileDialog sfdSaveLevel;
         private System.Windows.Forms.RadioButton radioButton1;
         private System.Windows.Forms.RadioButton rbnGrass;
         private System.Windows.Forms.GroupBox groupBox1;
@@ -338,6 +352,7 @@
         private System.Windows.Forms.RadioButton rbnSeed;
         private System.Windows.Forms.RadioButton rbnWorm;
         private System.Windows.Forms.RadioButton rbnEnemy;
+        private System.Windows.Forms.RadioButton rbnRemove;
     }
 }
 

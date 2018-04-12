@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
+
 
 namespace newLevelEditor
 {
@@ -16,9 +18,48 @@ namespace newLevelEditor
         Graphics graphics;
         int pointX;
         int pointY;
-        //SolidBrush sb;
+        int gridPointX;
+        int gridPointY;
         Color boxColor;
-       // Point point;
+
+        //enum PlacingState
+        //{
+        //    grass,
+        //    water,
+        //    stone,
+        //    wood,
+        //    enemy,
+        //    worm,
+        //    seed,
+        //    birdhouse
+        //}
+        //PlacingState pState;
+
+
+        //2d array to hold the level info in text form
+        string[,] level= {
+         // y, x  0,  1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31
+           /*0*/{ "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",},
+           /*1*/{ "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",},
+           /*2*/{ "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",},
+           /*3*/{ "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",},
+           /*4*/{ "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",},
+           /*5*/{ "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",},
+           /*6*/{ "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",},
+           /*7*/{ "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",},
+           /*8*/{ "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",},
+           /*9*/{ "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",},
+          /*10*/{ "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",},
+          /*11*/{ "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",},
+          /*12*/{ "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",},
+          /*13*/{ "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",},
+          /*14*/{ "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",},
+          /*15*/{ "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",},
+          /*16*/{ "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",},
+          /*17*/{ "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",},
+                
+
+            };
         public Form1()
         {
             InitializeComponent();
@@ -29,17 +70,67 @@ namespace newLevelEditor
 
             rbnGrass.Select();
 
+            //pState = new PlacingState();
         }
 
         private void pnlLevel_Paint(object sender, PaintEventArgs e)
         {
+            
             graphics.FillRectangle(new SolidBrush(boxColor), pointX, pointY, pixelSize, pixelSize);
+
+            
         }
 
         private void pnlLevel_MouseClick(object sender, MouseEventArgs e)
         {
+            //tiles
+            if (rbnGrass.Checked)
+            {
+                level[gridPointY, gridPointX] += "g";
+            }
+            else if (rbnWater.Checked)
+            {
+                level[gridPointY, gridPointX] += "w";
+            }
+            else if (rbnStone.Checked)
+            {
+                level[gridPointY, gridPointX] += "s";
+            }
+            else if (rbnWood.Checked)
+            {
+                level[gridPointY, gridPointX] += "o";
+            }
+            else if (rbnEnemy.Checked)
+            {
+                level[gridPointY, gridPointX] += "e";
+            }
+            else if (rbnWorm.Checked)
+            {
+                level[gridPointY, gridPointX] += "r";
+            }
+            else if (rbnSeed.Checked)
+            {
+                level[gridPointY, gridPointX] += "d";
+            }
+            else if (rbnBirdHouse.Checked)
+            {
+                level[gridPointY, gridPointX] += "h";
+            }
+            else if (rbnRemove.Checked)
+            {
+                level[gridPointY, gridPointX] = "";
+            }
+
+            //properties
+
+
+
             pnlLevel_Paint(this, null);
             DrawGrid();
+
+            //switch to check which radio button is on
+
+
         }
 
         private void tmrRefresh_Tick(object sender, EventArgs e)
@@ -59,7 +150,9 @@ namespace newLevelEditor
 
             pointX = relativePoint.X - (Math.Abs(relativePoint.X % pixelSize));
             pointY = relativePoint.Y - (Math.Abs(relativePoint.Y % pixelSize));
-            
+
+            gridPointX = pointX / pixelSize;
+            gridPointY = pointY / pixelSize;
 
             graphics = pnlLevel.CreateGraphics();
 
@@ -137,6 +230,31 @@ namespace newLevelEditor
         private void pnlLevel_DragOver(object sender, DragEventArgs e)
         {
 
+        }
+
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            sfdSaveLevel.Filter = "txt files (*.txt)|*.txt";
+            sfdSaveLevel.FilterIndex = 2;
+            sfdSaveLevel.RestoreDirectory = true;
+            if (sfdSaveLevel.ShowDialog() == DialogResult.OK)
+            {
+                StreamWriter swSaveLevel = new StreamWriter(sfdSaveLevel.FileName);
+
+                // Code to write the stream goes here.
+                for (int y = 0; y < 18; y++)
+                {
+                    //reset row
+                    for (int x = 0; x < 32; x++)
+                    {
+                        swSaveLevel.WriteLine(level[y, x]);
+                    }
+
+                    //swSaveLevel.WriteLine();
+                }
+
+                swSaveLevel.Close();
+            }
         }
     }
 }
