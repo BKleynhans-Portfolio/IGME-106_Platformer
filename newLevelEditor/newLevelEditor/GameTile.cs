@@ -6,18 +6,6 @@ using System.Threading.Tasks;
 
 namespace newLevelEditor
 {
-    
-
-    public enum MovementAppliedTo                                                           // Movement parameters used for all object movement
-    {
-        None,
-        Left,
-        Right,
-        Up,
-        Down        
-    }
-
-
     public enum GravityOnProximityFrom                                                      // Parameters used if object needs to start moving on proximity
     {
         None,
@@ -38,6 +26,14 @@ namespace newLevelEditor
         ToAndFroRightFirst
     }
 
+    public enum GravityAppliedTo                                                            // Gravity can be applied in these directions (autoconfigured)
+    {        
+        Down,
+        Up,
+        Left,
+        Right
+    }
+
     public enum ObjectType                                                                  // Type of object, required for object creation
     {
         Background,
@@ -56,8 +52,9 @@ namespace newLevelEditor
         private const int HEIGHT = 50;
 
         private string Name { get; set; }
+        private string ObjectMoveDistance { get; set; }
 
-        public MovementAppliedTo MovementAppliedTo { get; set; }
+        public GravityAppliedTo GravityAppliedTo { get; set; }
         public GravityOnProximityFrom GravityOnProximityFrom { get; set; }
         public ObjectMovement ObjectMovement { get; set; }
         
@@ -75,21 +72,27 @@ namespace newLevelEditor
         }
 
         //constructor
-        public GameTile(int x, int y, string name, MovementAppliedTo movementAppliedTo, GravityOnProximityFrom gravityOnProximityFrom, ObjectMovement objectMovement)
+        public GameTile(int x, int y, string name, GravityOnProximityFrom gravityOnProximityFrom, ObjectMovement objectMovement,
+                        GravityAppliedTo gravityDirection, string objectMoveDistance)
         {
             this.X = x * WIDTH;
             this.Y = y * HEIGHT;
-            this.Name = name;
-            this.MovementAppliedTo = movementAppliedTo;
+            this.Name = name;            
             this.GravityOnProximityFrom = gravityOnProximityFrom;
             this.ObjectMovement = objectMovement;
+            this.ObjectMoveDistance = objectMoveDistance;
 
             DefineTypeOfObject();
+            DefineGravityDirection();
         }
 
+        /// <summary>
+        /// Assign the appropriate object type to the object.  This is required for object
+        /// creation during object instantiation in the game
+        /// </summary>
         private void DefineTypeOfObject()
         {
-            if (Name.Equals("Background"))
+            if (this.Name.Equals("Background"))
             {
                 this.ObjectType = ObjectType.Background;
             }
@@ -119,6 +122,30 @@ namespace newLevelEditor
             }
         }
 
+        private void DefineGravityDirection()
+        {
+            if (this.ObjectMovement == ObjectMovement.ToAndFroDownFirst)
+            {
+                this.GravityAppliedTo = GravityAppliedTo.Down;
+            }
+            if (this.ObjectMovement == ObjectMovement.ToAndFroLeftFirst)
+            {
+                this.GravityAppliedTo = GravityAppliedTo.Left;
+            }
+            if (this.ObjectMovement == ObjectMovement.ToAndFroRightFirst)
+            {
+                this.GravityAppliedTo = GravityAppliedTo.Right;
+            }
+            if (this.ObjectMovement == ObjectMovement.ToAndFroUpFirst)
+            {
+                this.GravityAppliedTo = GravityAppliedTo.Up;
+            }
+        }
+
+        /// <summary>
+        /// ToString method used to print entire object for writing to text file
+        /// </summary>
+        /// <returns>Formatted string containing all properties</returns>
         public override string ToString()
         {
             StringBuilder myString = new StringBuilder();
@@ -134,13 +161,14 @@ namespace newLevelEditor
             myString.Append(WIDTH);
             myString.Append("|");
             myString.Append(HEIGHT);
-            myString.Append("|");
-            myString.Append(this.MovementAppliedTo);
-            myString.Append("|");
+            myString.Append("|");            
             myString.Append(this.GravityOnProximityFrom);
             myString.Append("|");
             myString.Append(this.ObjectMovement);
-
+            myString.Append("|");
+            myString.Append(this.GravityAppliedTo);
+            myString.Append("|");
+            myString.Append(this.ObjectMoveDistance);
 
             return myString.ToString();
         }

@@ -57,14 +57,14 @@ namespace newLevelEditor
 
             gameTiles = new List<GameTile>();
 
-            cbbMovementAppliedTo.DataSource = Enum.GetValues(typeof(MovementAppliedTo));
-            cbbMovementAppliedTo.SelectedIndex = 0;
-
             cbbGravityOnProximityFrom.DataSource = Enum.GetValues(typeof(GravityOnProximityFrom));
             cbbGravityOnProximityFrom.SelectedIndex = 0;
 
             cbbObjectMovement.DataSource = Enum.GetValues(typeof(ObjectMovement));
             cbbObjectMovement.SelectedIndex = 0;
+
+            cbbGravityAppliedTo.DataSource = Enum.GetValues(typeof(GravityAppliedTo));
+            cbbGravityAppliedTo.SelectedIndex = 0;
         }
 
         private void pnlLevel_Paint(object sender, PaintEventArgs e)
@@ -111,15 +111,16 @@ namespace newLevelEditor
                 {
                     name = "BirdHouse";
                 }
-
+                
                 gameTiles.Add(
                     new GameTile(
-                        gridPointX,
-                        gridPointY,
-                        name,
-                        (MovementAppliedTo)cbbMovementAppliedTo.SelectedValue,
-                        (GravityOnProximityFrom)cbbGravityOnProximityFrom.SelectedValue,
-                        (ObjectMovement)cbbObjectMovement.SelectedValue
+                        x: gridPointX,
+                        y: gridPointY,
+                        name: name,
+                        gravityOnProximityFrom: (GravityOnProximityFrom)cbbGravityOnProximityFrom.SelectedValue,
+                        objectMovement: (ObjectMovement)cbbObjectMovement.SelectedValue,
+                        gravityDirection: (GravityAppliedTo)cbbGravityAppliedTo.SelectedValue,
+                        objectMoveDistance: txtbObjectMoveDistance.Text
                     )
                 );
             }
@@ -131,10 +132,8 @@ namespace newLevelEditor
                     {
                         gameTiles.Remove(gameTile);
                     }
+                }
             }
-            }
-            
-
 
             pnlLevel_Paint(this, null);
             DrawGrid();
@@ -276,6 +275,37 @@ namespace newLevelEditor
         private void rbnRemove_CheckedChanged(object sender, EventArgs e)
         {
             
+        }
+
+        private void cbbObjectMovement_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if ((ObjectMovement)cbbObjectMovement.SelectedValue == ObjectMovement.OneDirection)
+            {
+                lblGravityAppliedTo.Location = new Point(548, 479);
+                lblGravityAppliedTo.Visible = true;
+                cbbGravityAppliedTo.Location = new Point(678, 474);
+                cbbGravityAppliedTo.Visible = true;
+
+                lblObjectMoveDistance.Visible = false;
+                txtbObjectMoveDistance.Visible = false;
+            }
+            else if ((ObjectMovement)cbbObjectMovement.SelectedValue != ObjectMovement.None)
+            {
+                lblObjectMoveDistance.Location = new Point(548, 479);
+                lblObjectMoveDistance.Visible = true;
+                txtbObjectMoveDistance.Location = new Point(678, 474);
+                txtbObjectMoveDistance.Visible = true;
+
+                lblGravityAppliedTo.Visible = false;
+                cbbGravityAppliedTo.Visible = false;
+            }
+            else
+            {
+                lblGravityAppliedTo.Visible = false;
+                cbbGravityAppliedTo.Visible = false;
+                lblObjectMoveDistance.Visible = false;
+                txtbObjectMoveDistance.Visible = false;
+            }
         }
     }
 }
