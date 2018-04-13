@@ -51,6 +51,9 @@
             this.cbbMovementAppliedTo = new System.Windows.Forms.ComboBox();
             this.cbbObjectMovement = new System.Windows.Forms.ComboBox();
             this.cbbGravityOnProximityFrom = new System.Windows.Forms.ComboBox();
+            this.lblMovementAppliedto = new System.Windows.Forms.Label();
+            this.lblGravityOnProximityFrom = new System.Windows.Forms.Label();
+            this.lblObjectMovement = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -269,11 +272,41 @@
             this.cbbGravityOnProximityFrom.Size = new System.Drawing.Size(121, 21);
             this.cbbGravityOnProximityFrom.TabIndex = 9;
             // 
+            // lblMovementAppliedto
+            // 
+            this.lblMovementAppliedto.AutoSize = true;
+            this.lblMovementAppliedto.Location = new System.Drawing.Point(281, 416);
+            this.lblMovementAppliedto.Name = "lblMovementAppliedto";
+            this.lblMovementAppliedto.Size = new System.Drawing.Size(124, 13);
+            this.lblMovementAppliedto.TabIndex = 10;
+            this.lblMovementAppliedto.Text = "Movement applied to the";
+            // 
+            // lblGravityOnProximityFrom
+            // 
+            this.lblGravityOnProximityFrom.AutoSize = true;
+            this.lblGravityOnProximityFrom.Location = new System.Drawing.Point(266, 459);
+            this.lblGravityOnProximityFrom.Name = "lblGravityOnProximityFrom";
+            this.lblGravityOnProximityFrom.Size = new System.Drawing.Size(139, 13);
+            this.lblGravityOnProximityFrom.TabIndex = 11;
+            this.lblGravityOnProximityFrom.Text = "Gravity on proximity from the";
+            // 
+            // lblObjectMovement
+            // 
+            this.lblObjectMovement.AutoSize = true;
+            this.lblObjectMovement.Location = new System.Drawing.Point(279, 505);
+            this.lblObjectMovement.Name = "lblObjectMovement";
+            this.lblObjectMovement.Size = new System.Drawing.Size(126, 13);
+            this.lblObjectMovement.TabIndex = 12;
+            this.lblObjectMovement.Text = "Object movement pattern";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(838, 562);
+            this.Controls.Add(this.lblObjectMovement);
+            this.Controls.Add(this.lblGravityOnProximityFrom);
+            this.Controls.Add(this.lblMovementAppliedto);
             this.Controls.Add(this.cbbGravityOnProximityFrom);
             this.Controls.Add(this.cbbObjectMovement);
             this.Controls.Add(this.cbbMovementAppliedTo);
@@ -317,6 +350,9 @@
         private System.Windows.Forms.ComboBox cbbMovementAppliedTo;
         private System.Windows.Forms.ComboBox cbbObjectMovement;
         private System.Windows.Forms.ComboBox cbbGravityOnProximityFrom;
+        private System.Windows.Forms.Label lblMovementAppliedto;
+        private System.Windows.Forms.Label lblGravityOnProximityFrom;
+        private System.Windows.Forms.Label lblObjectMovement;
     }
 }
 

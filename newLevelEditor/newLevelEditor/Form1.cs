@@ -58,21 +58,18 @@ namespace newLevelEditor
             gameTiles = new List<GameTile>();
 
             cbbMovementAppliedTo.DataSource = Enum.GetValues(typeof(MovementAppliedTo));
-            cbbMovementAppliedTo.SelectedIndex = 4;
+            cbbMovementAppliedTo.SelectedIndex = 0;
 
             cbbGravityOnProximityFrom.DataSource = Enum.GetValues(typeof(GravityOnProximityFrom));
-            cbbGravityOnProximityFrom.SelectedIndex = 5;
+            cbbGravityOnProximityFrom.SelectedIndex = 0;
 
             cbbObjectMovement.DataSource = Enum.GetValues(typeof(ObjectMovement));
             cbbObjectMovement.SelectedIndex = 0;
         }
 
         private void pnlLevel_Paint(object sender, PaintEventArgs e)
-        {
-            
-            graphics.FillRectangle(new SolidBrush(boxColor), pointX, pointY, pixelSize, pixelSize);
-
-            
+        {            
+            graphics.FillRectangle(new SolidBrush(boxColor), pointX, pointY, pixelSize, pixelSize);            
         }
 
         private void pnlLevel_MouseClick(object sender, MouseEventArgs e)
@@ -115,7 +112,16 @@ namespace newLevelEditor
                     name = "BirdHouse";
                 }
 
-                //gameTiles.Add(new GameTile(gridPointX, gridPointY, name cbbGravityOnProximityFrom.SelectedValue, cbbMovementAppliedTo, cbbObjectMovement));
+                gameTiles.Add(
+                    new GameTile(
+                        gridPointX,
+                        gridPointY,
+                        name,
+                        (MovementAppliedTo)cbbMovementAppliedTo.SelectedValue,
+                        (GravityOnProximityFrom)cbbGravityOnProximityFrom.SelectedValue,
+                        (ObjectMovement)cbbObjectMovement.SelectedValue
+                    )
+                );
             }
             else
             {
