@@ -12,6 +12,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Audio;
 
+using Game1.Properties;
 
 /// <summary>
 /// IGME-106 - Game Development and Algorithmic Problem Solving
@@ -152,6 +153,9 @@ namespace Game1
         // Window properties
         public const int SCREENWIDTH = 1600;
         public const int SCREENHEIGHT = 900;
+
+        //// Open Default file
+        //private bool OpenDefaultFile { get; set; }
 
         public GameState GameState
         {
@@ -308,14 +312,26 @@ namespace Game1
         {
             Application.EnableVisualStyles();
 
+            //OpenDefaultFile = false;
             LevelTracker = 1;
             CurrentScore = 0;
             FormCreated = false;
-                       
+                                   
             LevelsAvailable = Directory.GetFiles(Path.GetFullPath("Levels")).Length;
 
-            WriteStream = File.OpenWrite("testFile.txt");
-            MyWriter = new StreamWriter(WriteStream);
+            if (LevelsAvailable == 0)
+            {
+                MessageBox.Show(
+                    "There are currently no levels in the game.  The default level will be loaded!",
+                    "Error while reading level file",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information
+                );
+
+                //OpenDefaultFile = true;
+
+                CreateTempLevel();
+            }
 
             LoadSoundEffects();
             LoadSprites();
@@ -506,12 +522,8 @@ namespace Game1
                     InitializeGameObjects();
                     GameState = GameState.Title;
 
-                    MyWriter.Close();
-
                     break;
             }
-
-
 
             base.Update(gameTime);
         }
@@ -756,7 +768,7 @@ namespace Game1
 
                         bool gravityYesNo = false;
 
-                        if (readLineArray[7] != "None")
+                        if (!readLineArray[7].Equals("None"))
                         {
                             gravityYesNo = true;
                         }
@@ -1105,6 +1117,31 @@ namespace Game1
             }
 
             return returnValue;
+        }
+
+        private void CreateTempLevel()
+        {
+            try
+            {
+                FileStream WriteStream = File.OpenWrite("Levels//Level1.txt");
+                MyWriter = new StreamWriter(WriteStream);
+
+                string tempString = Resources.Level1;
+                string[] tempArray = tempString.Split(new string[] { "\r\n" }, StringSplitOptions.None);
+
+                foreach (string readString in tempArray)
+                {
+                    MyWriter.WriteLine(readString);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error received while trying to create temporary Level1.txt from Resources.Level1");
+            }
+            finally
+            {
+                MyWriter.Close();
+            }
         }
 
         private void LoadBackgroundElements()
