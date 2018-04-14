@@ -94,11 +94,11 @@ namespace Game1
 
                     switch (currentPosition)
                     {
-                        case "LoadGame":
-                            base.CreateRectangle(titleMenuDictionary["NewGame"]);
+                        case "NewGame":
+                            base.CreateRectangle(titleMenuDictionary["LevelEditor"]);
 
                             break;
-                        case "NewGame":
+                        case "LevelEditor":
                             base.CreateRectangle(titleMenuDictionary["Options"]);
 
                             break;
@@ -110,12 +110,12 @@ namespace Game1
 
                     switch (currentPosition)
                     {
-                        case "NewGame":
-                            base.CreateRectangle(titleMenuDictionary["LoadGame"]);
+                        case "LevelEditor":
+                            base.CreateRectangle(titleMenuDictionary["NewGame"]);
 
                             break;
                         case "Options":
-                            base.CreateRectangle(titleMenuDictionary["NewGame"]);
+                            base.CreateRectangle(titleMenuDictionary["LevelEditor"]);
 
                             break;
                     }
@@ -124,13 +124,13 @@ namespace Game1
                 {
                     switch (currentPosition)
                     {
-                        case "LoadGame":
-                            
-
-                            break;
                         case "NewGame":
                             gameState = GameState.InGame;
 
+                            break;
+                        case "LevelEditor":
+                            gameState = GameState.LevelEditor;
+                            
                             break;
                         case "Options":
                             gameState = GameState.Options;

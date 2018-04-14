@@ -40,6 +40,7 @@
             this.radioButton1 = new System.Windows.Forms.RadioButton();
             this.rbnGrass = new System.Windows.Forms.RadioButton();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.rbnPlayer = new System.Windows.Forms.RadioButton();
             this.rbnRemove = new System.Windows.Forms.RadioButton();
             this.rbnBirdHouse = new System.Windows.Forms.RadioButton();
             this.rbnSeed = new System.Windows.Forms.RadioButton();
@@ -126,7 +127,7 @@
             // rbnGrass
             // 
             this.rbnGrass.AutoSize = true;
-            this.rbnGrass.Location = new System.Drawing.Point(6, 19);
+            this.rbnGrass.Location = new System.Drawing.Point(99, 19);
             this.rbnGrass.Name = "rbnGrass";
             this.rbnGrass.Size = new System.Drawing.Size(52, 17);
             this.rbnGrass.TabIndex = 4;
@@ -137,6 +138,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.rbnPlayer);
             this.groupBox1.Controls.Add(this.rbnRemove);
             this.groupBox1.Controls.Add(this.rbnBirdHouse);
             this.groupBox1.Controls.Add(this.rbnSeed);
@@ -148,15 +150,27 @@
             this.groupBox1.Controls.Add(this.rbnGrass);
             this.groupBox1.Location = new System.Drawing.Point(12, 413);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(165, 137);
+            this.groupBox1.Size = new System.Drawing.Size(275, 137);
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Placing:";
             // 
+            // rbnPlayer
+            // 
+            this.rbnPlayer.AutoSize = true;
+            this.rbnPlayer.Location = new System.Drawing.Point(15, 20);
+            this.rbnPlayer.Name = "rbnPlayer";
+            this.rbnPlayer.Size = new System.Drawing.Size(54, 17);
+            this.rbnPlayer.TabIndex = 12;
+            this.rbnPlayer.TabStop = true;
+            this.rbnPlayer.Text = "Player";
+            this.rbnPlayer.UseVisualStyleBackColor = true;
+            this.rbnPlayer.CheckedChanged += new System.EventHandler(this.rbnPlayer_CheckedChanged);
+            // 
             // rbnRemove
             // 
             this.rbnRemove.AutoSize = true;
-            this.rbnRemove.Location = new System.Drawing.Point(40, 114);
+            this.rbnRemove.Location = new System.Drawing.Point(189, 105);
             this.rbnRemove.Name = "rbnRemove";
             this.rbnRemove.Size = new System.Drawing.Size(85, 17);
             this.rbnRemove.TabIndex = 7;
@@ -168,7 +182,7 @@
             // rbnBirdHouse
             // 
             this.rbnBirdHouse.AutoSize = true;
-            this.rbnBirdHouse.Location = new System.Drawing.Point(88, 88);
+            this.rbnBirdHouse.Location = new System.Drawing.Point(15, 105);
             this.rbnBirdHouse.Name = "rbnBirdHouse";
             this.rbnBirdHouse.Size = new System.Drawing.Size(74, 17);
             this.rbnBirdHouse.TabIndex = 11;
@@ -180,7 +194,7 @@
             // rbnSeed
             // 
             this.rbnSeed.AutoSize = true;
-            this.rbnSeed.Location = new System.Drawing.Point(88, 65);
+            this.rbnSeed.Location = new System.Drawing.Point(189, 42);
             this.rbnSeed.Name = "rbnSeed";
             this.rbnSeed.Size = new System.Drawing.Size(50, 17);
             this.rbnSeed.TabIndex = 10;
@@ -192,7 +206,7 @@
             // rbnWorm
             // 
             this.rbnWorm.AutoSize = true;
-            this.rbnWorm.Location = new System.Drawing.Point(88, 42);
+            this.rbnWorm.Location = new System.Drawing.Point(189, 19);
             this.rbnWorm.Name = "rbnWorm";
             this.rbnWorm.Size = new System.Drawing.Size(53, 17);
             this.rbnWorm.TabIndex = 9;
@@ -204,7 +218,7 @@
             // rbnEnemy
             // 
             this.rbnEnemy.AutoSize = true;
-            this.rbnEnemy.Location = new System.Drawing.Point(88, 19);
+            this.rbnEnemy.Location = new System.Drawing.Point(15, 43);
             this.rbnEnemy.Name = "rbnEnemy";
             this.rbnEnemy.Size = new System.Drawing.Size(57, 17);
             this.rbnEnemy.TabIndex = 8;
@@ -216,7 +230,7 @@
             // rbnWood
             // 
             this.rbnWood.AutoSize = true;
-            this.rbnWood.Location = new System.Drawing.Point(6, 88);
+            this.rbnWood.Location = new System.Drawing.Point(99, 88);
             this.rbnWood.Name = "rbnWood";
             this.rbnWood.Size = new System.Drawing.Size(54, 17);
             this.rbnWood.TabIndex = 7;
@@ -228,7 +242,7 @@
             // rbnStone
             // 
             this.rbnStone.AutoSize = true;
-            this.rbnStone.Location = new System.Drawing.Point(6, 65);
+            this.rbnStone.Location = new System.Drawing.Point(99, 65);
             this.rbnStone.Name = "rbnStone";
             this.rbnStone.Size = new System.Drawing.Size(53, 17);
             this.rbnStone.TabIndex = 6;
@@ -240,7 +254,7 @@
             // rbnWater
             // 
             this.rbnWater.AutoSize = true;
-            this.rbnWater.Location = new System.Drawing.Point(6, 42);
+            this.rbnWater.Location = new System.Drawing.Point(99, 42);
             this.rbnWater.Name = "rbnWater";
             this.rbnWater.Size = new System.Drawing.Size(54, 17);
             this.rbnWater.TabIndex = 5;
@@ -252,7 +266,7 @@
             // cbbGravityAppliedTo
             // 
             this.cbbGravityAppliedTo.FormattingEnabled = true;
-            this.cbbGravityAppliedTo.Location = new System.Drawing.Point(678, 428);
+            this.cbbGravityAppliedTo.Location = new System.Drawing.Point(698, 86);
             this.cbbGravityAppliedTo.Name = "cbbGravityAppliedTo";
             this.cbbGravityAppliedTo.Size = new System.Drawing.Size(121, 21);
             this.cbbGravityAppliedTo.TabIndex = 7;
@@ -262,7 +276,7 @@
             // cbbObjectMovement
             // 
             this.cbbObjectMovement.FormattingEnabled = true;
-            this.cbbObjectMovement.Location = new System.Drawing.Point(411, 474);
+            this.cbbObjectMovement.Location = new System.Drawing.Point(450, 473);
             this.cbbObjectMovement.Name = "cbbObjectMovement";
             this.cbbObjectMovement.Size = new System.Drawing.Size(121, 21);
             this.cbbObjectMovement.TabIndex = 8;
@@ -271,7 +285,7 @@
             // cbbGravityOnProximityFrom
             // 
             this.cbbGravityOnProximityFrom.FormattingEnabled = true;
-            this.cbbGravityOnProximityFrom.Location = new System.Drawing.Point(411, 428);
+            this.cbbGravityOnProximityFrom.Location = new System.Drawing.Point(450, 426);
             this.cbbGravityOnProximityFrom.Name = "cbbGravityOnProximityFrom";
             this.cbbGravityOnProximityFrom.Size = new System.Drawing.Size(121, 21);
             this.cbbGravityOnProximityFrom.TabIndex = 9;
@@ -279,7 +293,7 @@
             // lblGravityAppliedTo
             // 
             this.lblGravityAppliedTo.AutoSize = true;
-            this.lblGravityAppliedTo.Location = new System.Drawing.Point(548, 431);
+            this.lblGravityAppliedTo.Location = new System.Drawing.Point(695, 70);
             this.lblGravityAppliedTo.Name = "lblGravityAppliedTo";
             this.lblGravityAppliedTo.Size = new System.Drawing.Size(107, 13);
             this.lblGravityAppliedTo.TabIndex = 10;
@@ -289,7 +303,7 @@
             // lblGravityOnProximityFrom
             // 
             this.lblGravityOnProximityFrom.AutoSize = true;
-            this.lblGravityOnProximityFrom.Location = new System.Drawing.Point(266, 432);
+            this.lblGravityOnProximityFrom.Location = new System.Drawing.Point(293, 429);
             this.lblGravityOnProximityFrom.Name = "lblGravityOnProximityFrom";
             this.lblGravityOnProximityFrom.Size = new System.Drawing.Size(139, 13);
             this.lblGravityOnProximityFrom.TabIndex = 11;
@@ -298,24 +312,25 @@
             // lblObjectMovement
             // 
             this.lblObjectMovement.AutoSize = true;
-            this.lblObjectMovement.Location = new System.Drawing.Point(279, 479);
+            this.lblObjectMovement.Location = new System.Drawing.Point(366, 476);
             this.lblObjectMovement.Name = "lblObjectMovement";
-            this.lblObjectMovement.Size = new System.Drawing.Size(126, 13);
+            this.lblObjectMovement.Size = new System.Drawing.Size(66, 13);
             this.lblObjectMovement.TabIndex = 12;
-            this.lblObjectMovement.Text = "Object movement pattern";
+            this.lblObjectMovement.Text = "Move object";
             // 
             // txtbObjectMoveDistance
             // 
-            this.txtbObjectMoveDistance.Location = new System.Drawing.Point(678, 474);
+            this.txtbObjectMoveDistance.Location = new System.Drawing.Point(698, 133);
             this.txtbObjectMoveDistance.Name = "txtbObjectMoveDistance";
             this.txtbObjectMoveDistance.Size = new System.Drawing.Size(121, 20);
             this.txtbObjectMoveDistance.TabIndex = 13;
+            this.txtbObjectMoveDistance.Text = "0";
             this.txtbObjectMoveDistance.Visible = false;
             // 
             // lblObjectMoveDistance
             // 
             this.lblObjectMoveDistance.AutoSize = true;
-            this.lblObjectMoveDistance.Location = new System.Drawing.Point(548, 479);
+            this.lblObjectMoveDistance.Location = new System.Drawing.Point(695, 117);
             this.lblObjectMoveDistance.Name = "lblObjectMoveDistance";
             this.lblObjectMoveDistance.Size = new System.Drawing.Size(112, 13);
             this.lblObjectMoveDistance.TabIndex = 14;
@@ -328,13 +343,13 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(838, 562);
             this.Controls.Add(this.lblObjectMoveDistance);
-            this.Controls.Add(this.txtbObjectMoveDistance);
-            this.Controls.Add(this.lblObjectMovement);
-            this.Controls.Add(this.lblGravityOnProximityFrom);
             this.Controls.Add(this.lblGravityAppliedTo);
+            this.Controls.Add(this.lblObjectMovement);
+            this.Controls.Add(this.txtbObjectMoveDistance);
+            this.Controls.Add(this.lblGravityOnProximityFrom);
+            this.Controls.Add(this.cbbGravityAppliedTo);
             this.Controls.Add(this.cbbGravityOnProximityFrom);
             this.Controls.Add(this.cbbObjectMovement);
-            this.Controls.Add(this.cbbGravityAppliedTo);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.radioButton1);
             this.Controls.Add(this.pnlLevel);
@@ -380,6 +395,7 @@
         private System.Windows.Forms.Label lblObjectMovement;
         private System.Windows.Forms.TextBox txtbObjectMoveDistance;
         private System.Windows.Forms.Label lblObjectMoveDistance;
+        private System.Windows.Forms.RadioButton rbnPlayer;
     }
 }
 
