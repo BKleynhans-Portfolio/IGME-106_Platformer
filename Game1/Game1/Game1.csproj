@@ -54,6 +54,8 @@
     <Compile Include="NPC.cs" />
     <Compile Include="Obstacle.cs" />
     <Compile Include="Option.cs" />
+    <Compile Include="Collectible.cs" />
+    <Compile Include="Goal.cs" />
     <Compile Include="Platform.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Program.cs" />
@@ -78,6 +80,8 @@
     <MonoGameContentReference Include="Content\Content.mgcb" />
     <None Include="app.config" />
     <None Include="app.manifest" />
+    <None Include="ClassDiagram2.cd" />
+    <None Include="ClassDiagram3.cd" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\newLevelEditor\newLevelEditor\newLevelEditor.csproj">

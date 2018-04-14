@@ -97,14 +97,6 @@ namespace Game1
         public abstract bool Intersects(GameObject passedGameObject);
         protected abstract override void Update(GameTime gameTime);
 
-        //public int CyclesToThreshold { get; set; }                                                      // The amount of times the game loop runs during on acceleration / deceleration
-        //public int AccelerationCoefficientStartingPoint { get; set; }
-        //public int AccelerationCoefficientEndingPoint { get; set; }
-        //public bool AccelerationCoefficientStartingXSet { get; set; }
-        //public bool AccelerationCoefficientEndingXSet { get; set; }
-        //public bool CalculateCoefficient { get; set; }
-        //public float AccelerationCoefficient { get; set; }                        // Calculate pixels covered during acceleration
-
         public Texture2D SpriteSheet { get; set; }                                                    // Texture and drawLocation
         public Rectangle DrawLocation { get; set; }        
         public Rectangle SelectionArea { get; set; }
@@ -131,6 +123,7 @@ namespace Game1
         private bool falling;                                                               // Is the object falling?
         private bool jumpInProgress;                                                        // Is the object in a jump process?
         public string PlatformType { get; set; }
+        public string CollectibleType { get; set; }
 
         /// <summary>
         /// Default constructor.  Creates a GameObject with default values.

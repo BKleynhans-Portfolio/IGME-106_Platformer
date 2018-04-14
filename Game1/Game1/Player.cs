@@ -30,7 +30,7 @@ namespace Game1
     {
         private int JumpCount { get; set; }
         private int SlidesToCycle { get; set; }
-
+        
         /// <summary>
         /// Default constructor.  Creates a GameObject with default values.
         /// </summary>
@@ -44,7 +44,7 @@ namespace Game1
             base(spriteTexture, x, y, width, height)
         {
             base.IsAlive = true;
-            this.SlidesToCycle = slidesToCycle;
+            this.SlidesToCycle = slidesToCycle;            
         }
 
         /// <summary>
@@ -229,6 +229,24 @@ namespace Game1
                         base.GravitationalVelocity = 0;
                         base.Falling = true;
                     }
+                    else if ((intersectedBy[i].GetType() == typeof(Collectible)) && (intersectedBy[i].Visible))
+                    {
+                        intersectedBy[i].Visible = false;
+
+                        if (intersectedBy[i].CollectibleType.Equals("Worm"))
+                        {
+                            CurrentScore += 5;
+                        }
+                        else
+                        {
+                            CurrentScore++;
+                        }
+                        
+                    }
+                    else if (intersectedBy[i].GetType() == typeof(Goal))
+                    {
+                        GameState = GameState.AdvanceLevel;
+                    }
                 }
 
                 CreateRectangle(ApplyMovement(gameTime));
@@ -296,6 +314,13 @@ namespace Game1
                 0.1f,
                 base.SpriteEffect,
                 0.0f
+            );
+
+            spriteBatch.DrawString(
+                SpriteFont,
+                "Score      : " + CurrentScore,
+                new Vector2(SCREENWIDTH - 100, 20),
+                Color.White
             );
         }
     }

@@ -87,6 +87,7 @@ namespace Game1
             }
 
             UpdateMovementParameters();
+            this.SelectSprite(0);
             
             CreateRectangle(ApplyMovement(gameTime));
         }
@@ -255,6 +256,16 @@ namespace Game1
                         break;
                 }
             }
+        }
+
+        public void SelectSprite(int spriteIndex)
+        {
+            base.SelectionArea = new Rectangle(
+                                        (spriteIndex * SpriteWidth),
+                                        0,
+                                        SpriteWidth,
+                                        SpriteHeight
+                                    );
         }
     }
 }

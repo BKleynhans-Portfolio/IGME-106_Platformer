@@ -475,9 +475,6 @@ namespace Game1
                                         SpriteWidth,
                                         SpriteHeight
                                     );
-
-            if (this.GetType() == typeof(Enemy))
-                Console.WriteLine();
         }
 
         /// <summary>

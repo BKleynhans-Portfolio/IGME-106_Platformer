@@ -54,6 +54,9 @@ namespace Game1
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
+        // Define leveleditor
+        public static Form LevelForm { get; set; }        
+
         // Define input devices
         private static KeyboardState currentKeyboardState;
         private static KeyboardState previousKeyboardState;
@@ -65,6 +68,12 @@ namespace Game1
         // Write File
         protected static FileStream WriteStream { get; set; }
         protected static StreamWriter MyWriter { get; set; }
+
+        // Add spritefont for score display
+        public static SpriteFont SpriteFont { get; private set; }
+
+        //Player score
+        public static int CurrentScore { get; set; }
 
         // Dictionary of sounds
         private static Dictionary<string, SoundEffect> soundEffects = new Dictionary<string, SoundEffect>();
@@ -81,8 +90,14 @@ namespace Game1
         // Dictionary of enemy sprites
         private static Dictionary<string, Texture2D> enemySprites = new Dictionary<string, Texture2D>();
 
+        // Dictionary of goal sprites
+        private static Dictionary<string, Texture2D> goalSprites = new Dictionary<string, Texture2D>();
+
         // Dictionary of platform sprites
         private static Dictionary<string, Texture2D> platformSprites = new Dictionary<string, Texture2D>();
+
+        // Dictionary of collectible sprites
+        private static Dictionary<string, Texture2D> collectibleSprites = new Dictionary<string, Texture2D>();
 
         // Dictionary of general menu sprites
         private static Dictionary<string, Texture2D> menuSprites = new Dictionary<string, Texture2D>();
@@ -102,14 +117,19 @@ namespace Game1
         private static List<GraphicElement> livesLeft = new List<GraphicElement>();
 
         // Create player object and parameters
-        //private Player player;
         private Player Player { get; set; }
+
+        // Create goal object and parameters
+        private Goal Goal { get; set; }
 
         // Create enemy object and parameters
         private List<Enemy> enemies = new List<Enemy>();
 
         // Create platform object and parameters
         private List<Platform> platforms = new List<Platform>();
+
+        // Create collectible object and parameters
+        private List<Collectible> collectibles = new List<Collectible>();
 
         // Create gameGraphics object and parameters
         private List<GraphicElement> gameGraphics = new List<GraphicElement>();
@@ -119,6 +139,9 @@ namespace Game1
 
         // Level tracker
         private static int LevelTracker { get; set; }
+
+        // Level editor form tracker
+        public bool FormCreated { get; set; }
 
         // Animation variables        
         public static double fps;
@@ -183,6 +206,18 @@ namespace Game1
             set { platformSprites = value; }
         }
 
+        private static Dictionary<string, Texture2D> GoalSprites
+        {
+            get { return goalSprites; }
+            set { goalSprites = value; }
+        }
+
+        private static Dictionary<string, Texture2D> CollectibleSprites
+        {
+            get { return collectibleSprites; }
+            set { collectibleSprites = value; }
+        }
+
         private static Dictionary<string, Texture2D> MenuSprites
         {
             get { return menuSprites; }
@@ -238,6 +273,12 @@ namespace Game1
             set { platforms = value; }
         }
 
+        private List<Collectible> Collectibles
+        {
+            get { return collectibles; }
+            set { collectibles = value; }
+        }
+
         private List<GraphicElement> GameGraphics
         {
             get { return gameGraphics; }
@@ -267,6 +308,8 @@ namespace Game1
             Application.EnableVisualStyles();
 
             LevelTracker = 1;
+            CurrentScore = 0;
+            FormCreated = false;
 
             WriteStream = File.OpenWrite("testFile.txt");
             MyWriter = new StreamWriter(WriteStream);
@@ -299,6 +342,8 @@ namespace Game1
         protected override void LoadContent()
         {                                                                                            
             spriteBatch = new SpriteBatch(GraphicsDevice);                                  // Create a new SpriteBatch, which can be used to draw textures.            
+
+            SpriteFont = Content.Load<SpriteFont>("Fonts\\SpriteFont");
 
             InitializeGameObjects();
 
@@ -371,15 +416,34 @@ namespace Game1
 
                     break;
                 case GameState.LevelEditor:
-                    Form levelForm = new newLevelEditor.Form1();
 
-                    levelForm.Location = new System.Drawing.Point(
-                                            (SCREENWIDTH / 2) - (levelForm.Width / 2),
-                                            (SCREENHEIGHT / 2) - (levelForm.Height / 2)
-                                         );
-                    levelForm.Show();
+                    if (!FormCreated)
+                    {
+                        LevelForm = new newLevelEditor.Form1();
 
-                    GameState = GameState.Title;
+                        LevelForm.Location = new System.Drawing.Point(
+                                        (SCREENWIDTH / 2) - (LevelForm.Width / 2),
+                                        (SCREENHEIGHT / 2) - (LevelForm.Height / 2)
+                                     );
+
+                        FormCreated = true;
+
+                        if ((!LevelForm.Visible) && (FormCreated))
+                        {
+                            LevelForm.Show();
+                        }
+                    }
+                    else if ((!LevelForm.Visible) && (FormCreated))
+                    {
+                        LevelTracker = 1;
+
+                        GameState = GameState.Title;
+
+                        ClearGameObjects();
+                        InitializeGameObjects();
+
+                        FormCreated = false;
+                    }
 
                     break;
                 case GameState.Options:
@@ -467,25 +531,34 @@ namespace Game1
             switch (GameState)
             {
                 case GameState.Title:
-                    for (int i = 0; i < TitleElements.Count; i++)
+                    if (TitleElements.Count != 0)
                     {
-                        TitleElements[i].Draw(spriteBatch);
-                    }
+                        for (int i = 0; i < TitleElements.Count; i++)
+                        {
+                            TitleElements[i].Draw(spriteBatch);
+                        }
+                    }                    
 
                     break;
                 case GameState.Options:
-                    for (int i = 0; i < OptionElements.Count; i++)
+                    if (OptionElements.Count != 0)
                     {
-                        OptionElements[i].Draw(spriteBatch);
+                        for (int i = 0; i < OptionElements.Count; i++)
+                        {
+                            OptionElements[i].Draw(spriteBatch);
+                        }
                     }
-
+                    
                     break;
                 case GameState.InGame:
-                    for (int i = 0; i < GameObject.Count; i++)                                      // Draw all the objects in the game
+                    if (GameObject.Count != 0)
                     {
-                        if (GameObject[i].Visible)
+                        for (int i = 0; i < GameObject.Count; i++)                                      // Draw all the objects in the game
                         {
-                            GameObject[i].Draw(spriteBatch);
+                            if (GameObject[i].Visible)
+                            {
+                                GameObject[i].Draw(spriteBatch);
+                            }
                         }
                     }
 
@@ -510,11 +583,18 @@ namespace Game1
             // Add player sprites
             PlayerSprites.Add("Player", Content.Load<Texture2D>("Images\\SpriteSheets\\Player_400x400"));
 
+            // Add player sprites
+            GoalSprites.Add("BirdHouse", Content.Load<Texture2D>("Images\\SpriteSheets\\Goal_400x400"));
+
             // Add platform sprites
             PlatformSprites.Add("Grass", Content.Load<Texture2D>("Images\\SpriteSheets\\Grass_400x400"));
             PlatformSprites.Add("Water", Content.Load<Texture2D>("Images\\SpriteSheets\\Water_400x400"));
             PlatformSprites.Add("Stone", Content.Load<Texture2D>("Images\\SpriteSheets\\Stone_400x400"));
             PlatformSprites.Add("Wood", Content.Load<Texture2D>("Images\\SpriteSheets\\Wood_400x400"));
+
+            // Add collectible sprites
+            CollectibleSprites.Add("Seed", Content.Load<Texture2D>("Images\\SpriteSheets\\Seed_400x400"));
+            CollectibleSprites.Add("Worm", Content.Load<Texture2D>("Images\\SpriteSheets\\Worm_400x400"));
 
             // Add enemy sprites
             EnemySprites.Add("Enemy", Content.Load<Texture2D>("Images\\SpriteSheets\\Enemy_400x400"));
@@ -579,11 +659,17 @@ namespace Game1
 
         private void InitializeGameObjects()
         {
-            ReadLevelFile();
+            bool readSuccessful = ReadLevelFile();
+
+            if (!readSuccessful)
+            {
+                Exit();
+            }
+
             LoadBackgroundElements();
-            LoadPlayerElements();
-            LoadFloorElements();
-            LoadEnemyElements();            
+            //LoadPlayerElements();
+            //LoadFloorElements();
+            //LoadEnemyElements();            
             LoadGeneralElements();
 
             if (TitleElements.Count == 0)
@@ -593,6 +679,7 @@ namespace Game1
             
             // All objects need to be added to the GameObject list
             GameObject.Add(Player);                                                         // Add player to GameObject
+            GameObject.Add(Goal);
 
             foreach (Enemy enemy in Enemies)                                                // Add enemies to GameObject
             {
@@ -602,6 +689,11 @@ namespace Game1
             foreach (Platform platform in Platforms)                                        // Add platforms to GameObject
             {
                 GameObject.Add(platform);
+            }
+
+            foreach (Collectible collectible in Collectibles)
+            {
+                GameObject.Add(collectible);
             }
 
             foreach (GraphicElement graphic in GameGraphics)
@@ -614,38 +706,398 @@ namespace Game1
         {
             GameObject.Clear();
             Platforms.Clear();
+            Collectibles.Clear();
             Enemies.Clear();
             GameGraphics.Clear();
             LivesLeft.Clear();
         }
 
-        private void ReadLevelFile() {
+        /// <summary>
+        /// Reads the text file containing the level information and creates the associated objects
+        /// </summary>
+        /// <returns>True if file read was successful and false if it failed</returns>
+        private bool ReadLevelFile() {
 
-            ReadStream = File.OpenRead("Levels//Level" + LevelTracker + ".txt");
-            myReader = new StreamReader(ReadStream);
+            bool returnValue = true;
 
-            string readString;
-            string[] readLineArray;
-            List<newLevelEditor.GameTile[]> gameTileList = new List<newLevelEditor.GameTile[]>();
-
-            while ((readString = myReader.ReadLine()) != null)
+            if (File.Exists("Levels//Level" + LevelTracker + ".txt"))
             {
-                readLineArray = readString.Split(new string[] { "|" }, StringSplitOptions.None);
+                ReadStream = File.OpenRead("Levels//Level" + LevelTracker + ".txt");
+                myReader = new StreamReader(ReadStream);
+            }
+            else
+            {
+                returnValue = false;
+            }
 
-                switch(readLineArray[0])
+            if (returnValue != false)
+            {
+                string readString;
+                string[] readLineArray;
+                List<newLevelEditor.GameTile[]> gameTileList = new List<newLevelEditor.GameTile[]>();
+
+                int platformCounter = 0;
+                int enemyCounter = 0;
+                int collectibleCounter = 0;
+
+                try
                 {
-                    case "Player":
-                        break;
-                    case "Platform":
-                        break;
-                    case "Goal":
-                        break;                    
-                    case "Enemy":
-                        break;
-                    case "Collectible":
-                        break;
+                    while ((readString = myReader.ReadLine()) != null)
+                    {
+                        readLineArray = readString.Split(new string[] { "|" }, StringSplitOptions.None);
+
+                        bool gravityYesNo = false;
+
+                        if (readLineArray[7] != "None")
+                        {
+                            gravityYesNo = true;
+                        }
+
+                        switch (readLineArray[0])
+                        {
+                            case "Player":
+                                Player = new Player(
+                                    PlayerSprites[readLineArray[1]],
+                                    spritesInSheet: 4,
+                                    slidesToCycle: 3,
+                                    x: ParseToInt(readLineArray[1], 2, readLineArray[2]),
+                                    y: ParseToInt(readLineArray[1], 3, readLineArray[3]),
+                                    width: ParseToInt(readLineArray[1], 4, readLineArray[4]),
+                                    height: ParseToInt(readLineArray[1], 5, readLineArray[5]),
+                                    addGravity: true
+                                 );
+
+                                break;
+                            case "Platform":
+                                Platforms.Add(
+                                    new Platform(
+                                        platformType: readLineArray[1],
+                                        spriteTexture: PlatformSprites[readLineArray[1]],
+                                        x: ParseToInt(readLineArray[1], 2, readLineArray[2]),
+                                        y: ParseToInt(readLineArray[1], 3, readLineArray[3]),
+                                        width: ParseToInt(readLineArray[1], 4, readLineArray[4]),
+                                        height: ParseToInt(readLineArray[1], 5, readLineArray[5])
+                                    )
+                                );
+
+
+                                // Convert the string values from the text file back to their enum datatypes
+                                Platforms[platformCounter].ApplyGravity = gravityYesNo;
+                                Platforms[platformCounter].GravityOnProximityFrom = ProximityInterpreter(readLineArray[6]);
+                                Platforms[platformCounter].ObjectMovement = MovementInterpreter(readLineArray[7]);
+                                Platforms[platformCounter].GravityDirection = GravityInterpreter(readLineArray[8]);
+                                Platforms[platformCounter].ObjectXMoveDistance = MoveDistanceInterpreter(
+                                                                                        "X",
+                                                                                        readLineArray[8],
+                                                                                        ParseToInt(
+                                                                                            readLineArray[1],
+                                                                                            9,
+                                                                                            readLineArray[9]
+                                                                                        )
+                                                                                      );
+                                Platforms[platformCounter].ObjectYMoveDistance = MoveDistanceInterpreter(
+                                                                                        "Y",
+                                                                                        readLineArray[8],
+                                                                                        ParseToInt(
+                                                                                            readLineArray[1],
+                                                                                            9,
+                                                                                            readLineArray[9]
+                                                                                        )
+                                                                                      );
+
+                                platformCounter++;
+
+                                break;
+                            case "Goal":
+                                Goal = new Goal(
+                                    GoalSprites[readLineArray[1]],
+                                    spritesInSheet: 2,
+                                    x: ParseToInt(readLineArray[1], 2, readLineArray[2]),
+                                    y: ParseToInt(readLineArray[1], 3, readLineArray[3]),
+                                    width: ParseToInt(readLineArray[1], 4, readLineArray[4]),
+                                    height: ParseToInt(readLineArray[1], 5, readLineArray[5]),
+                                    addGravity: false
+                                 );
+                                
+                                break;
+                            case "Enemy":
+                                Enemies.Add(
+                                    new Enemy(
+                                        spriteTexture: EnemySprites[readLineArray[1]],
+                                        spritesInSheet: 4,
+                                        x: ParseToInt(readLineArray[1], 2, readLineArray[2]),
+                                        y: ParseToInt(readLineArray[1], 3, readLineArray[3]),
+                                        width: ParseToInt(readLineArray[1], 4, readLineArray[4]),
+                                        height: ParseToInt(readLineArray[1], 5, readLineArray[5]),
+                                        addGravity: true
+                                    )
+                                );
+
+                                Enemies[enemyCounter].ApplyGravity = gravityYesNo;
+                                Enemies[enemyCounter].GravityOnProximityFrom = ProximityInterpreter(readLineArray[6]);
+                                Enemies[enemyCounter].ObjectMovement = MovementInterpreter(readLineArray[7]);
+                                Enemies[enemyCounter].GravityDirection = GravityInterpreter(readLineArray[8]);
+                                Enemies[enemyCounter].ObjectXMoveDistance = MoveDistanceInterpreter(
+                                                                                        "X",
+                                                                                        readLineArray[8],
+                                                                                        ParseToInt(
+                                                                                            readLineArray[1],
+                                                                                            9,
+                                                                                            readLineArray[9]
+                                                                                        )
+                                                                                      );
+                                Enemies[enemyCounter].ObjectYMoveDistance = MoveDistanceInterpreter(
+                                                                                        "Y",
+                                                                                        readLineArray[8],
+                                                                                        ParseToInt(
+                                                                                            readLineArray[1],
+                                                                                            9,
+                                                                                            readLineArray[9]
+                                                                                        )
+                                                                                      );
+
+                                enemyCounter++;
+
+                                break;
+                            case "Collectible":
+                                Collectibles.Add(
+                                    new Collectible(
+                                        collectibleType: readLineArray[1],
+                                        spriteTexture: CollectibleSprites[readLineArray[1]],
+                                        spritesInSheet: 4,
+                                        x: ParseToInt(readLineArray[1], 2, readLineArray[2]),
+                                        y: ParseToInt(readLineArray[1], 3, readLineArray[3]),
+                                        width: ParseToInt(readLineArray[1], 4, readLineArray[4]),
+                                        height: ParseToInt(readLineArray[1], 5, readLineArray[5]),
+                                        addGravity: true
+                                    )
+                                );
+
+
+                                // Convert the string values from the text file back to their enum datatypes
+                                Collectibles[collectibleCounter].ApplyGravity = gravityYesNo;
+                                Collectibles[collectibleCounter].GravityOnProximityFrom = ProximityInterpreter(readLineArray[6]);
+                                Collectibles[collectibleCounter].ObjectMovement = MovementInterpreter(readLineArray[7]);
+                                Collectibles[collectibleCounter].GravityDirection = GravityInterpreter(readLineArray[8]);
+                                Collectibles[collectibleCounter].ObjectXMoveDistance = MoveDistanceInterpreter(
+                                                                                        "X",
+                                                                                        readLineArray[8],
+                                                                                        ParseToInt(
+                                                                                            readLineArray[1],
+                                                                                            9,
+                                                                                            readLineArray[9]
+                                                                                        )
+                                                                                      );
+                                Collectibles[collectibleCounter].ObjectYMoveDistance = MoveDistanceInterpreter(
+                                                                                        "Y",
+                                                                                        readLineArray[8],
+                                                                                        ParseToInt(
+                                                                                            readLineArray[1],
+                                                                                            9,
+                                                                                            readLineArray[9]
+                                                                                        )
+                                                                                      );
+
+                                collectibleCounter++;
+
+                                break;
+                        }
+                    }
+                }
+                catch (InvalidDataException myException)
+                {
+                    DialogResult messageBoxResult = MessageBox.Show(
+                                                        myException.ToString(),
+                                                        "Error while reading level file",
+                                                        MessageBoxButtons.OK,
+                                                        MessageBoxIcon.Error
+                                                    );
+
+                    if (messageBoxResult == DialogResult.OK)
+                    {
+                        returnValue = false;
+                    }
+                } finally
+                {
+                    myReader.Close();
                 }
             }
+
+            return returnValue;
+        }
+
+        /// <summary>
+        /// Converts a string value to an int value.
+        /// 
+        /// Provides exception information pertaining to which object is causing the error as well
+        /// as any other useful information pertaining to the exception
+        /// </summary>
+        /// <param name="callingObject">Object calling the method</param>
+        /// <param name="callingIndex">Index of the item in the array causing the exception</param>
+        /// <param name="valueToParse">The actually parsed value</param>
+        /// <returns>The value parsed from string to int</returns>
+        private int ParseToInt(string callingObject, int callingIndex, string valueToParse)
+        {
+            int returnValue = 0;            
+
+            try
+            {
+                returnValue = int.Parse(valueToParse);
+            }
+            catch (FormatException)
+            {
+                StringBuilder exceptionString = new StringBuilder();
+
+                exceptionString.Append("\n");
+                exceptionString.Append("Calling Object              : " + callingObject + "\n");
+                exceptionString.Append("Calling Index               : " + callingIndex + "\n");
+                exceptionString.Append("Value to Parse to string    : " + valueToParse);
+
+                throw new InvalidDataException(exceptionString.ToString());                
+            }
+
+            return returnValue;
+        }
+
+        /// <summary>
+        /// The values read from the input file are of type string.  The values that represent
+        /// enums need to be converted from strings back to enums.
+        /// 
+        /// - This method converts the GravityOnProximityFrom
+        /// 
+        /// </summary>
+        /// <param name="gravityDirection">Dynamics of how the object should move based on proximity of type string</param>
+        /// <returns>Dynamics of how the object should move based on proximity of type GravityOnProximityFrom (ENUM)</returns>
+        private GravityOnProximityFrom ProximityInterpreter(string proximity)
+        {
+            GravityOnProximityFrom returnValue = GravityOnProximityFrom.None;
+
+            switch (proximity)
+            {
+                case "Left":
+                    returnValue = GravityOnProximityFrom.Left;
+
+                    break;
+                case "Right":
+                    returnValue = GravityOnProximityFrom.Right;
+
+                    break;
+                case "Top":
+                    returnValue = GravityOnProximityFrom.Top;
+
+                    break;
+                case "Bottom":
+                    returnValue = GravityOnProximityFrom.Bottom;
+
+                    break;
+                case "Center":
+                    returnValue = GravityOnProximityFrom.Center;
+
+                    break;
+            }
+
+            return returnValue;
+        }
+
+        /// <summary>
+        /// The values read from the input file are of type string.  The values that represent
+        /// enums need to be converted from strings back to enums.
+        /// 
+        /// - This method converts the ObjectMovement
+        /// 
+        /// </summary>
+        /// <param name="gravityDirection">Dynamics of how the object should move of type string</param>
+        /// <returns>Dynamics of how the object should move of type ObjectMovement (ENUM)</returns>
+        private ObjectMovement MovementInterpreter(string movement)
+        {
+            ObjectMovement returnValue = ObjectMovement.OneDirection;
+
+            switch (movement)
+            {
+                case "ToAndFroUpFirst":
+                    returnValue = ObjectMovement.ToAndFroUpFirst;
+
+                    break;
+                case "ToAndFromDownFirst":
+                    returnValue = ObjectMovement.ToAndFroDownFirst;
+
+                    break;
+                case "ToAndFroLeftFirst":
+                    returnValue = ObjectMovement.ToAndFroLeftFirst;
+
+                    break;
+                case "ToAndFroRightFirst":
+                    returnValue = ObjectMovement.ToAndFroRightFirst;
+
+                    break;
+            }
+
+            return returnValue;
+        }
+
+        /// <summary>
+        /// The values read from the input file are of type string.  The values that represent
+        /// enums need to be converted from strings back to enums.
+        /// 
+        /// - This method converts the GravityDirection
+        /// 
+        /// </summary>
+        /// <param name="gravityDirection">Direction in which gravity needs to be applied of type string</param>
+        /// <returns>Direction in which gravity needs to be applied of type GravityDirection (ENUM)</returns>
+        private GravityDirection GravityInterpreter(string gravityDirection)
+        {
+            GravityDirection returnValue = GravityDirection.Down;
+
+            switch (gravityDirection)
+            {
+                case "Left":
+                    returnValue = GravityDirection.Left;
+
+                    break;
+                case "Right":
+                    returnValue = GravityDirection.Right;
+
+                    break;
+                case "Up":
+                    returnValue = GravityDirection.Up;
+
+                    break;
+
+            }
+
+            return returnValue;
+        }
+
+        /// <summary>
+        /// Converts the distance to move read from file in number of blocks, to distance in pixels
+        /// </summary>
+        /// <param name="cartesianPlane">The X-Y plane which the conversion is for</param>
+        /// <param name="direction">The direction in which the object should move (UP/DOWN/LEFT/RIGHT)</param>
+        /// <param name="distance">The distance the object should move in number of blocks (50 pixels each)</param>
+        /// <returns>The distance the object should move in Pixels</returns>
+        private int MoveDistanceInterpreter(string cartesianPlane, string direction, int distance)
+        {
+            int returnValue = 0;
+
+            switch (cartesianPlane)
+            {
+                case "X":
+                    if (direction == "Right" || direction == "Left")
+                    {
+                        returnValue = distance * 50;
+                    }
+
+                    break;
+                case "Y":
+                    if (direction == "Up" || direction == "Down")
+                    {
+                        returnValue = distance * 50;
+                    }
+
+                    break;
+            }
+
+            return returnValue;
         }
 
         private void LoadBackgroundElements()
@@ -660,426 +1112,426 @@ namespace Game1
             );
         }
 
-        private void LoadPlayerElements()
-        {
-            Player = new Player(
-                            PlayerSprites["Player"],
-                            spritesInSheet: 4,
-                            slidesToCycle: 3,
-                            x: 0,
-                            y: 810,
-                            width: 40,
-                            height: 40,
-                            addGravity: true
-                         );
-        }
+        //private void LoadPlayerElements()
+        //{
+        //    Player = new Player(
+        //                    PlayerSprites["Player"],
+        //                    spritesInSheet: 4,
+        //                    slidesToCycle: 3,
+        //                    x: 0,
+        //                    y: 810,
+        //                    width: 40,
+        //                    height: 40,
+        //                    addGravity: true
+        //                 );
+        //}
 
-        private void LoadEnemyElements()
-        {
-            //000
-            Enemies.Add(
-                 new Enemy(
-                     spriteTexture: enemySprites["Enemy"],
-                     spritesInSheet: 4,
-                     x: 350,
-                     y: 810,
-                     width: 40,
-                     height: 40,
-                     addGravity: true
-                 )
-             );
+        //private void LoadEnemyElements()
+        //{
+        //    //000
+        //    Enemies.Add(
+        //         new Enemy(
+        //             spriteTexture: enemySprites["Enemy"],
+        //             spritesInSheet: 4,
+        //             x: 350,
+        //             y: 810,
+        //             width: 40,
+        //             height: 40,
+        //             addGravity: true
+        //         )
+        //     );
             
-            Enemies[0].ObjectMovement = ObjectMovement.ToAndFroLeftFirst;
-            Enemies[0].ObjectXMoveDistance = 150;
+        //    Enemies[0].ObjectMovement = ObjectMovement.ToAndFroLeftFirst;
+        //    Enemies[0].ObjectXMoveDistance = 150;
 
-            //001
-            Enemies.Add(
-                new Enemy(
-                    spriteTexture: enemySprites["Enemy"],
-                    spritesInSheet: 4,
-                    x: 800,
-                    y: 810,
-                    width: 40,
-                    height: 40,
-                    addGravity: true
-                )
-            );
+        //    //001
+        //    Enemies.Add(
+        //        new Enemy(
+        //            spriteTexture: enemySprites["Enemy"],
+        //            spritesInSheet: 4,
+        //            x: 800,
+        //            y: 810,
+        //            width: 40,
+        //            height: 40,
+        //            addGravity: true
+        //        )
+        //    );
 
-            Enemies[1].ObjectMovement = ObjectMovement.ToAndFroRightFirst;
-            Enemies[1].ObjectXMoveDistance = 150;
+        //    Enemies[1].ObjectMovement = ObjectMovement.ToAndFroRightFirst;
+        //    Enemies[1].ObjectXMoveDistance = 150;
 
-            //002
-            Enemies.Add(
-                new Enemy(
-                    spriteTexture: enemySprites["Enemy"],
-                    spritesInSheet: 4,
-                    x: 200,
-                    y: 470,
-                    width: 40,
-                    height: 40,
-                    addGravity: true
-                )
-            );
+        //    //002
+        //    Enemies.Add(
+        //        new Enemy(
+        //            spriteTexture: enemySprites["Enemy"],
+        //            spritesInSheet: 4,
+        //            x: 200,
+        //            y: 470,
+        //            width: 40,
+        //            height: 40,
+        //            addGravity: true
+        //        )
+        //    );
 
-            Enemies[2].ObjectMovement = ObjectMovement.ToAndFroRightFirst;
-            Enemies[2].ObjectXMoveDistance = 250;
-        }
+        //    Enemies[2].ObjectMovement = ObjectMovement.ToAndFroRightFirst;
+        //    Enemies[2].ObjectXMoveDistance = 250;
+        //}
 
-        private void LoadFloorElements()
-        {
-            //000
-            Platforms.Add(                                                                  // Ceiling platform
-                new Platform(
-                    platformType: "Grass",
-                    spriteTexture: PlatformSprites["Grass"],
-                    x: 0,
-                    y: 860,
-                    width: 400,
-                    height: 50
-                )
-            );
+        //private void LoadFloorElements()
+        //{
+        //    //000
+        //    Platforms.Add(                                                                  // Ceiling platform
+        //        new Platform(
+        //            platformType: "Grass",
+        //            spriteTexture: PlatformSprites["Grass"],
+        //            x: 0,
+        //            y: 860,
+        //            width: 400,
+        //            height: 50
+        //        )
+        //    );
 
-            //001
-            Platforms.Add(
-                new Platform(
-                    platformType: "Grass",
-                    spriteTexture: PlatformSprites["Grass"],
-                    x: 490,
-                    y: 860,
-                    width: 110,
-                    height: 50
-                )
-            );
+        //    //001
+        //    Platforms.Add(
+        //        new Platform(
+        //            platformType: "Grass",
+        //            spriteTexture: PlatformSprites["Grass"],
+        //            x: 490,
+        //            y: 860,
+        //            width: 110,
+        //            height: 50
+        //        )
+        //    );
 
-            //002
-            Platforms.Add(
-                new Platform(
-                    platformType: "Grass",
-                    spriteTexture: PlatformSprites["Grass"],
-                    x: 800,
-                    y: 860,
-                    width: 200,
-                    height: 50
-                )
-            );
+        //    //002
+        //    Platforms.Add(
+        //        new Platform(
+        //            platformType: "Grass",
+        //            spriteTexture: PlatformSprites["Grass"],
+        //            x: 800,
+        //            y: 860,
+        //            width: 200,
+        //            height: 50
+        //        )
+        //    );
 
-            //003
-            Platforms.Add(
-                new Platform(
-                    platformType: "Grass",
-                    spriteTexture: PlatformSprites["Grass"],
-                    x: 1400,
-                    y: 860,
-                    width: 200,
-                    height: 50
-                )
-            );
+        //    //003
+        //    Platforms.Add(
+        //        new Platform(
+        //            platformType: "Grass",
+        //            spriteTexture: PlatformSprites["Grass"],
+        //            x: 1400,
+        //            y: 860,
+        //            width: 200,
+        //            height: 50
+        //        )
+        //    );
 
-            //004
-            Platforms.Add(
-                new Platform(
-                    platformType: "Wood",
-                    spriteTexture: PlatformSprites["Wood"],
-                    x: 1100,
-                    y: 800,
-                    width: 100,
-                    height: 10
-                )
-            );
+        //    //004
+        //    Platforms.Add(
+        //        new Platform(
+        //            platformType: "Wood",
+        //            spriteTexture: PlatformSprites["Wood"],
+        //            x: 1100,
+        //            y: 800,
+        //            width: 100,
+        //            height: 10
+        //        )
+        //    );
 
-            Platforms[4].ApplyGravity = true;
-            Platforms[4].ObjectMovement = ObjectMovement.ToAndFroUpFirst;
-            Platforms[4].ObjectYMoveDistance = 300;
+        //    Platforms[4].ApplyGravity = true;
+        //    Platforms[4].ObjectMovement = ObjectMovement.ToAndFroUpFirst;
+        //    Platforms[4].ObjectYMoveDistance = 300;
 
-            //005
-            Platforms.Add(
-                new Platform(
-                    platformType: "Wood",
-                    spriteTexture: PlatformSprites["Wood"],
-                    x: 600,
-                    y: 700,
-                    width: 100,
-                    height: 10
-                )
-            );
+        //    //005
+        //    Platforms.Add(
+        //        new Platform(
+        //            platformType: "Wood",
+        //            spriteTexture: PlatformSprites["Wood"],
+        //            x: 600,
+        //            y: 700,
+        //            width: 100,
+        //            height: 10
+        //        )
+        //    );
 
-            Platforms[5].ApplyGravity = true;
-            Platforms[5].ObjectMovement = ObjectMovement.ToAndFroRightFirst;
-            Platforms[5].ObjectXMoveDistance = 400;
+        //    Platforms[5].ApplyGravity = true;
+        //    Platforms[5].ObjectMovement = ObjectMovement.ToAndFroRightFirst;
+        //    Platforms[5].ObjectXMoveDistance = 400;
 
-            //006
-            Platforms.Add(
-                new Platform(
-                    platformType: "Grass",
-                    spriteTexture: PlatformSprites["Grass"],
-                    x: 300,
-                    y: 700,
-                    width: 200,
-                    height: 50
-                )
-            );
+        //    //006
+        //    Platforms.Add(
+        //        new Platform(
+        //            platformType: "Grass",
+        //            spriteTexture: PlatformSprites["Grass"],
+        //            x: 300,
+        //            y: 700,
+        //            width: 200,
+        //            height: 50
+        //        )
+        //    );
 
-            //007
-            Platforms.Add(
-                new Platform(
-                    platformType: "Grass",
-                    spriteTexture: PlatformSprites["Grass"],
-                    x: 0,
-                    y: 510,
-                    width: 510,
-                    height: 50
-                )
-            );
+        //    //007
+        //    Platforms.Add(
+        //        new Platform(
+        //            platformType: "Grass",
+        //            spriteTexture: PlatformSprites["Grass"],
+        //            x: 0,
+        //            y: 510,
+        //            width: 510,
+        //            height: 50
+        //        )
+        //    );
 
-            //008
-            Platforms.Add(
-                new Platform(
-                    platformType: "Wood",
-                    spriteTexture: PlatformSprites["Wood"],
-                    x: 50,
-                    y: 400,
-                    width: 100,
-                    height: 10
-                )
-            );
+        //    //008
+        //    Platforms.Add(
+        //        new Platform(
+        //            platformType: "Wood",
+        //            spriteTexture: PlatformSprites["Wood"],
+        //            x: 50,
+        //            y: 400,
+        //            width: 100,
+        //            height: 10
+        //        )
+        //    );
 
-            Platforms[8].ApplyGravity = true;
-            Platforms[8].ObjectMovement = ObjectMovement.ToAndFroUpFirst;
-            Platforms[8].ObjectYMoveDistance = 100;
+        //    Platforms[8].ApplyGravity = true;
+        //    Platforms[8].ObjectMovement = ObjectMovement.ToAndFroUpFirst;
+        //    Platforms[8].ObjectYMoveDistance = 100;
 
-            //009
-            Platforms.Add(
-                new Platform(
-                    platformType: "Wood",
-                    spriteTexture: PlatformSprites["Wood"],
-                    x: 1000,
-                    y: 500,
-                    width: 100,
-                    height: 10
-                )
-            );
+        //    //009
+        //    Platforms.Add(
+        //        new Platform(
+        //            platformType: "Wood",
+        //            spriteTexture: PlatformSprites["Wood"],
+        //            x: 1000,
+        //            y: 500,
+        //            width: 100,
+        //            height: 10
+        //        )
+        //    );
 
-            Platforms[9].ApplyGravity = true;
-            Platforms[9].ObjectMovement = ObjectMovement.ToAndFroUpFirst;
-            Platforms[9].ObjectYMoveDistance = 200;
+        //    Platforms[9].ApplyGravity = true;
+        //    Platforms[9].ObjectMovement = ObjectMovement.ToAndFroUpFirst;
+        //    Platforms[9].ObjectYMoveDistance = 200;
 
-            //010
-            Platforms.Add(
-                new Platform(
-                    platformType: "Stone",
-                    spriteTexture: PlatformSprites["Stone"],
-                    x: 1200,
-                    y: 150,
-                    width: 50,
-                    height: 650
-                )
-            );
+        //    //010
+        //    Platforms.Add(
+        //        new Platform(
+        //            platformType: "Stone",
+        //            spriteTexture: PlatformSprites["Stone"],
+        //            x: 1200,
+        //            y: 150,
+        //            width: 50,
+        //            height: 650
+        //        )
+        //    );
 
-            //011
-            Platforms.Add(
-                new Platform(
-                    platformType: "Grass",
-                    spriteTexture: PlatformSprites["Grass"],
-                    x: 800,
-                    y: 250,
-                    width: 200,
-                    height: 50
-                )
-            );
+        //    //011
+        //    Platforms.Add(
+        //        new Platform(
+        //            platformType: "Grass",
+        //            spriteTexture: PlatformSprites["Grass"],
+        //            x: 800,
+        //            y: 250,
+        //            width: 200,
+        //            height: 50
+        //        )
+        //    );
 
-            //012
-            Platforms.Add(
-                new Platform(
-                    platformType: "Grass",
-                    spriteTexture: PlatformSprites["Grass"],
-                    x: 700,
-                    y: 250,
-                    width: 100,
-                    height: 50
-                )
-            );
+        //    //012
+        //    Platforms.Add(
+        //        new Platform(
+        //            platformType: "Grass",
+        //            spriteTexture: PlatformSprites["Grass"],
+        //            x: 700,
+        //            y: 250,
+        //            width: 100,
+        //            height: 50
+        //        )
+        //    );
 
-            Platforms[12].ApplyGravity = false;
-            Platforms[12].GravityDirection = GravityDirection.Down;
-            Platforms[12].ObjectMovement = ObjectMovement.OneDirection;
-            Platforms[12].GravityOnProximityFrom = GravityOnProximityFrom.Top;
+        //    Platforms[12].ApplyGravity = false;
+        //    Platforms[12].GravityDirection = GravityDirection.Down;
+        //    Platforms[12].ObjectMovement = ObjectMovement.OneDirection;
+        //    Platforms[12].GravityOnProximityFrom = GravityOnProximityFrom.Top;
 
-            //013
-            Platforms.Add(
-                new Platform(
-                    platformType: "Grass",
-                    spriteTexture: PlatformSprites["Grass"],
-                    x: 600,
-                    y: 250,
-                    width: 100,
-                    height: 50
-                )
-            );
+        //    //013
+        //    Platforms.Add(
+        //        new Platform(
+        //            platformType: "Grass",
+        //            spriteTexture: PlatformSprites["Grass"],
+        //            x: 600,
+        //            y: 250,
+        //            width: 100,
+        //            height: 50
+        //        )
+        //    );
 
-            //014
-            Platforms.Add(
-                new Platform(
-                    platformType: "Stone",
-                    spriteTexture: PlatformSprites["Stone"],
-                    x: 450,
-                    y: 150,
-                    width: 50,
-                    height: 260
-                )
-            );
+        //    //014
+        //    Platforms.Add(
+        //        new Platform(
+        //            platformType: "Stone",
+        //            spriteTexture: PlatformSprites["Stone"],
+        //            x: 450,
+        //            y: 150,
+        //            width: 50,
+        //            height: 260
+        //        )
+        //    );
 
-            //015
-            Platforms.Add(
-                new Platform(
-                    platformType: "Wood",
-                    spriteTexture: PlatformSprites["Wood"],
-                    x: 400,
-                    y: 250,
-                    width: 50,
-                    height: 10
-                )
-            );
+        //    //015
+        //    Platforms.Add(
+        //        new Platform(
+        //            platformType: "Wood",
+        //            spriteTexture: PlatformSprites["Wood"],
+        //            x: 400,
+        //            y: 250,
+        //            width: 50,
+        //            height: 10
+        //        )
+        //    );
 
-            Platforms[15].ApplyGravity = true;            
-            Platforms[15].ObjectMovement = ObjectMovement.ToAndFroLeftFirst;            
-            Platforms[15].ObjectXMoveDistance = 100;
+        //    Platforms[15].ApplyGravity = true;            
+        //    Platforms[15].ObjectMovement = ObjectMovement.ToAndFroLeftFirst;            
+        //    Platforms[15].ObjectXMoveDistance = 100;
 
-            //016
-            Platforms.Add(
-                new Platform(
-                    platformType: "Grass",
-                    spriteTexture: PlatformSprites["Grass"],
-                    x: 150,
-                    y: 250,
-                    width: 100,
-                    height: 50
-                )
-            );
+        //    //016
+        //    Platforms.Add(
+        //        new Platform(
+        //            platformType: "Grass",
+        //            spriteTexture: PlatformSprites["Grass"],
+        //            x: 150,
+        //            y: 250,
+        //            width: 100,
+        //            height: 50
+        //        )
+        //    );
 
-            //017
-            Platforms.Add(
-                new Platform(
-                    platformType: "Wood",
-                    spriteTexture: PlatformSprites["Wood"],
-                    x: 0,
-                    y: 150,
-                    width: 100,
-                    height: 10
-                )
-            );
+        //    //017
+        //    Platforms.Add(
+        //        new Platform(
+        //            platformType: "Wood",
+        //            spriteTexture: PlatformSprites["Wood"],
+        //            x: 0,
+        //            y: 150,
+        //            width: 100,
+        //            height: 10
+        //        )
+        //    );
 
-            Platforms[17].ApplyGravity = true;
-            Platforms[17].GravityDirection = GravityDirection.Up;
-            Platforms[17].ObjectMovement = ObjectMovement.ToAndFroUpFirst;
-            Platforms[17].GravityOnProximityFrom = GravityOnProximityFrom.Top;
-            Platforms[17].ObjectXMoveDistance = 100;
+        //    Platforms[17].ApplyGravity = true;
+        //    Platforms[17].GravityDirection = GravityDirection.Up;
+        //    Platforms[17].ObjectMovement = ObjectMovement.ToAndFroUpFirst;
+        //    Platforms[17].GravityOnProximityFrom = GravityOnProximityFrom.Top;
+        //    Platforms[17].ObjectXMoveDistance = 100;
 
-            //018
-            Platforms.Add(
-                new Platform(
-                    platformType: "Grass",
-                    spriteTexture: PlatformSprites["Grass"],
-                    x: 100,
-                    y: 150,
-                    width: 300,
-                    height: 50
-                )
-            );
+        //    //018
+        //    Platforms.Add(
+        //        new Platform(
+        //            platformType: "Grass",
+        //            spriteTexture: PlatformSprites["Grass"],
+        //            x: 100,
+        //            y: 150,
+        //            width: 300,
+        //            height: 50
+        //        )
+        //    );
 
-            //019
-            Platforms.Add(
-                new Platform(
-                    platformType: "Grass",
-                    spriteTexture: PlatformSprites["Grass"],
-                    x: 100,
-                    y: 50,
-                    width: 350,
-                    height: 50
-                )
-            );
+        //    //019
+        //    Platforms.Add(
+        //        new Platform(
+        //            platformType: "Grass",
+        //            spriteTexture: PlatformSprites["Grass"],
+        //            x: 100,
+        //            y: 50,
+        //            width: 350,
+        //            height: 50
+        //        )
+        //    );
 
-            //020
-            Platforms.Add(
-                new Platform(
-                    platformType: "Grass",
-                    spriteTexture: PlatformSprites["Grass"],
-                    x: 450,
-                    y: 100,
-                    width: 550,
-                    height: 50
-                )
-            );
+        //    //020
+        //    Platforms.Add(
+        //        new Platform(
+        //            platformType: "Grass",
+        //            spriteTexture: PlatformSprites["Grass"],
+        //            x: 450,
+        //            y: 100,
+        //            width: 550,
+        //            height: 50
+        //        )
+        //    );
 
-            //021
-            Platforms.Add(
-                new Platform(
-                    platformType: "Grass",
-                    spriteTexture: PlatformSprites["Grass"],
-                    x: 1000,
-                    y: 100,
-                    width: 100,
-                    height: 50
-                )
-            );
+        //    //021
+        //    Platforms.Add(
+        //        new Platform(
+        //            platformType: "Grass",
+        //            spriteTexture: PlatformSprites["Grass"],
+        //            x: 1000,
+        //            y: 100,
+        //            width: 100,
+        //            height: 50
+        //        )
+        //    );
 
-            Platforms[21].ApplyGravity = false;
-            Platforms[21].GravityDirection = GravityDirection.Down;
-            Platforms[21].ObjectMovement = ObjectMovement.OneDirection;
-            Platforms[21].GravityOnProximityFrom = GravityOnProximityFrom.Top;
+        //    Platforms[21].ApplyGravity = false;
+        //    Platforms[21].GravityDirection = GravityDirection.Down;
+        //    Platforms[21].ObjectMovement = ObjectMovement.OneDirection;
+        //    Platforms[21].GravityOnProximityFrom = GravityOnProximityFrom.Top;
 
-            //022
-            Platforms.Add(
-                new Platform(
-                    platformType: "Grass",
-                    spriteTexture: PlatformSprites["Grass"],
-                    x: 1100,
-                    y: 100,
-                    width: 100,
-                    height: 50
-                )
-            );
+        //    //022
+        //    Platforms.Add(
+        //        new Platform(
+        //            platformType: "Grass",
+        //            spriteTexture: PlatformSprites["Grass"],
+        //            x: 1100,
+        //            y: 100,
+        //            width: 100,
+        //            height: 50
+        //        )
+        //    );
 
-            Platforms[22].ApplyGravity = false;
-            Platforms[22].GravityDirection = GravityDirection.Down;
-            Platforms[22].ObjectMovement = ObjectMovement.OneDirection;
-            Platforms[22].GravityOnProximityFrom = GravityOnProximityFrom.Top;
+        //    Platforms[22].ApplyGravity = false;
+        //    Platforms[22].GravityDirection = GravityDirection.Down;
+        //    Platforms[22].ObjectMovement = ObjectMovement.OneDirection;
+        //    Platforms[22].GravityOnProximityFrom = GravityOnProximityFrom.Top;
 
-            //023
-            Platforms.Add(
-                new Platform(
-                    platformType: "Water",
-                    spriteTexture: PlatformSprites["Water"],
-                    x: 400,
-                    y: 860,
-                    width: 100,
-                    height: 50
-                )
-            );
+        //    //023
+        //    Platforms.Add(
+        //        new Platform(
+        //            platformType: "Water",
+        //            spriteTexture: PlatformSprites["Water"],
+        //            x: 400,
+        //            y: 860,
+        //            width: 100,
+        //            height: 50
+        //        )
+        //    );
 
-            //024
-            Platforms.Add(
-                new Platform(
-                    platformType: "Water",
-                    spriteTexture: PlatformSprites["Water"],
-                    x: 600,
-                    y: 860,
-                    width: 200,
-                    height: 50
-                )
-            );
+        //    //024
+        //    Platforms.Add(
+        //        new Platform(
+        //            platformType: "Water",
+        //            spriteTexture: PlatformSprites["Water"],
+        //            x: 600,
+        //            y: 860,
+        //            width: 200,
+        //            height: 50
+        //        )
+        //    );
 
-            //025
-            Platforms.Add(
-                new Platform(
-                    platformType: "Water",
-                    spriteTexture: PlatformSprites["Water"],
-                    x: 1000,
-                    y: 860,
-                    width: 400,
-                    height: 50
-                )
-            );
-        }
+        //    //025
+        //    Platforms.Add(
+        //        new Platform(
+        //            platformType: "Water",
+        //            spriteTexture: PlatformSprites["Water"],
+        //            x: 1000,
+        //            y: 860,
+        //            width: 400,
+        //            height: 50
+        //        )
+        //    );
+        //}
 
         private void LoadGeneralElements()
         {
