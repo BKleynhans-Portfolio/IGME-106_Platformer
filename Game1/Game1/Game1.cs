@@ -139,6 +139,7 @@ namespace Game1
 
         // Level tracker
         private static int LevelTracker { get; set; }
+        private static int LevelsAvailable { get; set; }
 
         // Level editor form tracker
         public bool FormCreated { get; set; }
@@ -310,6 +311,8 @@ namespace Game1
             LevelTracker = 1;
             CurrentScore = 0;
             FormCreated = false;
+                       
+            LevelsAvailable = Directory.GetFiles(Path.GetFullPath("Levels")).Length;
 
             WriteStream = File.OpenWrite("testFile.txt");
             MyWriter = new StreamWriter(WriteStream);
@@ -482,9 +485,16 @@ namespace Game1
                 case GameState.AdvanceLevel:
                     LevelTracker++;
 
-                    ClearGameObjects();
-                    InitializeGameObjects();
-                    GameState = GameState.InGame;
+                    if (LevelTracker > LevelsAvailable)
+                    {
+                        GameState = GameState.Title;
+                    }
+                    else
+                    {
+                        ClearGameObjects();
+                        InitializeGameObjects();
+                        GameState = GameState.InGame;
+                    }                    
 
                     break;
                 case GameState.Pause:
@@ -667,9 +677,6 @@ namespace Game1
             }
 
             LoadBackgroundElements();
-            //LoadPlayerElements();
-            //LoadFloorElements();
-            //LoadEnemyElements();            
             LoadGeneralElements();
 
             if (TitleElements.Count == 0)
@@ -1062,7 +1069,6 @@ namespace Game1
                     returnValue = GravityDirection.Up;
 
                     break;
-
             }
 
             return returnValue;
@@ -1111,427 +1117,6 @@ namespace Game1
                 height: SCREENHEIGHT
             );
         }
-
-        //private void LoadPlayerElements()
-        //{
-        //    Player = new Player(
-        //                    PlayerSprites["Player"],
-        //                    spritesInSheet: 4,
-        //                    slidesToCycle: 3,
-        //                    x: 0,
-        //                    y: 810,
-        //                    width: 40,
-        //                    height: 40,
-        //                    addGravity: true
-        //                 );
-        //}
-
-        //private void LoadEnemyElements()
-        //{
-        //    //000
-        //    Enemies.Add(
-        //         new Enemy(
-        //             spriteTexture: enemySprites["Enemy"],
-        //             spritesInSheet: 4,
-        //             x: 350,
-        //             y: 810,
-        //             width: 40,
-        //             height: 40,
-        //             addGravity: true
-        //         )
-        //     );
-            
-        //    Enemies[0].ObjectMovement = ObjectMovement.ToAndFroLeftFirst;
-        //    Enemies[0].ObjectXMoveDistance = 150;
-
-        //    //001
-        //    Enemies.Add(
-        //        new Enemy(
-        //            spriteTexture: enemySprites["Enemy"],
-        //            spritesInSheet: 4,
-        //            x: 800,
-        //            y: 810,
-        //            width: 40,
-        //            height: 40,
-        //            addGravity: true
-        //        )
-        //    );
-
-        //    Enemies[1].ObjectMovement = ObjectMovement.ToAndFroRightFirst;
-        //    Enemies[1].ObjectXMoveDistance = 150;
-
-        //    //002
-        //    Enemies.Add(
-        //        new Enemy(
-        //            spriteTexture: enemySprites["Enemy"],
-        //            spritesInSheet: 4,
-        //            x: 200,
-        //            y: 470,
-        //            width: 40,
-        //            height: 40,
-        //            addGravity: true
-        //        )
-        //    );
-
-        //    Enemies[2].ObjectMovement = ObjectMovement.ToAndFroRightFirst;
-        //    Enemies[2].ObjectXMoveDistance = 250;
-        //}
-
-        //private void LoadFloorElements()
-        //{
-        //    //000
-        //    Platforms.Add(                                                                  // Ceiling platform
-        //        new Platform(
-        //            platformType: "Grass",
-        //            spriteTexture: PlatformSprites["Grass"],
-        //            x: 0,
-        //            y: 860,
-        //            width: 400,
-        //            height: 50
-        //        )
-        //    );
-
-        //    //001
-        //    Platforms.Add(
-        //        new Platform(
-        //            platformType: "Grass",
-        //            spriteTexture: PlatformSprites["Grass"],
-        //            x: 490,
-        //            y: 860,
-        //            width: 110,
-        //            height: 50
-        //        )
-        //    );
-
-        //    //002
-        //    Platforms.Add(
-        //        new Platform(
-        //            platformType: "Grass",
-        //            spriteTexture: PlatformSprites["Grass"],
-        //            x: 800,
-        //            y: 860,
-        //            width: 200,
-        //            height: 50
-        //        )
-        //    );
-
-        //    //003
-        //    Platforms.Add(
-        //        new Platform(
-        //            platformType: "Grass",
-        //            spriteTexture: PlatformSprites["Grass"],
-        //            x: 1400,
-        //            y: 860,
-        //            width: 200,
-        //            height: 50
-        //        )
-        //    );
-
-        //    //004
-        //    Platforms.Add(
-        //        new Platform(
-        //            platformType: "Wood",
-        //            spriteTexture: PlatformSprites["Wood"],
-        //            x: 1100,
-        //            y: 800,
-        //            width: 100,
-        //            height: 10
-        //        )
-        //    );
-
-        //    Platforms[4].ApplyGravity = true;
-        //    Platforms[4].ObjectMovement = ObjectMovement.ToAndFroUpFirst;
-        //    Platforms[4].ObjectYMoveDistance = 300;
-
-        //    //005
-        //    Platforms.Add(
-        //        new Platform(
-        //            platformType: "Wood",
-        //            spriteTexture: PlatformSprites["Wood"],
-        //            x: 600,
-        //            y: 700,
-        //            width: 100,
-        //            height: 10
-        //        )
-        //    );
-
-        //    Platforms[5].ApplyGravity = true;
-        //    Platforms[5].ObjectMovement = ObjectMovement.ToAndFroRightFirst;
-        //    Platforms[5].ObjectXMoveDistance = 400;
-
-        //    //006
-        //    Platforms.Add(
-        //        new Platform(
-        //            platformType: "Grass",
-        //            spriteTexture: PlatformSprites["Grass"],
-        //            x: 300,
-        //            y: 700,
-        //            width: 200,
-        //            height: 50
-        //        )
-        //    );
-
-        //    //007
-        //    Platforms.Add(
-        //        new Platform(
-        //            platformType: "Grass",
-        //            spriteTexture: PlatformSprites["Grass"],
-        //            x: 0,
-        //            y: 510,
-        //            width: 510,
-        //            height: 50
-        //        )
-        //    );
-
-        //    //008
-        //    Platforms.Add(
-        //        new Platform(
-        //            platformType: "Wood",
-        //            spriteTexture: PlatformSprites["Wood"],
-        //            x: 50,
-        //            y: 400,
-        //            width: 100,
-        //            height: 10
-        //        )
-        //    );
-
-        //    Platforms[8].ApplyGravity = true;
-        //    Platforms[8].ObjectMovement = ObjectMovement.ToAndFroUpFirst;
-        //    Platforms[8].ObjectYMoveDistance = 100;
-
-        //    //009
-        //    Platforms.Add(
-        //        new Platform(
-        //            platformType: "Wood",
-        //            spriteTexture: PlatformSprites["Wood"],
-        //            x: 1000,
-        //            y: 500,
-        //            width: 100,
-        //            height: 10
-        //        )
-        //    );
-
-        //    Platforms[9].ApplyGravity = true;
-        //    Platforms[9].ObjectMovement = ObjectMovement.ToAndFroUpFirst;
-        //    Platforms[9].ObjectYMoveDistance = 200;
-
-        //    //010
-        //    Platforms.Add(
-        //        new Platform(
-        //            platformType: "Stone",
-        //            spriteTexture: PlatformSprites["Stone"],
-        //            x: 1200,
-        //            y: 150,
-        //            width: 50,
-        //            height: 650
-        //        )
-        //    );
-
-        //    //011
-        //    Platforms.Add(
-        //        new Platform(
-        //            platformType: "Grass",
-        //            spriteTexture: PlatformSprites["Grass"],
-        //            x: 800,
-        //            y: 250,
-        //            width: 200,
-        //            height: 50
-        //        )
-        //    );
-
-        //    //012
-        //    Platforms.Add(
-        //        new Platform(
-        //            platformType: "Grass",
-        //            spriteTexture: PlatformSprites["Grass"],
-        //            x: 700,
-        //            y: 250,
-        //            width: 100,
-        //            height: 50
-        //        )
-        //    );
-
-        //    Platforms[12].ApplyGravity = false;
-        //    Platforms[12].GravityDirection = GravityDirection.Down;
-        //    Platforms[12].ObjectMovement = ObjectMovement.OneDirection;
-        //    Platforms[12].GravityOnProximityFrom = GravityOnProximityFrom.Top;
-
-        //    //013
-        //    Platforms.Add(
-        //        new Platform(
-        //            platformType: "Grass",
-        //            spriteTexture: PlatformSprites["Grass"],
-        //            x: 600,
-        //            y: 250,
-        //            width: 100,
-        //            height: 50
-        //        )
-        //    );
-
-        //    //014
-        //    Platforms.Add(
-        //        new Platform(
-        //            platformType: "Stone",
-        //            spriteTexture: PlatformSprites["Stone"],
-        //            x: 450,
-        //            y: 150,
-        //            width: 50,
-        //            height: 260
-        //        )
-        //    );
-
-        //    //015
-        //    Platforms.Add(
-        //        new Platform(
-        //            platformType: "Wood",
-        //            spriteTexture: PlatformSprites["Wood"],
-        //            x: 400,
-        //            y: 250,
-        //            width: 50,
-        //            height: 10
-        //        )
-        //    );
-
-        //    Platforms[15].ApplyGravity = true;            
-        //    Platforms[15].ObjectMovement = ObjectMovement.ToAndFroLeftFirst;            
-        //    Platforms[15].ObjectXMoveDistance = 100;
-
-        //    //016
-        //    Platforms.Add(
-        //        new Platform(
-        //            platformType: "Grass",
-        //            spriteTexture: PlatformSprites["Grass"],
-        //            x: 150,
-        //            y: 250,
-        //            width: 100,
-        //            height: 50
-        //        )
-        //    );
-
-        //    //017
-        //    Platforms.Add(
-        //        new Platform(
-        //            platformType: "Wood",
-        //            spriteTexture: PlatformSprites["Wood"],
-        //            x: 0,
-        //            y: 150,
-        //            width: 100,
-        //            height: 10
-        //        )
-        //    );
-
-        //    Platforms[17].ApplyGravity = true;
-        //    Platforms[17].GravityDirection = GravityDirection.Up;
-        //    Platforms[17].ObjectMovement = ObjectMovement.ToAndFroUpFirst;
-        //    Platforms[17].GravityOnProximityFrom = GravityOnProximityFrom.Top;
-        //    Platforms[17].ObjectXMoveDistance = 100;
-
-        //    //018
-        //    Platforms.Add(
-        //        new Platform(
-        //            platformType: "Grass",
-        //            spriteTexture: PlatformSprites["Grass"],
-        //            x: 100,
-        //            y: 150,
-        //            width: 300,
-        //            height: 50
-        //        )
-        //    );
-
-        //    //019
-        //    Platforms.Add(
-        //        new Platform(
-        //            platformType: "Grass",
-        //            spriteTexture: PlatformSprites["Grass"],
-        //            x: 100,
-        //            y: 50,
-        //            width: 350,
-        //            height: 50
-        //        )
-        //    );
-
-        //    //020
-        //    Platforms.Add(
-        //        new Platform(
-        //            platformType: "Grass",
-        //            spriteTexture: PlatformSprites["Grass"],
-        //            x: 450,
-        //            y: 100,
-        //            width: 550,
-        //            height: 50
-        //        )
-        //    );
-
-        //    //021
-        //    Platforms.Add(
-        //        new Platform(
-        //            platformType: "Grass",
-        //            spriteTexture: PlatformSprites["Grass"],
-        //            x: 1000,
-        //            y: 100,
-        //            width: 100,
-        //            height: 50
-        //        )
-        //    );
-
-        //    Platforms[21].ApplyGravity = false;
-        //    Platforms[21].GravityDirection = GravityDirection.Down;
-        //    Platforms[21].ObjectMovement = ObjectMovement.OneDirection;
-        //    Platforms[21].GravityOnProximityFrom = GravityOnProximityFrom.Top;
-
-        //    //022
-        //    Platforms.Add(
-        //        new Platform(
-        //            platformType: "Grass",
-        //            spriteTexture: PlatformSprites["Grass"],
-        //            x: 1100,
-        //            y: 100,
-        //            width: 100,
-        //            height: 50
-        //        )
-        //    );
-
-        //    Platforms[22].ApplyGravity = false;
-        //    Platforms[22].GravityDirection = GravityDirection.Down;
-        //    Platforms[22].ObjectMovement = ObjectMovement.OneDirection;
-        //    Platforms[22].GravityOnProximityFrom = GravityOnProximityFrom.Top;
-
-        //    //023
-        //    Platforms.Add(
-        //        new Platform(
-        //            platformType: "Water",
-        //            spriteTexture: PlatformSprites["Water"],
-        //            x: 400,
-        //            y: 860,
-        //            width: 100,
-        //            height: 50
-        //        )
-        //    );
-
-        //    //024
-        //    Platforms.Add(
-        //        new Platform(
-        //            platformType: "Water",
-        //            spriteTexture: PlatformSprites["Water"],
-        //            x: 600,
-        //            y: 860,
-        //            width: 200,
-        //            height: 50
-        //        )
-        //    );
-
-        //    //025
-        //    Platforms.Add(
-        //        new Platform(
-        //            platformType: "Water",
-        //            spriteTexture: PlatformSprites["Water"],
-        //            x: 1000,
-        //            y: 860,
-        //            width: 400,
-        //            height: 50
-        //        )
-        //    );
-        //}
 
         private void LoadGeneralElements()
         {

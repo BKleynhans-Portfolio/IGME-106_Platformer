@@ -68,24 +68,28 @@ namespace Game1
         {
             Vector2 returnValue;
 
-            if ((CurrentKeyboardState.IsKeyDown(Keys.A)) && (PreviousKeyboardState.IsKeyUp(Keys.A)))
+            if ((CurrentKeyboardState.IsKeyDown(Keys.A)) && (PreviousKeyboardState.IsKeyUp(Keys.A)) ||
+                (CurrentKeyboardState.IsKeyDown(Keys.Left)) && (PreviousKeyboardState.IsKeyUp(Keys.Left)))
             {
                 base.MovementAppliedTo = MovementAppliedTo.Left;
                 base.SpriteEffect = SpriteEffects.FlipHorizontally;
             }
-            else if ((CurrentKeyboardState.IsKeyDown(Keys.D)) && (PreviousKeyboardState.IsKeyUp(Keys.D)))
+            else if ((CurrentKeyboardState.IsKeyDown(Keys.D)) && (PreviousKeyboardState.IsKeyUp(Keys.D)) ||
+                     (CurrentKeyboardState.IsKeyDown(Keys.Right)) && (PreviousKeyboardState.IsKeyUp(Keys.Right)))
             {
                 base.MovementAppliedTo = MovementAppliedTo.Right;
                 base.SpriteEffect = SpriteEffects.None;
             }
-            else if ((CurrentKeyboardState.IsKeyUp(Keys.A)) && (PreviousKeyboardState.IsKeyDown(Keys.A)))
+            else if ((CurrentKeyboardState.IsKeyUp(Keys.A)) && (PreviousKeyboardState.IsKeyDown(Keys.A)) ||
+                     (CurrentKeyboardState.IsKeyUp(Keys.Left)) && (PreviousKeyboardState.IsKeyDown(Keys.Left)))
             {
                 if ((!base.JumpInProgress) && (!base.HasJumped))
                 {
                     base.MovementAppliedTo = MovementAppliedTo.None;
                 }                
             }
-            else if ((CurrentKeyboardState.IsKeyUp(Keys.D)) && (PreviousKeyboardState.IsKeyDown(Keys.D)))
+            else if ((CurrentKeyboardState.IsKeyUp(Keys.D)) && (PreviousKeyboardState.IsKeyDown(Keys.D)) ||
+                     (CurrentKeyboardState.IsKeyUp(Keys.Right)) && (PreviousKeyboardState.IsKeyDown(Keys.Right)))
             {
                 if ((!base.JumpInProgress) && (!base.HasJumped))
                 {
@@ -96,7 +100,8 @@ namespace Game1
 
             if (base.GravityDirection == GravityDirection.Down)
             {
-                if (((CurrentKeyboardState.IsKeyDown(Keys.Space)) && (PreviousKeyboardState.IsKeyUp(Keys.Space))) &&
+                if (((CurrentKeyboardState.IsKeyDown(Keys.Space)) && (PreviousKeyboardState.IsKeyUp(Keys.Space)) ||
+                     (CurrentKeyboardState.IsKeyDown(Keys.Up)) && (PreviousKeyboardState.IsKeyUp(Keys.Up))) &&
                     ((base.HitObstacle == HitObstacle.FromTop) || (this.JumpCount == 1)))
                 {
                     base.TimeSinceJump = gameTime.ElapsedGameTime.Milliseconds;
@@ -125,7 +130,8 @@ namespace Game1
             }
             else if (base.GravityDirection == GravityDirection.Up)
             {
-                if (((CurrentKeyboardState.IsKeyDown(Keys.Space)) && (PreviousKeyboardState.IsKeyUp(Keys.Space))) &&
+                if (((CurrentKeyboardState.IsKeyDown(Keys.Space)) && (PreviousKeyboardState.IsKeyUp(Keys.Space)) ||
+                     (CurrentKeyboardState.IsKeyUp(Keys.Up)) && (PreviousKeyboardState.IsKeyDown(Keys.Up))) &&
                     ((base.HitObstacle == HitObstacle.FromTop) || (this.JumpCount == 1)))
                 {                    
                     base.MovementAppliedTo = MovementAppliedTo.Down;
@@ -145,6 +151,7 @@ namespace Game1
             }
 
             if ((CurrentKeyboardState.IsKeyUp(Keys.A)) && (CurrentKeyboardState.IsKeyUp(Keys.D)) &&
+                (CurrentKeyboardState.IsKeyUp(Keys.Left)) && (CurrentKeyboardState.IsKeyUp(Keys.Right)) &&
                 (base.Falling == false) && (base.HasJumped == false) && (base.JumpInProgress == false))
             {
                 base.MovementAppliedTo = MovementAppliedTo.None;
