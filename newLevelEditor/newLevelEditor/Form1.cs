@@ -234,7 +234,7 @@ namespace newLevelEditor
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            sfdSaveLevel.Filter = "txt files (*.txt)|*.txt";
+            sfdSaveLevel.Filter = "txt files (*.txt)|*.txt";            
             sfdSaveLevel.FilterIndex = 2;
             sfdSaveLevel.RestoreDirectory = true;
             if (sfdSaveLevel.ShowDialog() == DialogResult.OK)

@@ -48,8 +48,8 @@ namespace newLevelEditor
     {
         private ObjectType ObjectType { get; set; }
 
-        private const int WIDTH = 50;
-        private const int HEIGHT = 50;
+        private int width = 50;
+        private int height = 50;
 
         private string Name { get; set; }
         private string ObjectMoveDistance { get; set; }
@@ -63,20 +63,27 @@ namespace newLevelEditor
         
         public int Width
         {
-            get { return WIDTH; }
+            get { return this.width; }
+            private set { this.width = value; }
         }
 
         public int Height
         {
-            get { return HEIGHT; }
+            get { return this.height; }
+            private set { this.height = value; }
         }
 
         //constructor
         public GameTile(int x, int y, string name, GravityOnProximityFrom gravityOnProximityFrom, ObjectMovement objectMovement,
                         GravityAppliedTo gravityDirection, string objectMoveDistance)
         {
-            this.X = x * WIDTH;
-            this.Y = y * HEIGHT;
+            if (name.Equals("Wood"))
+            {
+                this.Height = 10;                                                           // If this is a wooden platform, give it a smaller height
+            }
+            
+            this.X = x * Width;
+            this.Y = y * Height;
             this.Name = name;            
             this.GravityOnProximityFrom = gravityOnProximityFrom;
             this.ObjectMovement = objectMovement;
@@ -122,6 +129,9 @@ namespace newLevelEditor
             }
         }
 
+        /// <summary>
+        /// Define the direction in which gravity needs to be applied so user doesn't have to do this manually
+        /// </summary>
         private void DefineGravityDirection()
         {
             if (this.ObjectMovement == ObjectMovement.ToAndFroDownFirst)
@@ -158,9 +168,9 @@ namespace newLevelEditor
             myString.Append("|");
             myString.Append(this.Y);
             myString.Append("|");
-            myString.Append(WIDTH);
+            myString.Append(this.Width);
             myString.Append("|");
-            myString.Append(HEIGHT);
+            myString.Append(this.Height);
             myString.Append("|");            
             myString.Append(this.GravityOnProximityFrom);
             myString.Append("|");
