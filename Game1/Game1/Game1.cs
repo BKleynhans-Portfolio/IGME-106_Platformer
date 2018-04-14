@@ -439,6 +439,7 @@ namespace Game1
                     else if ((!LevelForm.Visible) && (FormCreated))
                     {
                         LevelTracker = 1;
+                        LevelsAvailable = Directory.GetFiles(Path.GetFullPath("Levels")).Length;
 
                         GameState = GameState.Title;
 
