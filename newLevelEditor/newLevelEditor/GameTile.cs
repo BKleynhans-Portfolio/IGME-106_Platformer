@@ -48,8 +48,8 @@ namespace newLevelEditor
     {
         private ObjectType ObjectType { get; set; }
 
-        private int width = 50;
-        private int height = 50;
+        private const int BLOCKWIDTH = 50;
+        private const int BLOCKHEIGHT = 50;
 
         private string Name { get; set; }
         private string ObjectMoveDistance { get; set; }
@@ -60,30 +60,23 @@ namespace newLevelEditor
         
         public int X { get; set; }
         public int Y { get; set; }
+        public int ObjectHeight { get; set; }
         
-        public int Width
-        {
-            get { return this.width; }
-            private set { this.width = value; }
-        }
-
-        public int Height
-        {
-            get { return this.height; }
-            private set { this.height = value; }
-        }
-
         //constructor
         public GameTile(int x, int y, string name, GravityOnProximityFrom gravityOnProximityFrom, ObjectMovement objectMovement,
                         GravityAppliedTo gravityDirection, string objectMoveDistance)
         {
             if (name.Equals("Wood"))
             {
-                this.Height = 10;                                                           // If this is a wooden platform, give it a smaller height
+                this.ObjectHeight = 10;                                                     // If this is a wooden platform, give it a smaller height
+            }
+            else
+            {
+                this.ObjectHeight = BLOCKHEIGHT;
             }
             
-            this.X = x * Width;
-            this.Y = y * Height;
+            this.X = x * BLOCKWIDTH;
+            this.Y = y * BLOCKHEIGHT;
             this.Name = name;            
             this.GravityOnProximityFrom = gravityOnProximityFrom;
             this.ObjectMovement = objectMovement;
@@ -168,9 +161,9 @@ namespace newLevelEditor
             myString.Append("|");
             myString.Append(this.Y);
             myString.Append("|");
-            myString.Append(this.Width);
+            myString.Append(BLOCKWIDTH);
             myString.Append("|");
-            myString.Append(this.Height);
+            myString.Append(this.ObjectHeight);
             myString.Append("|");            
             myString.Append(this.GravityOnProximityFrom);
             myString.Append("|");

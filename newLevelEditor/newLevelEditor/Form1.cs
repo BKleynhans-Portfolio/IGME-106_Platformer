@@ -234,6 +234,10 @@ namespace newLevelEditor
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            
+            sfdSaveLevel.InitialDirectory = "Levels";
+            int lastSavedLevel = GetLastLevel();
+            sfdSaveLevel.FileName = ("Level" + lastSavedLevel + ".txt");
             sfdSaveLevel.Filter = "txt files (*.txt)|*.txt";            
             sfdSaveLevel.FilterIndex = 2;
             sfdSaveLevel.RestoreDirectory = true;
@@ -262,6 +266,30 @@ namespace newLevelEditor
                 }
                 
             }
+        }
+
+        private int GetLastLevel()
+        {
+            int returnValue = 0;
+            int startLevel = 1;
+            bool foundLastLevel = false;
+            string fullFilePath = Path.GetFullPath(sfdSaveLevel.InitialDirectory);
+
+            do
+            {
+                if (File.Exists(fullFilePath + "\\Level" + startLevel + ".txt"))
+                {
+                    startLevel++;
+                }
+                else
+                {
+                    returnValue = startLevel;
+                    foundLastLevel = true;
+                }
+
+            } while (!foundLastLevel);
+
+            return returnValue;
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
