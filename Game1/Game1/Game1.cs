@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Collections;
+using System.Windows.Forms;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
@@ -32,8 +33,10 @@ namespace Game1
     public enum GameState
     {
         Title,
+        LevelEditor,
         Options,
         InGame,
+        AdvanceLevel,
         GameOver,
         Pause
     }
@@ -54,6 +57,10 @@ namespace Game1
         // Define input devices
         private static KeyboardState currentKeyboardState;
         private static KeyboardState previousKeyboardState;
+
+        // Read File
+        protected static FileStream ReadStream { get; set; }
+        protected static StreamReader myReader { get; set; }
 
         // Write File
         protected static FileStream WriteStream { get; set; }
@@ -95,7 +102,8 @@ namespace Game1
         private static List<GraphicElement> livesLeft = new List<GraphicElement>();
 
         // Create player object and parameters
-        private Player player;
+        //private Player player;
+        private Player Player { get; set; }
 
         // Create enemy object and parameters
         private List<Enemy> enemies = new List<Enemy>();
@@ -108,6 +116,9 @@ namespace Game1
 
         // List of objects currently being intersected
         protected List<GameObject> intersectedBy = new List<GameObject>();
+
+        // Level tracker
+        private static int LevelTracker { get; set; }
 
         // Animation variables        
         public static double fps;
@@ -215,12 +226,6 @@ namespace Game1
             set { livesLeft = value; }
         }
 
-        private Player Player
-        {
-            get { return player; }
-            set { player = value; }
-        }
-
         private List<Enemy> Enemies
         {
             get { return enemies; }
@@ -259,7 +264,10 @@ namespace Game1
         /// </summary>
         protected override void Initialize()
         {
-            //WriteStream = File.OpenWrite("D:/Users/bkleynhans/Source/Repos/team-project/Game1/Game1/Content/testFile.txt");
+            Application.EnableVisualStyles();
+
+            LevelTracker = 1;
+
             WriteStream = File.OpenWrite("testFile.txt");
             MyWriter = new StreamWriter(WriteStream);
 
@@ -321,7 +329,8 @@ namespace Game1
             PreviousKeyboardState = CurrentKeyboardState;                                   // Get comparative keyboard states
             CurrentKeyboardState = Keyboard.GetState();
 
-            if (CurrentKeyboardState.IsKeyDown(Keys.Escape) && PreviousKeyboardState.IsKeyUp(Keys.Escape))
+            if (CurrentKeyboardState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Escape) && 
+                PreviousKeyboardState.IsKeyUp(Microsoft.Xna.Framework.Input.Keys.Escape))
             {
                 switch (gameState)
                 {
@@ -329,7 +338,15 @@ namespace Game1
                         Exit();
 
                         break;
+                    case GameState.LevelEditor:
+                        GameState = GameState.Title;
+
+                        break;
                     case GameState.Options:
+                        GameState = GameState.Title;
+
+                        break;
+                    case GameState.AdvanceLevel:
                         GameState = GameState.Title;
 
                         break;
@@ -351,6 +368,18 @@ namespace Game1
                     {
                         TitleElements[i].Update(gameTime);
                     }
+
+                    break;
+                case GameState.LevelEditor:
+                    Form levelForm = new newLevelEditor.Form1();
+
+                    levelForm.Location = new System.Drawing.Point(
+                                            (SCREENWIDTH / 2) - (levelForm.Width / 2),
+                                            (SCREENHEIGHT / 2) - (levelForm.Height / 2)
+                                         );
+                    levelForm.Show();
+
+                    GameState = GameState.Title;
 
                     break;
                 case GameState.Options:
@@ -384,6 +413,14 @@ namespace Game1
                     {
                         GameObject[i].Update(gameTime);
                     }
+
+                    break;
+                case GameState.AdvanceLevel:
+                    LevelTracker++;
+
+                    ClearGameObjects();
+                    InitializeGameObjects();
+                    GameState = GameState.InGame;
 
                     break;
                 case GameState.Pause:
@@ -471,7 +508,7 @@ namespace Game1
             BackgroundSprites.Add("GameBackground", Content.Load<Texture2D>("Images\\Backgrounds\\GameBackground"));
 
             // Add player sprites
-            PlayerSprites.Add("PlayerCharacter", Content.Load<Texture2D>("Images\\SpriteSheets\\Player_400x400"));
+            PlayerSprites.Add("Player", Content.Load<Texture2D>("Images\\SpriteSheets\\Player_400x400"));
 
             // Add platform sprites
             PlatformSprites.Add("Grass", Content.Load<Texture2D>("Images\\SpriteSheets\\Grass_400x400"));
@@ -480,7 +517,7 @@ namespace Game1
             PlatformSprites.Add("Wood", Content.Load<Texture2D>("Images\\SpriteSheets\\Wood_400x400"));
 
             // Add enemy sprites
-            EnemySprites.Add("GeneralEnemy", Content.Load<Texture2D>("Images\\SpriteSheets\\Enemy_400x400"));
+            EnemySprites.Add("Enemy", Content.Load<Texture2D>("Images\\SpriteSheets\\Enemy_400x400"));
 
             // Add random other graphics sprites            
             GeneralSprites.Add("LifeIcon", Content.Load<Texture2D>("Images\\GeneralElements\\LifeIcon"));
@@ -489,7 +526,7 @@ namespace Game1
             MenuSprites.Add("MenuBackground", Content.Load<Texture2D>("Images\\Backgrounds\\MenuBackground"));
             MenuSprites.Add("Title", Content.Load<Texture2D>("Menus\\Title\\Title"));
             MenuSprites.Add("TitleSelectionFrame", Content.Load<Texture2D>("Menus\\Title\\TitleSelectionFrame"));
-            MenuSprites.Add("LoadGame", Content.Load<Texture2D>("Menus\\Title\\LoadGame"));
+            MenuSprites.Add("LevelEditor", Content.Load<Texture2D>("Menus\\Title\\LevelEditor"));
             MenuSprites.Add("NewGame", Content.Load<Texture2D>("Menus\\Title\\NewGame"));
             MenuSprites.Add("Options", Content.Load<Texture2D>("Menus\\Title\\Options"));
 
@@ -542,6 +579,7 @@ namespace Game1
 
         private void InitializeGameObjects()
         {
+            ReadLevelFile();
             LoadBackgroundElements();
             LoadPlayerElements();
             LoadFloorElements();
@@ -554,7 +592,7 @@ namespace Game1
             }
             
             // All objects need to be added to the GameObject list
-            GameObject.Add(player);                                                         // Add player to GameObject
+            GameObject.Add(Player);                                                         // Add player to GameObject
 
             foreach (Enemy enemy in Enemies)                                                // Add enemies to GameObject
             {
@@ -581,6 +619,35 @@ namespace Game1
             LivesLeft.Clear();
         }
 
+        private void ReadLevelFile() {
+
+            ReadStream = File.OpenRead("Levels//Level" + LevelTracker + ".txt");
+            myReader = new StreamReader(ReadStream);
+
+            string readString;
+            string[] readLineArray;
+            List<newLevelEditor.GameTile[]> gameTileList = new List<newLevelEditor.GameTile[]>();
+
+            while ((readString = myReader.ReadLine()) != null)
+            {
+                readLineArray = readString.Split(new string[] { "|" }, StringSplitOptions.None);
+
+                switch(readLineArray[0])
+                {
+                    case "Player":
+                        break;
+                    case "Platform":
+                        break;
+                    case "Goal":
+                        break;                    
+                    case "Enemy":
+                        break;
+                    case "Collectible":
+                        break;
+                }
+            }
+        }
+
         private void LoadBackgroundElements()
         {
             new GraphicElement(
@@ -596,7 +663,7 @@ namespace Game1
         private void LoadPlayerElements()
         {
             Player = new Player(
-                            PlayerSprites["PlayerCharacter"],
+                            PlayerSprites["Player"],
                             spritesInSheet: 4,
                             slidesToCycle: 3,
                             x: 0,
@@ -612,7 +679,7 @@ namespace Game1
             //000
             Enemies.Add(
                  new Enemy(
-                     spriteTexture: enemySprites["GeneralEnemy"],
+                     spriteTexture: enemySprites["Enemy"],
                      spritesInSheet: 4,
                      x: 350,
                      y: 810,
@@ -628,7 +695,7 @@ namespace Game1
             //001
             Enemies.Add(
                 new Enemy(
-                    spriteTexture: enemySprites["GeneralEnemy"],
+                    spriteTexture: enemySprites["Enemy"],
                     spritesInSheet: 4,
                     x: 800,
                     y: 810,
@@ -644,7 +711,7 @@ namespace Game1
             //002
             Enemies.Add(
                 new Enemy(
-                    spriteTexture: enemySprites["GeneralEnemy"],
+                    spriteTexture: enemySprites["Enemy"],
                     spritesInSheet: 4,
                     x: 200,
                     y: 470,
@@ -1082,8 +1149,8 @@ namespace Game1
 
             TitleElements.Add(
                 new Title(
-                    menuItem: "LoadGame",
-                    spriteTexture: MenuSprites["LoadGame"],
+                    menuItem: "NewGame",
+                    spriteTexture: MenuSprites["NewGame"],
                     spritesInSheet: 1,
                     x: (SCREENWIDTH / 2) - 200,
                     y: (SCREENHEIGHT / 2) - 100,
@@ -1095,8 +1162,8 @@ namespace Game1
 
             TitleElements.Add(
                 new Title(
-                    menuItem: "NewGame",
-                    spriteTexture: MenuSprites["NewGame"],
+                    menuItem: "LevelEditor",
+                    spriteTexture: MenuSprites["LevelEditor"],                    
                     spritesInSheet: 1,
                     x: (SCREENWIDTH / 2) - 200,
                     y: (SCREENHEIGHT / 2) + 50,

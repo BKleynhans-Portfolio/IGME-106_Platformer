@@ -193,18 +193,6 @@
 /processorParam:TextureFormat=Color
 /build:Menus/Options/OffButton.png
 
-#begin Menus/Options/LowText.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Menus/Options/LowText.png
-
 #begin Menus/Options/OnButton.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -216,18 +204,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Menus/Options/OnButton.png
-
-#begin Menus/Options/HiText.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Menus/Options/HiText.png
 
 #begin Menus/Options/OptionsSelectionFrame.png
 /importer:TextureImporter
@@ -289,7 +265,7 @@
 /processorParam:TextureFormat=Color
 /build:Menus/Options/SFX.png
 
-#begin Menus/Title/LoadGame.png
+#begin Menus/Title/LevelEditor.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -299,7 +275,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Menus/Title/LoadGame.png
+/build:Menus/Title/LevelEditor.png
 
 #begin Menus/Title/NewGame.png
 /importer:TextureImporter
@@ -480,4 +456,16 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Menus/Options/LowText.png
+
+#begin Menus/Title/LevelEditor.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Menus/Title/LevelEditor.png
 
