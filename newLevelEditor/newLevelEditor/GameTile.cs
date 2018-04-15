@@ -51,7 +51,7 @@ namespace newLevelEditor
         private const int BLOCKWIDTH = 50;
         private const int BLOCKHEIGHT = 50;
 
-        private string Name { get; set; }
+        public string Name { get; set; }
         private string ObjectMoveDistance { get; set; }
 
         public GravityAppliedTo GravityAppliedTo { get; set; }

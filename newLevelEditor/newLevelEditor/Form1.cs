@@ -28,6 +28,9 @@ namespace newLevelEditor
               
         List<GameTile> gameTiles;
 
+        private bool PlayerCreated { get; set; }
+        private bool BirdHouseCreated { get; set; }
+
 
         public Form1()
         {
@@ -59,9 +62,12 @@ namespace newLevelEditor
         private void pnlLevel_MouseClick(object sender, MouseEventArgs e)
         {
             string name = null;
+            string operation = null;
 
             if (rbnRemove.Checked != true)
             {
+                operation = "Add";
+
                 //tiles
                 if (rbnGrass.Checked)
                 {
@@ -99,7 +105,7 @@ namespace newLevelEditor
                 {
                     name = "BirdHouse";
                 }
-                
+
                 gameTiles.Add(                                                              // Add a tile to the list
                     new GameTile(
                         x: gridPointX,
@@ -114,6 +120,8 @@ namespace newLevelEditor
             }
             else
             {
+                operation = "Remove";
+
                 GameTile tileToRemove = null;                                               // You cannot modify a list while accessing it
                                                                                             // the temp object is required
                 foreach (GameTile gameTile in gameTiles)
@@ -123,6 +131,8 @@ namespace newLevelEditor
                         tileToRemove = gameTile;
                     }
                 }
+
+                name = tileToRemove.Name;
 
                 gameTiles.Remove(tileToRemove);                                             // Remove the tile from the list
 
@@ -134,9 +144,48 @@ namespace newLevelEditor
             lastPlacedX = gridPointX;
             lastPlacedY = gridPointY;
 
+            if (name.Equals("Player") || name.Equals("BirdHouse"))
+            {
+                UpdateControls(operation, name);
+            }
+
             //switch to check which radio button is on
 
+        }
 
+        private void UpdateControls(string operation, string objectName)
+        {
+            switch (operation)
+            {
+                case "Add":
+                    if (objectName.Equals("Player"))
+                    {
+                        PlayerCreated = true;
+                        rbnPlayer.Enabled = false;
+                        rbnEnemy.Checked = true;
+                    }
+                    else if (objectName.Equals("BirdHouse"))
+                    {
+                        BirdHouseCreated = true;
+                        rbnBirdHouse.Enabled = false;
+                        rbnEnemy.Checked = true;
+                    }
+                    break;
+                case "Remove":
+
+                    if (objectName.Equals("Player"))
+                    {
+                        PlayerCreated = false;
+                        rbnPlayer.Enabled = true;
+                    }
+                    else if (objectName.Equals("BirdHouse"))
+                    {
+                        BirdHouseCreated = false;
+                        rbnBirdHouse.Enabled = true;
+                    }
+
+                    break;
+            }
         }
 
         private void tmrRefresh_Tick(object sender, EventArgs e)
@@ -234,37 +283,59 @@ namespace newLevelEditor
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            
-            sfdSaveLevel.InitialDirectory = "Levels";
-            int lastSavedLevel = GetLastLevel();
-            sfdSaveLevel.FileName = ("Level" + lastSavedLevel + ".txt");
-            sfdSaveLevel.Filter = "txt files (*.txt)|*.txt";            
-            sfdSaveLevel.FilterIndex = 2;
-            sfdSaveLevel.RestoreDirectory = true;
-            if (sfdSaveLevel.ShowDialog() == DialogResult.OK)
+            if (!PlayerCreated || !BirdHouseCreated)
             {
-                try
-                {
-                    StreamWriter swSaveLevel = new StreamWriter(sfdSaveLevel.FileName);
+                string errorObject = null;
 
-                    foreach (GameTile tiles in gameTiles)
+                if (!PlayerCreated)
+                {
+                    errorObject = "Player";
+                }
+                else if (!BirdHouseCreated)
+                {
+                    errorObject = "BirdHouse";
+                }
+
+                MessageBox.Show(
+                    "The level cannot be saved, you have not yet created a " + errorObject + " object",
+                    "Save error " + errorObject + " missing",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+            }
+            else
+            {
+                sfdSaveLevel.InitialDirectory = "Levels";
+                int lastSavedLevel = GetLastLevel();
+                sfdSaveLevel.FileName = ("Level" + lastSavedLevel + ".txt");
+                sfdSaveLevel.Filter = "txt files (*.txt)|*.txt";
+                sfdSaveLevel.FilterIndex = 2;
+                sfdSaveLevel.RestoreDirectory = true;
+                if (sfdSaveLevel.ShowDialog() == DialogResult.OK)
+                {
+                    try
                     {
-                        swSaveLevel.WriteLine(tiles.ToString());
+                        StreamWriter swSaveLevel = new StreamWriter(sfdSaveLevel.FileName);
+
+                        foreach (GameTile tiles in gameTiles)
+                        {
+                            swSaveLevel.WriteLine(tiles.ToString());
+                        }
+
+                        swSaveLevel.Close();
+                    }
+                    catch (Exception fileWriteException)
+                    {
+                        MessageBox.Show(
+                            fileWriteException.Message + "\n\n" +
+                            "The file cannot be saved",
+                            "Error in Form1.cs : lines 242 - 251",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Error
+                        );
                     }
 
-                    swSaveLevel.Close();
                 }
-                catch (Exception fileWriteException)
-                {
-                    MessageBox.Show(
-                        fileWriteException.Message + "\n\n" +
-                        "The file cannot be saved",
-                        "Error in Form1.cs : lines 242 - 251",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Error
-                    );
-                }
-                
             }
         }
 
