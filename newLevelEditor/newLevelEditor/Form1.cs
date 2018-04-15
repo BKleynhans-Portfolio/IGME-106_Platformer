@@ -153,6 +153,11 @@ namespace newLevelEditor
 
         }
 
+        /// <summary>
+        /// Set the properties of the radio button controls of both player and bird feeder
+        /// </summary>
+        /// <param name="operation">Add or Remove an Object</param>
+        /// <param name="objectName">Object to be removed</param>
         private void UpdateControls(string operation, string objectName)
         {
             switch (operation)
