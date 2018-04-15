@@ -132,9 +132,11 @@ namespace newLevelEditor
                     }
                 }
 
-                name = tileToRemove.Name;
-
-                gameTiles.Remove(tileToRemove);                                             // Remove the tile from the list
+                if (tileToRemove != null)
+                {
+                    name = tileToRemove.Name;
+                    gameTiles.Remove(tileToRemove);                                             // Remove the tile from the list
+                }
 
                 boxColor = SystemColors.Control;                                            // Reset grid point to system color
             }
@@ -144,9 +146,12 @@ namespace newLevelEditor
             lastPlacedX = gridPointX;
             lastPlacedY = gridPointY;
 
-            if (name.Equals("Player") || name.Equals("BirdHouse"))
+            if (name != null)
             {
-                UpdateControls(operation, name);
+                if (name.Equals("Player") || name.Equals("BirdHouse"))
+                {
+                    UpdateControls(operation, name);
+                }
             }
 
             //switch to check which radio button is on
