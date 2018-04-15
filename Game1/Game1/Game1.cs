@@ -415,11 +415,11 @@ namespace Game1
 
                         break;
                     case GameState.InGame:
-                        GameState = GameState.GameOver;
+                        GameState = GameState.Title;
 
                         break;
                     case GameState.GameOver:
-                        GameState = GameState.Title;
+                        GameState = GameState.GameOver;                        
 
                         break;
                 }
@@ -517,6 +517,7 @@ namespace Game1
                 case GameState.Pause:
                     break;
                 case GameState.GameOver:
+                    LevelTracker = 1;
                     ClearGameObjects();
 
                     InitializeGameObjects();
@@ -768,7 +769,7 @@ namespace Game1
 
                         bool gravityYesNo = false;
 
-                        if (!readLineArray[7].Equals("None"))
+                        if (readLineArray[6].Equals("None") && (!readLineArray[7].Equals("None")))
                         {
                             gravityYesNo = true;
                         }
@@ -1038,7 +1039,7 @@ namespace Game1
                     returnValue = ObjectMovement.ToAndFroUpFirst;
 
                     break;
-                case "ToAndFromDownFirst":
+                case "ToAndFroDownFirst":
                     returnValue = ObjectMovement.ToAndFroDownFirst;
 
                     break;
