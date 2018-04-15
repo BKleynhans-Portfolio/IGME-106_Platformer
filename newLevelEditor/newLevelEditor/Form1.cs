@@ -162,7 +162,7 @@ namespace newLevelEditor
         {
             switch (operation)
             {
-                case "Add":
+                case "Add":                                                                 // Set these properties if we're adding an object
                     if (objectName.Equals("Player"))
                     {
                         PlayerCreated = true;
@@ -176,8 +176,7 @@ namespace newLevelEditor
                         rbnEnemy.Checked = true;
                     }
                     break;
-                case "Remove":
-
+                case "Remove":                                                              // Set these properties if we're removing an object
                     if (objectName.Equals("Player"))
                     {
                         PlayerCreated = false;
@@ -286,13 +285,18 @@ namespace newLevelEditor
 
         }
 
+        /// <summary>
+        /// Saves the grid information to a text file
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (!PlayerCreated || !BirdHouseCreated)
+            if (!PlayerCreated || !BirdHouseCreated)                                        // Check that both player and bird house are created
             {
                 string errorObject = null;
 
-                if (!PlayerCreated)
+                if (!PlayerCreated)                                                         // If not, determine which one is missing
                 {
                     errorObject = "Player";
                 }
@@ -301,7 +305,7 @@ namespace newLevelEditor
                     errorObject = "BirdHouse";
                 }
 
-                MessageBox.Show(
+                MessageBox.Show(                                                            // Error message to display which item is missing
                     "The level cannot be saved, you have not yet created a " + errorObject + " object",
                     "Save error " + errorObject + " missing",
                     MessageBoxButtons.OK,
@@ -309,20 +313,21 @@ namespace newLevelEditor
                 );
             }
             else
-            {
-                sfdSaveLevel.InitialDirectory = "Levels";
-                int lastSavedLevel = GetLastLevel();
-                sfdSaveLevel.FileName = ("Level" + lastSavedLevel + ".txt");
+            {                                                                               // If no items are missing, save the file
+                sfdSaveLevel.InitialDirectory = "Levels";                                   // Define directory for save dialog box to open in
+                int lastSavedLevel = GetLastLevel();                                        // Determine what the last saved level was
+                sfdSaveLevel.FileName = ("Level" + lastSavedLevel + ".txt");                // Suggest the next file name to use
                 sfdSaveLevel.Filter = "txt files (*.txt)|*.txt";
                 sfdSaveLevel.FilterIndex = 2;
                 sfdSaveLevel.RestoreDirectory = true;
+
                 if (sfdSaveLevel.ShowDialog() == DialogResult.OK)
                 {
                     try
                     {
                         StreamWriter swSaveLevel = new StreamWriter(sfdSaveLevel.FileName);
 
-                        foreach (GameTile tiles in gameTiles)
+                        foreach (GameTile tiles in gameTiles)                               // Write each tile to the txt file
                         {
                             swSaveLevel.WriteLine(tiles.ToString());
                         }
@@ -331,7 +336,7 @@ namespace newLevelEditor
                     }
                     catch (Exception fileWriteException)
                     {
-                        MessageBox.Show(
+                        MessageBox.Show(                                                    // Throw exception if error at save
                             fileWriteException.Message + "\n\n" +
                             "The file cannot be saved",
                             "Error in Form1.cs : lines 242 - 251",
@@ -339,23 +344,27 @@ namespace newLevelEditor
                             MessageBoxIcon.Error
                         );
                     }
-
                 }
             }
         }
 
+        /// <summary>
+        /// Determines what level was last to be saved.  This is only accurate if launched from the game
+        /// and not when launched from newLevelEditor because it references the relative path
+        /// </summary>
+        /// <returns>Integer of the next level that should be saved</returns>
         private int GetLastLevel()
         {
             int returnValue = 0;
             int startLevel = 1;
             bool foundLastLevel = false;
-            string fullFilePath = Path.GetFullPath(sfdSaveLevel.InitialDirectory);
+            string fullFilePath = Path.GetFullPath(sfdSaveLevel.InitialDirectory);          // Get full path
 
             do
             {
-                if (File.Exists(fullFilePath + "\\Level" + startLevel + ".txt"))
+                if (File.Exists(fullFilePath + "\\Level" + startLevel + ".txt"))            // Checks if the file exists
                 {
-                    startLevel++;
+                    startLevel++;                                                           // Determine number of next level to save
                 }
                 else
                 {
@@ -378,6 +387,11 @@ namespace newLevelEditor
             
         }
 
+        /// <summary>
+        /// Set controls active or inactive depending on status of other controls on the screen
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void cbbObjectMovement_SelectedIndexChanged(object sender, EventArgs e)
         {
             if ((ObjectMovement)cbbObjectMovement.SelectedValue == ObjectMovement.OneDirection)
