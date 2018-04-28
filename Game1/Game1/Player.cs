@@ -310,7 +310,7 @@ namespace Game1
             {
                 drawColor = (Color.Red * 0.5f);                
             }
-
+            
             spriteBatch.Draw(
                 base.SpriteSheet,
                 new Vector2(base.DrawLocation.X, base.DrawLocation.Y),
@@ -318,11 +318,11 @@ namespace Game1
                 drawColor,
                 0.0f,
                 Vector2.Zero,
-                0.1f,
+                0.12f,
                 base.SpriteEffect,
                 0.0f
             );
-
+            
             spriteBatch.DrawString(
                 SpriteFont,
                 "Score      : " + CurrentScore,

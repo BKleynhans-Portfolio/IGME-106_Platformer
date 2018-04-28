@@ -199,9 +199,9 @@ namespace Game1
         {
             bool returnValue = false;
 
-            if (this.DrawLocation.Intersects(passedGameObject.DrawLocation))                      // Does this object's drawLocation intersect with the passed in object's drawLocation
+            if (this.DrawLocation.Intersects(passedGameObject.DrawLocation))                      // Does this object's drawLocation intersect with the passed in object's drawLocation                        
             {
-                returnValue = true;
+                returnValue = true;                
 
                 float newX;                                                                 // New X and Y values in case there is an intersection
                 float newY;
@@ -214,9 +214,10 @@ namespace Game1
                     ))
                 {
                     if ((passedGameObject.GetType() == typeof(Platform)) && (!passedGameObject.PlatformType.Equals("Water")))
-                    {
+                    {                        
                         base.HitObstacle = HitObstacle.FromTop;
                         this.JumpInProgress = false;
+                        this.HasJumped = false;
                         this.PlatformHorizontalAcceleration = passedGameObject.MovementVelocity;
                         this.PlatformVerticalAcceleration = passedGameObject.GravitationalVelocity;
 
@@ -294,8 +295,8 @@ namespace Game1
                     }
                 }
                 else if ((// From Right
-                            (this.DrawLocation.Left < passedGameObject.DrawLocation.Right) &&     // If the left border of this object has a smaller X coordinate than the right border
-                            (this.DrawLocation.Left > (passedGameObject.DrawLocation.Right - 20)) // of the passed in object but a higher X coordinate than the passed in objects
+                            (this.DrawLocation.Left + 2 < passedGameObject.DrawLocation.Right - 2) &&     // If the left border of this object has a smaller X coordinate than the right border
+                            (this.DrawLocation.Left + 2 > (passedGameObject.DrawLocation.Right - 20)) // of the passed in object but a higher X coordinate than the passed in objects
                         ) && (                                                              // X coordinate - 10
                             (this.DrawLocation.Right != passedGameObject.DrawLocation.Right)
                         ))
@@ -335,8 +336,8 @@ namespace Game1
                     }
                 }
                 else if ((// From Left
-                            (this.DrawLocation.Right > passedGameObject.DrawLocation.Left) &&     // If the left border of this object has a smaller X coordinate than the right border
-                            (this.DrawLocation.Right < (passedGameObject.DrawLocation.Left + 20)) // of the passed in object but a higher X coordinate than the passed in objects
+                            (this.DrawLocation.Right - 2 > passedGameObject.DrawLocation.Left + 2) &&     // If the left border of this object has a smaller X coordinate than the right border
+                            (this.DrawLocation.Right - 2 < (passedGameObject.DrawLocation.Left + 20)) // of the passed in object but a higher X coordinate than the passed in objects
                         ) && (                                                              // X coordinate - 10
                             (this.DrawLocation.Right != passedGameObject.DrawLocation.Right)
                         ))
@@ -490,7 +491,7 @@ namespace Game1
                 Color.White,
                 0.0f,
                 Vector2.Zero,
-                0.1f,
+                0.12f,
                 base.SpriteEffect,
                 0.0f
             );

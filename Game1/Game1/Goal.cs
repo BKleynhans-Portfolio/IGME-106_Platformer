@@ -71,7 +71,7 @@ namespace Game1
                 drawColor,
                 0.0f,
                 Vector2.Zero,
-                0.1f,
+                0.12f,
                 base.SpriteEffect,
                 0.0f
             );

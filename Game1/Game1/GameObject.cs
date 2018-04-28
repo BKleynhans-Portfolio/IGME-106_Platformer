@@ -110,20 +110,25 @@ namespace Game1
         public float PreviousMovementVelocity { get; set; }
         public int TimeSinceLastUpdate { get; set; }
 
-        private float globalGlobalAcceleration;                                             // Acceleration to apply to characters during each iteration
-        private float environmentalAcceleration;                                              // Acceleration to apply to platforms
-        private float gravitationalVelocity;                                                // Gravitational velocity for vertical movement
-        private float movementVelocity;                                                     // Movement velocity for horizontal movement
+        protected float GlobalAcceleration { get; set; }                                             // Acceleration to apply to characters during each iteration
+        protected float EnvironmentalAcceleration { get; set; }                                              // Acceleration to apply to platforms
+        public float GravitationalVelocity { get; set; }                                                // Gravitational velocity for vertical movement
+        public float MovementVelocity { get; set; }                                                     // Movement velocity for horizontal movement
 
         private const float defaultHorizonalVelocity = 5f;                                  // Default velocity to implement horizontally
         private const float defaultVerticalVelocity = 5f;                                   // Default velocity to implement vertically   
 
-        private bool applyGravity;                                                          // Should the object have gravity
+        public bool ApplyGravity { get; set; }                                                          // Should the object have gravity
 
-        private bool falling;                                                               // Is the object falling?
-        private bool jumpInProgress;                                                        // Is the object in a jump process?
+        protected bool Falling { get; set; }                                                               // Is the object falling?
+        protected bool JumpInProgress { get; set; }                                                        // Is the object in a jump process?
         public string PlatformType { get; set; }
         public string CollectibleType { get; set; }
+
+        /// <summary>
+        /// Default Constructor
+        /// </summary>
+        public GameObject() { }
 
         /// <summary>
         /// Default constructor.  Creates a GameObject with default values.
@@ -151,18 +156,12 @@ namespace Game1
             this.InitialXPlacement = x;
             this.InitialYPlacement = y;
 
-            //this.AccelerationCoefficientStartingPoint = 0;
-            //this.AccelerationCoefficientEndingPoint = 0;
-            //this.AccelerationCoefficientStartingXSet = false;
-            //this.AccelerationCoefficientEndingXSet = false;
             GravityDirection = GravityDirection.Down;
             MovementAppliedTo = MovementAppliedTo.None;
             HitObstacle = HitObstacle.None;
             HitNpc = HitNpc.None;
             GravityOnProximityFrom = GravityOnProximityFrom.None;
-            ObjectMovement = ObjectMovement.OneDirection;            
-            //CalculateCoefficient = true;
-            //AccelerationCoefficient = 0;
+            ObjectMovement = ObjectMovement.OneDirection;
 
             SpritesInSheet = 4;
             SpriteWidth = 400;
@@ -190,16 +189,12 @@ namespace Game1
 
             this.ApplyGravity = addGravity;
 
-            this.GlobalAcceleration = /*2f;//*/ 0.25f;
+            this.GlobalAcceleration = 0.25f;
             this.EnvironmentalAcceleration = 0.05f;
 
             this.InitialXPlacement = x;
             this.InitialYPlacement = y;
 
-            //this.AccelerationCoefficientStartingPoint = 0;
-            //this.AccelerationCoefficientEndingPoint = 0;
-            //this.AccelerationCoefficientStartingXSet = false;
-            //this.AccelerationCoefficientEndingXSet = false;
             GravityDirection = GravityDirection.Down;
             MovementAppliedTo = MovementAppliedTo.None;
             HitObstacle = HitObstacle.None;
@@ -228,68 +223,6 @@ namespace Game1
         public float DefaultVerticalVelocity
         {
             get { return defaultVerticalVelocity; }
-        }
-
-        /// <summary>
-        /// Is the object in a jump process
-        /// </summary>
-        public bool JumpInProgress
-        {
-            get { return this.jumpInProgress; }
-            set { this.jumpInProgress = value; }
-        }
-
-        /// <summary>
-        /// Gravitational velocity to apply to an object (up and down)
-        /// </summary>
-        public float GravitationalVelocity
-        {
-            get { return this.gravitationalVelocity; }
-            set { this.gravitationalVelocity = value; }
-        }
-
-        /// <summary>
-        /// Movement velocity to apply to an object (left and right)
-        /// </summary>
-        public float MovementVelocity
-        {
-            get { return this.movementVelocity; }
-            set { this.movementVelocity = value; }
-        }
-
-        /// <summary>
-        /// GlobalAcceleration to add to velocity in any of the four cardinal directions
-        /// </summary>
-        public float GlobalAcceleration
-        {
-            get { return this.globalGlobalAcceleration; }
-            set { this.globalGlobalAcceleration = value; }
-        }
-
-        public float EnvironmentalAcceleration
-        {
-            get { return this.environmentalAcceleration; }
-            set { this.environmentalAcceleration = value; }
-        }
-        
-        /// <summary>
-        /// Properties for variable containing the boolean value which is true when the object
-        /// is falling and false when the object is not falling.
-        /// </summary>
-        public bool Falling
-        {
-            get { return this.falling; }
-            set { this.falling = value; }
-        }
-
-        /// <summary>
-        /// Properties for variable containing the boolean value which is true when gravity needs
-        /// to be applied to the object and false when it should not be applied to the object.
-        /// </summary>
-        public bool ApplyGravity
-        {
-            get { return this.applyGravity; }
-            set { this.applyGravity = value; }
         }
 
         /// <summary>

@@ -100,10 +100,7 @@ namespace Game1
         public override bool Intersects(GameObject passedGameObject)
         {
             bool returnValue = false;
-
-            if (passedGameObject.GetType().BaseType == typeof(Character))
-                Console.ReadLine();
-
+            
             if (this.DrawLocation.Intersects(passedGameObject.DrawLocation))                      // Does this object's drawLocation intersect with the passed in object's drawLocation
             {
                 returnValue = true;

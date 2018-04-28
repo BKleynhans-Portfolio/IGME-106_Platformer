@@ -281,7 +281,7 @@ namespace Game1
                 Color.White,
                 0.0f,
                 Vector2.Zero,
-                0.2f,
+                0.22f,
                 base.SpriteEffect,
                 0.0f
             );

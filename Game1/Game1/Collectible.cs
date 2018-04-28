@@ -68,12 +68,12 @@ namespace Game1
             {
                 spriteBatch.Draw(
                     base.SpriteSheet,
-                    new Vector2(base.DrawLocation.X, base.DrawLocation.Y),
+                    new Vector2(base.DrawLocation.X, base.DrawLocation.Y + 20),
                     base.SelectionArea,
                     drawColor,
                     0.0f,
                     Vector2.Zero,
-                    0.1f,
+                    0.06f,
                     base.SpriteEffect,
                     0.0f
                 );

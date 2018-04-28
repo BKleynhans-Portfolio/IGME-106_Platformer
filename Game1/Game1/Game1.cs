@@ -316,7 +316,12 @@ namespace Game1
             LevelTracker = 1;
             CurrentScore = 0;
             FormCreated = false;
-                                   
+
+            if (!Directory.Exists(Path.GetFullPath("Levels")))
+            {
+                Directory.CreateDirectory(Path.GetFullPath("Levels"));
+            }
+
             LevelsAvailable = Directory.GetFiles(Path.GetFullPath("Levels")).Length;
 
             if (LevelsAvailable == 0)
@@ -606,6 +611,7 @@ namespace Game1
 
             // Add player sprites
             PlayerSprites.Add("Player", Content.Load<Texture2D>("Images\\SpriteSheets\\Player_400x400"));
+            //PlayerSprites.Add("Player", Content.Load<Texture2D>("Images\\TestImages\\Player_Overlay"));
 
             // Add player sprites
             GoalSprites.Add("BirdHouse", Content.Load<Texture2D>("Images\\SpriteSheets\\Goal_400x400"));
@@ -1135,7 +1141,7 @@ namespace Game1
                     MyWriter.WriteLine(readString);
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 Console.WriteLine("Error received while trying to create temporary Level1.txt from Resources.Level1");
             }
