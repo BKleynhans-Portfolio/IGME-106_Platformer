@@ -19,7 +19,7 @@ using Microsoft.Xna.Framework.Input;
 ///                       
 ///                       
 /// Last Modified By    : Benjamin Kleynhans
-/// Last Modified Date  : March 22, 2018
+/// Last Modified Date  : April 29, 2018
 /// Filename            : Environment.cs
 /// </summary>
 
@@ -86,7 +86,7 @@ namespace Game1
                 }                
             }
 
-            UpdateMovementParameters();
+            UpdateMovementParameters(gameTime);
             this.SelectSprite(0);
             
             CreateRectangle(ApplyMovement(gameTime));

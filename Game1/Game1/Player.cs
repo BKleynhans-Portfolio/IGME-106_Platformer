@@ -20,7 +20,7 @@ using Microsoft.Xna.Framework.Audio;
 ///                       
 ///                       
 /// Last Modified By    : Benjamin Kleynhans
-/// Last Modified Date  : March 25, 2018
+/// Last Modified Date  : April 29, 2018
 /// Filename            : Player.cs
 /// </summary>
 
@@ -159,7 +159,6 @@ namespace Game1
 
             if (base.TimeSinceLastUpdate > 100)
             {
-                //UpdateMovementParameters();
                 this.UpdateSprite();
                 base.SelectSprite(base.CurrentSpriteIndex);
 
@@ -186,7 +185,7 @@ namespace Game1
                 base.TakeLife();
                 base.TookLife = false;
 
-                CreateRectangle(new Vector2(0, 800));
+                base.CreateRectangle(PlayerSpawnPoint);
                 base.MovementVelocity = 0f;
                 base.GravitationalVelocity = 0f;
             }
@@ -198,9 +197,9 @@ namespace Game1
             {
                 CreateRectangle(1, this.DrawLocation.Y);
             }
-            else if (this.DrawLocation.X > 1600)
+            else if (this.DrawLocation.X + this.DrawLocation.Width > 1600)
             {
-                CreateRectangle(1599, this.DrawLocation.Y);
+                CreateRectangle(1600 - this.DrawLocation.Width - 1, this.DrawLocation.Y);
             }
 
             if (this.IsAlive)

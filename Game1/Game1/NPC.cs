@@ -62,7 +62,7 @@ namespace Game1
         {
             Vector2 returnValue;
 
-            base.UpdateMovementParameters();
+            base.UpdateMovementParameters(gameTime);
             this.CalculateGravity(gameTime);            
 
             returnValue = new Vector2(
@@ -91,7 +91,7 @@ namespace Game1
 
             if (base.TimeSinceLastUpdate > 100)
             {
-                UpdateMovementParameters();
+                UpdateMovementParameters(gameTime);
                 base.UpdateSprite();
                 base.SelectSprite(base.CurrentSpriteIndex);
 

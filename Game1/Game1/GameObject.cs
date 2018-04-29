@@ -20,7 +20,7 @@ using Microsoft.Xna.Framework.Input;
 ///                       
 ///                       
 /// Last Modified By    : Benjamin Kleynhans
-/// Last Modified Date  : March 22, 2018
+/// Last Modified Date  : April 29, 2018
 /// Filename            : GameObject.cs
 /// </summary>
 
@@ -258,11 +258,13 @@ namespace Game1
                 switch (GravityDirection)                                                   // Based on which direction the gravity is implemented in
                 {
                     case GravityDirection.Up:
-                        this.GravitationalVelocity -= this.GlobalAcceleration;
+                        if (this.GravitationalVelocity > -5)
+                            this.GravitationalVelocity -= this.GlobalAcceleration;
 
                         break;
                     case GravityDirection.Down:
-                        this.GravitationalVelocity += this.GlobalAcceleration;
+                        if (this.GravitationalVelocity < 5)
+                            this.GravitationalVelocity += this.GlobalAcceleration;
 
                         break;
                     case GravityDirection.Left:
@@ -278,7 +280,7 @@ namespace Game1
             }
         }
 
-        public void UpdateMovementParameters()
+        public void UpdateMovementParameters(GameTime gameTime)
         {
             switch (HitObstacle)
             {
@@ -442,11 +444,19 @@ namespace Game1
         /// <param name="spriteBatch">Spritebatch Image</param>
         public virtual void Draw(SpriteBatch spriteBatch)
         {
+            Color drawColor = Color.White;
+                        
+
+            if (this.PlatformType == "Water")
+            {
+                drawColor = (Color.White * 0.5f);
+            }
+
             spriteBatch.Draw(
                 this.SpriteSheet,
                 this.DrawLocation,
                 null,
-                Color.White,
+                drawColor,
                 0f,
                 Vector2.Zero,
                 this.SpriteEffect,

@@ -25,7 +25,7 @@ using Game1.Properties;
 ///                       
 ///                       
 /// Last Modified By    : Benjamin Kleynhans
-/// Last Modified Date  : March 22, 2018
+/// Last Modified Date  : April 29, 2018
 /// Filename            : Game1.cs
 /// </summary>
 
@@ -75,6 +75,7 @@ namespace Game1
 
         //Player score
         public static int CurrentScore { get; set; }
+        public static Vector2 PlayerSpawnPoint { get; set; }
 
         // Dictionary of sounds
         private static Dictionary<string, SoundEffect> soundEffects = new Dictionary<string, SoundEffect>();
@@ -327,15 +328,13 @@ namespace Game1
             if (LevelsAvailable == 0)
             {
                 MessageBox.Show(
-                    "There are currently no levels in the game.  The default level will be loaded!",
+                    "There are currently no levels in the game.  The default levels will be loaded!",
                     "Error while reading level file",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information
                 );
-
-                //OpenDefaultFile = true;
-
-                CreateTempLevel();
+                
+                CreateTempLevels();
             }
 
             LoadSoundEffects();
@@ -354,7 +353,7 @@ namespace Game1
                     (graphics.PreferredBackBufferHeight / 2)
             );
 
-            this.IsMouseVisible = true;
+            this.IsMouseVisible = false;
 
             base.Initialize();
         }
@@ -794,6 +793,11 @@ namespace Game1
                                     addGravity: true
                                  );
 
+                                PlayerSpawnPoint = new Vector2(
+                                                            ParseToInt(readLineArray[1], 2, readLineArray[2]),
+                                                            ParseToInt(readLineArray[1], 3, readLineArray[3])
+                                                        );
+
                                 break;
                             case "Platform":
                                 Platforms.Add(
@@ -1126,20 +1130,43 @@ namespace Game1
             return returnValue;
         }
 
-        private void CreateTempLevel()
+        private void CreateTempLevels()
         {
             try
             {
-                FileStream WriteStream = File.OpenWrite("Levels//Level1.txt");
-                MyWriter = new StreamWriter(WriteStream);
-
-                string tempString = Resources.Level1;
-                string[] tempArray = tempString.Split(new string[] { "\r\n" }, StringSplitOptions.None);
-
-                foreach (string readString in tempArray)
+                for (int i = 0; i < 3; i++)
                 {
-                    MyWriter.WriteLine(readString);
+                    FileStream WriteStream = File.OpenWrite("Levels//Level" + (i + 1) + ".txt");
+                    MyWriter = new StreamWriter(WriteStream);
+
+                    string tempString = null;
+
+                    switch (i)
+                    {
+                        case 0:
+                            tempString = Resources.Level1;
+
+                            break;
+                        case 1:
+                            tempString = Resources.Level2;
+
+                            break;
+                        case 2:
+                            tempString = Resources.Level3;
+
+                            break;
+                    }
+                    string[] tempArray = tempString.Split(new string[] { "\r\n" }, StringSplitOptions.None);
+
+                    foreach (string readString in tempArray)
+                    {
+                        MyWriter.WriteLine(readString);
+                    }
+
+                    MyWriter.Close();
                 }
+
+                LevelsAvailable = Directory.GetFiles(Path.GetFullPath("Levels")).Length;
             }
             catch (Exception)
             {
@@ -1147,7 +1174,10 @@ namespace Game1
             }
             finally
             {
-                MyWriter.Close();
+                if (MyWriter.BaseStream != null)
+                {
+                    MyWriter.Close();
+                }
             }
         }
 

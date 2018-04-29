@@ -79,6 +79,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Levels\Level2.txt" />
+    <Content Include="Levels\Level3.txt" />
     <EmbeddedResource Include="Levels\Level1.txt" />
     <Content Include="Icon.ico" />
   </ItemGroup>

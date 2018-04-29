@@ -19,7 +19,7 @@ using Microsoft.Xna.Framework.Input;
 ///                       
 ///                       
 /// Last Modified By    : Benjamin Kleynhans
-/// Last Modified Date  : March 25, 2018
+/// Last Modified Date  : April 29, 2018
 /// Filename            : Character.cs
 /// </summary>
 
@@ -206,9 +206,10 @@ namespace Game1
                 float newX;                                                                 // New X and Y values in case there is an intersection
                 float newY;
 
-                if ((// From Top
+                if ((// this object hit another object from the Top
                         (this.DrawLocation.Bottom > passedGameObject.DrawLocation.Top) &&         // If the lower border of this object has a larger Y coordinate than the upper border
-                        (this.DrawLocation.Bottom < (passedGameObject.DrawLocation.Top + 20))     // of the passed in object but a lower Y coordinate than the passed in objects
+                        (this.DrawLocation.Bottom < (passedGameObject.DrawLocation.Top + 20)) && // of the passed in object but a lower Y coordinate than the passed in objects
+                        ((this.DrawLocation.X + this.DrawLocation.Width) > (passedGameObject.DrawLocation.X + 2))                        
                     ) && (                                                                  // Y coordinate + 10
                         (this.DrawLocation.Bottom != passedGameObject.DrawLocation.Bottom)
                     ))
@@ -245,7 +246,7 @@ namespace Game1
                         }
                     }
                 }
-                else if ((// From Bottom
+                else if ((// this object hit another object from the Bottom
                             (this.DrawLocation.Top < passedGameObject.DrawLocation.Bottom) &&     // If the upper border of this object has a smaller Y coordinate than the lower border
                             (this.DrawLocation.Top > (passedGameObject.DrawLocation.Bottom - 20)) // of the passed in object but a higher Y coordinate than the passed in objects
                         ) && (                                                              // Y coordinate - 10
@@ -294,7 +295,7 @@ namespace Game1
                         }
                     }
                 }
-                else if ((// From Right
+                else if ((// this object hit another object from the Right
                             (this.DrawLocation.Left + 2 < passedGameObject.DrawLocation.Right - 2) &&     // If the left border of this object has a smaller X coordinate than the right border
                             (this.DrawLocation.Left + 2 > (passedGameObject.DrawLocation.Right - 20)) // of the passed in object but a higher X coordinate than the passed in objects
                         ) && (                                                              // X coordinate - 10
@@ -335,11 +336,11 @@ namespace Game1
                         }
                     }
                 }
-                else if ((// From Left
+                else if ((// this object hit another object from the Left
                             (this.DrawLocation.Right - 2 > passedGameObject.DrawLocation.Left + 2) &&     // If the left border of this object has a smaller X coordinate than the right border
                             (this.DrawLocation.Right - 2 < (passedGameObject.DrawLocation.Left + 20)) // of the passed in object but a higher X coordinate than the passed in objects
                         ) && (                                                              // X coordinate - 10
-                            (this.DrawLocation.Right != passedGameObject.DrawLocation.Right)
+                            (this.DrawLocation.Right != passedGameObject.DrawLocation.Right)                            
                         ))
                 {                                                                           // If this object is of type Character and the passed in object is of type Platform
                                                                                             // *** Each continuation of the BaseType keyword goes up one additional level in the derived classes
@@ -431,7 +432,7 @@ namespace Game1
                 Lives++;
             }
 
-            base.CreateRectangle(new Vector2(0, 800));
+            base.CreateRectangle(PlayerSpawnPoint);
 
             gameState = GameState.GameOver;
 
