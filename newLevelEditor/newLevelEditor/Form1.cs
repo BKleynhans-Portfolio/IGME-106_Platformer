@@ -9,6 +9,20 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
 
+/// <summary>
+/// IGME-106 - Game Development and Algorithmic Problem Solving
+/// Group Project
+/// Class Description   : Form for level editor
+/// Created By          : Miranda Auriemma
+/// Creation Date       : 
+/// Authors             : Miranda Auriemma
+///                       Benjamin Kleynhans
+///                       
+///                       
+/// Last Modified By    : Benjamin Kleynhans
+/// Last Modified Date  : April 15, 2018
+/// Filename            : Form1.cs
+/// </summary>
 
 namespace newLevelEditor
 {

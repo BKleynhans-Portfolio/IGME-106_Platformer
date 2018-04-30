@@ -4,6 +4,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+/// <summary>
+/// IGME-106 - Game Development and Algorithmic Problem Solving
+/// Group Project
+/// Class Description   : Form for level editor
+/// Created By          : Miranda Auriemma
+/// Creation Date       : 
+/// Authors             : Miranda Auriemma
+///                       Benjamin Kleynhans
+///                       
+///                       
+/// Last Modified By    : Benjamin Kleynhans
+/// Last Modified Date  : April 15, 2018
+/// Filename            : GameTile.cs
+/// </summary>
+
 namespace newLevelEditor
 {
     public enum GravityOnProximityFrom                                                      // Parameters used if object needs to start moving on proximity
