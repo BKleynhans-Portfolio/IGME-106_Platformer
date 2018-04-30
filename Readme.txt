@@ -2,7 +2,7 @@ Hi Ash,
 
 The project you want to run is in this folder
 
-team-project\Game1\Game1
+team-project\Game1
 
 
 
