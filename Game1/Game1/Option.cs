@@ -63,6 +63,10 @@ namespace Game1
             this.Name = menuItem;
         }
 
+        /// <summary>
+        /// Update method
+        /// </summary>
+        /// <param name="gameTime"></param>
         protected override void Update(GameTime gameTime)
         {
              if (this.Name == "OptionsSelectionFrame")
@@ -79,10 +83,10 @@ namespace Game1
                             (keyValuePair.Key != "OptionSelectionFrame")
                         ))
                     {
-                        currentPosition = keyValuePair.Key;
+                        currentPosition = keyValuePair.Key;                                 // Find the current index of the selection bar
                     }
                 }
-
+                // Move the selection bar based on key pressed
                 if (CurrentKeyboardState.IsKeyDown(Keys.Down) && PreviousKeyboardState.IsKeyUp(Keys.Down))
                 {
                     SoundEffectInstances["MenuMove"].Play();
@@ -118,7 +122,7 @@ namespace Game1
                     switch (currentPosition)
                     {
                         case "Music":
-                            if (SoundEffectInstances["BackgroundMusic"].Volume < 0.9f) {
+                            if (SoundEffectInstances["BackgroundMusic"].Volume < 0.9f) {    // Move the side scrolling volume controls
 
                                 SoundEffectInstances["BackgroundMusic"].Volume += 0.1f;                                
 
@@ -126,7 +130,7 @@ namespace Game1
                                 {
                                     if (menuOption.Name == "MusicSlider")
                                     {
-                                        menuOption.CreateRectangle(
+                                        menuOption.CreateRectangle(                         // Adjust the volume
                                             (int)(optionMenuDictionary["MusicSlider"].X + 10),
                                             (int)(optionMenuDictionary["MusicSlider"].Y)
                                         );
@@ -153,7 +157,7 @@ namespace Game1
                             {
                                 if (keyValuePair.Key != "BackgroundMusic")
                                 {
-                                    if (keyValuePair.Value.Volume < 0.9f)
+                                    if (keyValuePair.Value.Volume < 0.9f)                   // Move the side scrolling volume controls
                                     {
                                         keyValuePair.Value.Volume += 0.1f;
 
@@ -163,7 +167,7 @@ namespace Game1
                                             {
                                                 if (menuOption.Name == "SFXSlider")
                                                 {
-                                                    menuOption.CreateRectangle(
+                                                    menuOption.CreateRectangle(             // Adjust the volume
                                                         (int)(optionMenuDictionary["SFXSlider"].X + 10),
                                                         (int)(optionMenuDictionary["SFXSlider"].Y)
                                                     );
@@ -197,7 +201,7 @@ namespace Game1
                     switch (currentPosition)
                     {
                         case "Music":
-                            if (SoundEffectInstances["BackgroundMusic"].Volume > 0.1f)
+                            if (SoundEffectInstances["BackgroundMusic"].Volume > 0.1f)      // Move the side scrolling volume controls
                             {
                                 SoundEffectInstances["BackgroundMusic"].Volume -= 0.1f;
 
@@ -205,12 +209,12 @@ namespace Game1
                                 {
                                     if (menuOption.Name == "MusicSlider")
                                     {
-                                        menuOption.CreateRectangle(
+                                        menuOption.CreateRectangle(                         // Adjust the volume
                                             (int)(optionMenuDictionary["MusicSlider"].X - 10),
                                             (int)(optionMenuDictionary["MusicSlider"].Y)
                                         );
 
-                                        optionMenuDictionary["MusicSlider"] = new Vector2(
+                                        optionMenuDictionary["MusicSlider"] = new Vector2(  
                                             (int)(optionMenuDictionary["MusicSlider"].X - 10),
                                             (int)(optionMenuDictionary["MusicSlider"].Y)
                                         );
@@ -232,7 +236,7 @@ namespace Game1
                             {
                                 if (keyValuePair.Key != "BackgroundMusic")
                                 {
-                                    if (keyValuePair.Value.Volume > 0.1f)
+                                    if (keyValuePair.Value.Volume > 0.1f)                   // Move the side scrolling volume controls
                                     {
                                         keyValuePair.Value.Volume -= 0.1f;
 
@@ -242,7 +246,7 @@ namespace Game1
                                             {
                                                 if (menuOption.Name == "SFXSlider")
                                                 {
-                                                    menuOption.CreateRectangle(
+                                                    menuOption.CreateRectangle(             // Adjust the volume
                                                         (int)(optionMenuDictionary["SFXSlider"].X - 10),
                                                         (int)(optionMenuDictionary["SFXSlider"].Y)
                                                     );

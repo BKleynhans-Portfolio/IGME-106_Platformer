@@ -27,12 +27,28 @@ namespace Game1
 {
     class Friendly : NPC
     {
-
+        /// <summary>
+        /// Default constructor.  Creates a GameObject with default values.
+        /// </summary>
+        /// <param name="spriteTexture">Texture2D image for object</param>
+        /// <param name="x">Starting X coordinate of object</param>
+        /// <param name="y">Starting Y coordinate of object</param>
+        /// <param name="width">Width of object</param>
+        /// <param name="height">Height of object</param>
         public Friendly(Texture2D spriteTexture, int x, int y, int width, int height) : base(spriteTexture, x, y, width, height)
         {
             base.IsAlive = true;
         }
 
+        /// <summary>
+        /// This is a secondary constructor for the GameObject.
+        /// </summary>
+        /// <param name="spriteTexture">Texture2D image for object</param>
+        /// <param name="x">Starting X coordinate of object</param>
+        /// <param name="y">Starting Y coordinate of object</param>
+        /// <param name="width">Width of object</param>
+        /// <param name="height">Height of object</param>
+        /// <param name="addGravity">Does this object require immediate gravity implementation</param>
         public Friendly(Texture2D spriteTexture, int spritesInSheet, int x, int y, int width, int height,
                           bool addGravity) :
                 base(spriteTexture, spritesInSheet, x, y, width, height, addGravity)
@@ -40,10 +56,7 @@ namespace Game1
             base.IsAlive = true;
         }
 
-        protected override void Die()
-        {
-
-        }
+        protected override void Die() { }
 
         protected override void Update(GameTime gameTime)
         {

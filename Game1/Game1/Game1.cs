@@ -155,9 +155,6 @@ namespace Game1
         public const int SCREENWIDTH = 1600;
         public const int SCREENHEIGHT = 900;
 
-        //// Open Default file
-        //private bool OpenDefaultFile { get; set; }
-
         public GameState GameState
         {
             get { return gameState; }
@@ -318,6 +315,8 @@ namespace Game1
             CurrentScore = 0;
             FormCreated = false;
 
+            //Check if there are any levels available, if there aren't, inform the user
+            // and load the default levels
             if (!Directory.Exists(Path.GetFullPath("Levels")))
             {
                 Directory.CreateDirectory(Path.GetFullPath("Levels"));
@@ -336,7 +335,7 @@ namespace Game1
                 
                 CreateTempLevels();
             }
-
+            
             LoadSoundEffects();
             LoadSprites();
 
@@ -400,7 +399,7 @@ namespace Game1
             if (CurrentKeyboardState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Escape) && 
                 PreviousKeyboardState.IsKeyUp(Microsoft.Xna.Framework.Input.Keys.Escape))
             {
-                switch (gameState)
+                switch (gameState)                                                          // Manage game states
                 {
                     case GameState.Title:
                         Exit();
@@ -429,18 +428,18 @@ namespace Game1
                 }
             }
 
-            switch (gameState)
+            switch (gameState)                                                              // Perform action based on state
             {
                 case GameState.Title:
                     for (int i = 0; i < TitleElements.Count; i++)
                     {
-                        TitleElements[i].Update(gameTime);
+                        TitleElements[i].Update(gameTime);                                  // Update the title elements (menus)
                     }
 
                     break;
                 case GameState.LevelEditor:
 
-                    if (!FormCreated)
+                    if (!FormCreated)                                                       // If the form isn't visible, create and launch the editor
                     {
                         LevelForm = new newLevelEditor.Form1();
 
@@ -459,10 +458,12 @@ namespace Game1
                     else if ((!LevelForm.Visible) && (FormCreated))
                     {
                         LevelTracker = 1;
+                        // Get the path and current levels in the levels folder
                         LevelsAvailable = Directory.GetFiles(Path.GetFullPath("Levels")).Length;
 
                         GameState = GameState.Title;
 
+                        // Clear the game objects and load the new level
                         ClearGameObjects();
                         InitializeGameObjects();
 
@@ -470,7 +471,7 @@ namespace Game1
                     }
 
                     break;
-                case GameState.Options:
+                case GameState.Options:                                                     // Open the options menu
                     for (int i = 0; i < OptionElements.Count; i++)
                     {
                         OptionElements[i].Update(gameTime);
@@ -478,14 +479,14 @@ namespace Game1
 
                     break;
                 case GameState.InGame:
-                    for (int i = 0; i < (GameObject.Count - 1); i++)                                // Cycle through GameObject list and test
-                    {                                                                               // all created objects for intersection
+                    for (int i = 0; i < (GameObject.Count - 1); i++)                        // Cycle through GameObject list and test
+                    {                                                                       // all created objects for intersection
                         for (int j = i + 1; j < GameObject.Count; j++)
                         {
                             if (GameObject[i].Intersects(GameObject[j]))
                             {
-                                if (!GameObject[i].intersectedBy.Contains(GameObject[j]))           // If there is an intersection, create
-                                {                                                                   // references in the objects to each other
+                                if (!GameObject[i].intersectedBy.Contains(GameObject[j]))   // If there is an intersection, create
+                                {                                                           // references in the objects to each other
                                     GameObject[i].intersectedBy.Add(GameObject[j]);
                                 }
 
@@ -497,30 +498,30 @@ namespace Game1
                         }
                     }
 
-                    for (int i = 0; i < GameObject.Count; i++)                                      // Update all the objects in the game
+                    for (int i = 0; i < GameObject.Count; i++)                              // Update all the objects in the game
                     {
                         GameObject[i].Update(gameTime);
                     }
 
                     break;
-                case GameState.AdvanceLevel:
+                case GameState.AdvanceLevel:                                                // If the level was completed successfully, advance
                     LevelTracker++;
 
                     if (LevelTracker > LevelsAvailable)
                     {
-                        GameState = GameState.Title;
+                        GameState = GameState.Title;                                        // If there are no more levels, return to the menu
                     }
                     else
                     {
-                        ClearGameObjects();
+                        ClearGameObjects();                                                 // If there are more levels, clear the objects and load the next level
                         InitializeGameObjects();
                         GameState = GameState.InGame;
                     }                    
 
                     break;
-                case GameState.Pause:
+                case GameState.Pause:                                                       // If we have time
                     break;
-                case GameState.GameOver:
+                case GameState.GameOver:                                                    // Reset level counter, clear game objects and return to menu
                     LevelTracker = 1;
                     ClearGameObjects();
 
@@ -556,7 +557,7 @@ namespace Game1
                 0.0f
             );
 
-            switch (GameState)
+            switch (GameState)                                                              // Draw elements based on state
             {
                 case GameState.Title:
                     if (TitleElements.Count != 0)
@@ -568,7 +569,7 @@ namespace Game1
                     }                    
 
                     break;
-                case GameState.Options:
+                case GameState.Options:                                                     // Draw options menu objects
                     if (OptionElements.Count != 0)
                     {
                         for (int i = 0; i < OptionElements.Count; i++)
@@ -581,7 +582,7 @@ namespace Game1
                 case GameState.InGame:
                     if (GameObject.Count != 0)
                     {
-                        for (int i = 0; i < GameObject.Count; i++)                                      // Draw all the objects in the game
+                        for (int i = 0; i < GameObject.Count; i++)                          // Draw in-game objects
                         {
                             if (GameObject[i].Visible)
                             {
@@ -603,6 +604,9 @@ namespace Game1
             base.Draw(gameTime);
         }
 
+        /// <summary>
+        /// Load the image sprites
+        /// </summary>
         private void LoadSprites()
         {
             // Add level sprites
@@ -651,8 +655,12 @@ namespace Game1
             MenuSprites.Add("OptionsSelectionFrame", Content.Load<Texture2D>("Menus\\Options\\OptionsSelectionFrame"));
         }
 
+        /// <summary>
+        /// Load the sound effects
+        /// </summary>
         private void LoadSoundEffects()
-        {            
+        {
+            // Add sound sprites and create instances of the sounds to allow manipulation
             SoundEffects.Add("JumpSound", Content.Load<SoundEffect>("Sounds\\JumpSound"));
             SoundEffectInstances.Add("JumpSound", SoundEffects["JumpSound"].CreateInstance());
 
@@ -686,6 +694,9 @@ namespace Game1
             
         }
 
+        /// <summary>
+        /// Load the game objects from individual dictionaries into gameobjects dictionary
+        /// </summary>
         private void InitializeGameObjects()
         {
             bool readSuccessful = ReadLevelFile();
@@ -728,6 +739,9 @@ namespace Game1
             }
         }
 
+        /// <summary>
+        /// Clear all the game dictionaries
+        /// </summary>
         private void ClearGameObjects()
         {
             GameObject.Clear();
@@ -768,7 +782,7 @@ namespace Game1
 
                 try
                 {
-                    while ((readString = myReader.ReadLine()) != null)
+                    while ((readString = myReader.ReadLine()) != null)                      // Read the Level text file
                     {
                         readLineArray = readString.Split(new string[] { "|" }, StringSplitOptions.None);
 
@@ -779,7 +793,7 @@ namespace Game1
                             gravityYesNo = true;
                         }
 
-                        switch (readLineArray[0])
+                        switch (readLineArray[0])                                           // Create appropriate object based on dictionary index
                         {
                             case "Player":
                                 Player = new Player(
@@ -1130,6 +1144,9 @@ namespace Game1
             return returnValue;
         }
 
+        /// <summary>
+        /// If there are no levels created, create temporary levels
+        /// </summary>
         private void CreateTempLevels()
         {
             try
@@ -1181,6 +1198,9 @@ namespace Game1
             }
         }
 
+        /// <summary>
+        /// Load game background
+        /// </summary>
         private void LoadBackgroundElements()
         {
             new GraphicElement(
@@ -1193,6 +1213,9 @@ namespace Game1
             );
         }
 
+        /// <summary>
+        /// Load life icons
+        /// </summary>
         private void LoadGeneralElements()
         {
             GameGraphics.Add(
@@ -1230,6 +1253,9 @@ namespace Game1
 
         }
 
+        /// <summary>
+        /// Load title menu elements
+        /// </summary>
         private void LoadMenuElements()
         {
 // Title menu starts here

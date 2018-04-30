@@ -82,48 +82,48 @@ namespace Game1
 
     public abstract class GameObject : Game1
     {
+        public abstract bool Intersects(GameObject passedGameObject);
+        protected abstract override void Update(GameTime gameTime);
+
         public GravityDirection GravityDirection { get; set; }
         public MovementAppliedTo MovementAppliedTo { get; set; }
         public HitObstacle HitObstacle { get; set; }
         public HitNpc HitNpc { get; set; }
         public GravityOnProximityFrom GravityOnProximityFrom { get; set; }
         public ObjectMovement ObjectMovement { get; set; }
-
-        public float ObjectXMoveDistance { get; set; }
-        public float ObjectYMoveDistance { get; set; }
-        public float InitialXPlacement { get; set; }
-        public float InitialYPlacement { get; set; }
-        
-        public abstract bool Intersects(GameObject passedGameObject);
-        protected abstract override void Update(GameTime gameTime);
-
-        public Texture2D SpriteSheet { get; set; }                                                    // Texture and drawLocation
-        public Rectangle DrawLocation { get; set; }        
-        public Rectangle SelectionArea { get; set; }
-        public int SpritesInSheet { get; set; }
-        public int SpriteWidth { get; set; }
-        public int SpriteHeight { get; set; }
         public SpriteEffects SpriteEffect { get; set; }
-        public bool Visible { get; set; }                                                               // Is this object visible in the scene
-        public int CurrentSpriteIndex { get; set; }
-        public int PreviousSpriteIndex { get; set; }
-        public float PreviousMovementVelocity { get; set; }
-        public int TimeSinceLastUpdate { get; set; }
 
-        protected float GlobalAcceleration { get; set; }                                             // Acceleration to apply to characters during each iteration
-        protected float EnvironmentalAcceleration { get; set; }                                              // Acceleration to apply to platforms
-        public float GravitationalVelocity { get; set; }                                                // Gravitational velocity for vertical movement
-        public float MovementVelocity { get; set; }                                                     // Movement velocity for horizontal movement
+        public float ObjectXMoveDistance { get; set; }                                      // Distance the object has moved in the horizontal direction
+        public float ObjectYMoveDistance { get; set; }                                      // Distance the object has moved in the vertical direction
+        public float InitialXPlacement { get; set; }                                        // X position where object was before it started moving
+        public float InitialYPlacement { get; set; }                                        // Y position where object was before it started moving
+        
+        public Texture2D SpriteSheet { get; set; }                                          // Texture and drawLocation
+        public Rectangle DrawLocation { get; set; }                                         // Rectangle location where object should be drawn
+        public Rectangle SelectionArea { get; set; }                                        // Rectangle location that image is being selected from spritesheet
+        public int SpritesInSheet { get; set; }                                             // Number of sprites in the sprite sheet
+        public int SpriteWidth { get; set; }                                                // Width of each sprite
+        public int SpriteHeight { get; set; }                                               // Height of each sprite
+        public bool Visible { get; set; }                                                   // Is this object visible in the scene
+        public int CurrentSpriteIndex { get; set; }                                         // Index of the current sprite being displayed
+        public int PreviousSpriteIndex { get; set; }                                        // Index of the sprite that was displayed before
+        public float PreviousMovementVelocity { get; set; }                                 // Previous velocity of element before update
+        public int TimeSinceLastUpdate { get; set; }                                        // Elapsed time since the last update
+
+        protected float GlobalAcceleration { get; set; }                                    // Acceleration to apply to characters during each iteration
+        protected float EnvironmentalAcceleration { get; set; }                             // Acceleration to apply to platforms
+        public float GravitationalVelocity { get; set; }                                    // Gravitational velocity for vertical movement
+        public float MovementVelocity { get; set; }                                         // Movement velocity for horizontal movement
 
         private const float defaultHorizonalVelocity = 5f;                                  // Default velocity to implement horizontally
         private const float defaultVerticalVelocity = 5f;                                   // Default velocity to implement vertically   
 
-        public bool ApplyGravity { get; set; }                                                          // Should the object have gravity
+        public bool ApplyGravity { get; set; }                                              // Should the object have gravity
 
-        protected bool Falling { get; set; }                                                               // Is the object falling?
-        protected bool JumpInProgress { get; set; }                                                        // Is the object in a jump process?
-        public string PlatformType { get; set; }
-        public string CollectibleType { get; set; }
+        protected bool Falling { get; set; }                                                // Is the object falling?
+        protected bool JumpInProgress { get; set; }                                         // Is the object in a jump process?
+        public string PlatformType { get; set; }                                            // What type of platform is it (grass, stone, water, wood)
+        public string CollectibleType { get; set; }                                         // What type of collectible is it (worm, seed)
 
         /// <summary>
         /// Default Constructor
@@ -280,9 +280,13 @@ namespace Game1
             }
         }
 
+        /// <summary>
+        /// Updates parameters associated with all movement in the game
+        /// </summary>
+        /// <param name="gameTime"></param>
         public void UpdateMovementParameters(GameTime gameTime)
         {
-            switch (HitObstacle)
+            switch (HitObstacle)                                                            // Activate gravity if element has a proximity setting
             {
                 case HitObstacle.FromLeft:
                     if (GravityOnProximityFrom == GravityOnProximityFrom.Left)
@@ -306,7 +310,7 @@ namespace Game1
                     break;
             }
 
-            if (this.ApplyGravity == true)
+            if (this.ApplyGravity == true)                                                  // Apply gravity in the direction specified during level creation
             {
                 switch (ObjectMovement)
                 {
@@ -328,7 +332,7 @@ namespace Game1
                         break;
                 }
                 
-                switch (ObjectMovement)
+                switch (ObjectMovement)                                                     // Change the direction of motion based on movement parameters
                 {
                     case ObjectMovement.ToAndFroRightFirst:
 
@@ -418,6 +422,9 @@ namespace Game1
             }
         }
 
+        /// <summary>
+        /// Switch the direction in which acceleration/gravity is being applied
+        /// </summary>
         private void SwitchDirections()
         {
             if (this.GravityDirection == GravityDirection.Down)
@@ -447,7 +454,7 @@ namespace Game1
             Color drawColor = Color.White;
                         
 
-            if (this.PlatformType == "Water")
+            if (this.PlatformType == "Water")                                               // If the element is a water platform, add opacity
             {
                 drawColor = (Color.White * 0.5f);
             }

@@ -27,6 +27,14 @@ namespace Game1
 {
     public class GameOver : Menu
     {
+        /// <summary>
+        /// Default constructor.  Creates a GameObject with default values.
+        /// </summary>
+        /// <param name="spriteTexture">Texture2D image for object</param>
+        /// <param name="x">Starting X coordinate of object</param>
+        /// <param name="y">Starting Y coordinate of object</param>
+        /// <param name="width">Width of object</param>
+        /// <param name="height">Height of object</param>
         public GameOver(Texture2D texture2D, int x, int y, int width, int height) : base(texture2D, x, y, width, height)
         {
 

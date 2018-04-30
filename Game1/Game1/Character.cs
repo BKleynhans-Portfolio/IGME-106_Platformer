@@ -89,21 +89,21 @@ namespace Game1
         {            
             if (this.ApplyGravity)                                                          // If this character needs to have gravity applied
             {
-                switch (base.GravityDirection)                                                   // Determine in which direction the gravity needs to be applied
+                switch (base.GravityDirection)                                              // Determine in which direction the gravity needs to be applied
                 {
                     case GravityDirection.Up:                                               // If gravity needs to be applied in a upward direction
                                                                                             // If we have time
 
                         break;
                     case GravityDirection.Down:
-                        if (base.HitObstacle == HitObstacle.FromTop)                             // If this object hit another object on it's top
+                        if (base.HitObstacle == HitObstacle.FromTop)                        // If this object hit another object on it's top
                         {
                             base.Falling = false;                                           // Stop falling
                             this.GravitationalVelocity = 0;
                         }
                         else if (!HasJumped)                                                // If this object did not hit another object on its top and is not
                         {                                                                   // busy with a jump action                            
-                            this.GravitationalVelocity += this.GlobalAcceleration;                // Continue to implement gravity
+                            this.GravitationalVelocity += this.GlobalAcceleration;          // Continue to implement gravity
                         }
 
                         break;
@@ -124,11 +124,11 @@ namespace Game1
         /// </summary>
         public void CalculateMovement(GameTime gameTime)
         {
-            if (base.MovementAppliedTo == MovementAppliedTo.None)
+            if (base.MovementAppliedTo == MovementAppliedTo.None)                           // If no movement buttons are being pressed
             {
                 if (this.PlatformHorizontalAcceleration != 0)
                 {
-                    base.MovementVelocity = this.PlatformHorizontalAcceleration;
+                    base.MovementVelocity = this.PlatformHorizontalAcceleration;            // Add frication if on a platform
                 }
                 else
                 {
@@ -141,17 +141,19 @@ namespace Game1
                 }
             }
 
+            // If left button is pressed, apply movement to left
             if ((base.MovementAppliedTo == MovementAppliedTo.Left) && (base.HitObstacle != HitObstacle.FromLeft))
             {
                 base.MovementVelocity = -DefaultHorizonalVelocity + this.PlatformHorizontalAcceleration;
             }
 
+            // If right button is pressed, apply movement to right
             if ((base.MovementAppliedTo == MovementAppliedTo.Right) && (base.HitObstacle != HitObstacle.FromRight))
             {
                 base.MovementVelocity = DefaultHorizonalVelocity + this.PlatformHorizontalAcceleration;
             }
 
-            
+            // If the characters head hits an obstacle, cancel jump action and start application of gravity
             if ((base.HitObstacle != HitObstacle.FromTop))
             {
                 if ((HasJumped) && (GravitationalVelocity == 0))
@@ -183,6 +185,7 @@ namespace Game1
                 }
             }
 
+            // Reset gravitational velocity if the player is jumping
             if ((base.MovementAppliedTo == MovementAppliedTo.Up) && (base.HitObstacle == HitObstacle.FromBottom))
             {
                 this.GravitationalVelocity = 0;
@@ -199,7 +202,7 @@ namespace Game1
         {
             bool returnValue = false;
 
-            if (this.DrawLocation.Intersects(passedGameObject.DrawLocation))                      // Does this object's drawLocation intersect with the passed in object's drawLocation                        
+            if (this.DrawLocation.Intersects(passedGameObject.DrawLocation))                // Does this object's drawLocation intersect with the passed in object's drawLocation                        
             {
                 returnValue = true;                
 
@@ -207,7 +210,7 @@ namespace Game1
                 float newY;
 
                 if ((// this object hit another object from the Top
-                        (this.DrawLocation.Bottom > passedGameObject.DrawLocation.Top) &&         // If the lower border of this object has a larger Y coordinate than the upper border
+                        (this.DrawLocation.Bottom > passedGameObject.DrawLocation.Top) &&   // If the lower border of this object has a larger Y coordinate than the upper border
                         (this.DrawLocation.Bottom < (passedGameObject.DrawLocation.Top + 20)) && // of the passed in object but a lower Y coordinate than the passed in objects
                         ((this.DrawLocation.X + this.DrawLocation.Width) > (passedGameObject.DrawLocation.X + 2))                        
                     ) && (                                                                  // Y coordinate + 10
@@ -222,7 +225,7 @@ namespace Game1
                         this.PlatformHorizontalAcceleration = passedGameObject.MovementVelocity;
                         this.PlatformVerticalAcceleration = passedGameObject.GravitationalVelocity;
 
-                        newX = this.DrawLocation.X;                                     // Define new X and Y coordinates and create a new drawLocation                        
+                        newX = this.DrawLocation.X;                                         // Define new X and Y coordinates and create a new drawLocation                        
                         newY = passedGameObject.DrawLocation.Y - this.DrawLocation.Height + 1;
 
                         if (newX != this.DrawLocation.X || newY != this.DrawLocation.Y)
@@ -272,7 +275,7 @@ namespace Game1
                             base.GravitationalVelocity += GlobalAcceleration;
                         }
 
-                        newX = this.DrawLocation.X;                                            // Define new X and Y coordinates and create a new drawLocation
+                        newX = this.DrawLocation.X;                                         // Define new X and Y coordinates and create a new drawLocation
                         newY = passedGameObject.DrawLocation.Y + passedGameObject.DrawLocation.Height - 1;
 
                         if (newX != this.DrawLocation.X || newY != this.DrawLocation.Y)
@@ -382,6 +385,9 @@ namespace Game1
             return returnValue;
         }
 
+        /// <summary>
+        /// Take one heart/life
+        /// </summary>
         protected void TakeLife()
         {
             bool heartTaken = false;
@@ -389,7 +395,7 @@ namespace Game1
 
             do
             {
-                if (LivesLeft[lifeCounter - 1].Visible)
+                if (LivesLeft[lifeCounter - 1].Visible)                                     // If the heart image is visible, make it invisible
                 {
                     LivesLeft[lifeCounter - 1].Visible = false;
                     heartTaken = true;
@@ -421,6 +427,9 @@ namespace Game1
             }
         }
 
+        /// <summary>
+        /// The player died
+        /// </summary>
         protected virtual void Die()
         {
             Console.WriteLine("Player Died");
@@ -439,6 +448,9 @@ namespace Game1
             SoundEffectInstances["GameOver"].Play();
         }
 
+        /// <summary>
+        /// Update the sprite for animation purposes
+        /// </summary>
         public virtual void UpdateSprite()
         {
             if ((CurrentSpriteIndex < SpritesInSheet) && (Math.Abs(MovementVelocity) > Math.Abs(PreviousMovementVelocity)))
@@ -469,6 +481,10 @@ namespace Game1
             PreviousMovementVelocity = MovementVelocity;            
         }
 
+        /// <summary>
+        /// Select the next sprite from the spritesheet
+        /// </summary>
+        /// <param name="spriteIndex"></param>
         public void SelectSprite(int spriteIndex)
         {
             base.SelectionArea = new Rectangle(

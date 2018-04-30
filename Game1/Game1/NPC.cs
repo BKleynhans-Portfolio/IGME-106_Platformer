@@ -58,6 +58,11 @@ namespace Game1
             this.ObjectYMoveDistance = 50;
         }
 
+        /// <summary>
+        /// Apply movement to NPC's
+        /// </summary>
+        /// <param name="gameTime"></param>
+        /// <returns>Vector2 containing new location of element</returns>
         public override Vector2 ApplyMovement(GameTime gameTime)
         {
             Vector2 returnValue;
@@ -73,6 +78,10 @@ namespace Game1
             return returnValue;
         }
 
+        /// <summary>
+        /// Update method
+        /// </summary>
+        /// <param name="gameTime"></param>
         protected override void Update(GameTime gameTime)
         {
             base.TimeSinceLastUpdate += gameTime.ElapsedGameTime.Milliseconds;
@@ -114,7 +123,7 @@ namespace Game1
             {
                 returnValue = true;
 
-                if ((// From Top
+                if ((// this object hit another object from the Top
                         (this.DrawLocation.Bottom > passedGameObject.DrawLocation.Top) &&         // If the lower border of this object has a larger Y coordinate than the upper border
                         (this.DrawLocation.Bottom < (passedGameObject.DrawLocation.Top + 10))     // of the passed in object but a lower Y coordinate than the passed in objects
                     ) && (                                                                  // Y coordinate + 10
@@ -131,7 +140,7 @@ namespace Game1
                         base.HitObstacle = HitObstacle.FromBottom;
                     }
                 }
-                else if ((// From Bottom
+                else if ((// this object hit another object from the Bottom
                             (this.DrawLocation.Top < passedGameObject.DrawLocation.Bottom) &&     // If the upper border of this object has a smaller Y coordinate than the lower border
                             (this.DrawLocation.Top > (passedGameObject.DrawLocation.Bottom - 10)) // of the passed in object but a higher Y coordinate than the passed in objects
                         ) && (                                                              // Y coordinate - 10
@@ -150,7 +159,7 @@ namespace Game1
                         base.HitObstacle = HitObstacle.FromTop;
                     }
                 }
-                else if ((// From Right
+                else if ((// this object hit another object from the Right
                             (this.DrawLocation.Left < passedGameObject.DrawLocation.Right) &&     // If the left border of this object has a smaller X coordinate than the right border
                             (this.DrawLocation.Left > (passedGameObject.DrawLocation.Right - 10)) // of the passed in object but a higher X coordinate than the passed in objects
                         ) && (                                                              // X coordinate - 10
@@ -168,7 +177,7 @@ namespace Game1
                         base.HitObstacle = HitObstacle.FromLeft;
                     }
                 }
-                else if ((// From Left
+                else if ((// this object hit another object from the Left
                             (this.DrawLocation.Right > passedGameObject.DrawLocation.Left) &&     // If the left border of this object has a smaller X coordinate than the right border
                             (this.DrawLocation.Right < (passedGameObject.DrawLocation.Left + 10)) // of the passed in object but a higher X coordinate than the passed in objects
                         ) && (                                                              // X coordinate - 10
@@ -191,8 +200,10 @@ namespace Game1
             return returnValue;
         }
 
+        /// <summary>
         /// Calculates the amount of force to apply for the object during each iteration of the game loop
         /// </summary>
+        /// <param name="gameTime"></param>
         public override void CalculateGravity(GameTime gameTime)
         {
             if (base.ApplyGravity)

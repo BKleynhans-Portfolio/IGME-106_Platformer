@@ -62,19 +62,26 @@ namespace Game1
             this.Name = menuItem;
         }
 
+        /// <summary>
+        /// Name/Key of the title element being added
+        /// </summary>
         public string Name
         {
             get { return this.name; }
             set { this.name = value; }
         }
         
+        /// <summary>
+        /// Update method
+        /// </summary>
+        /// <param name="gameTime"></param>
         protected override void Update(GameTime gameTime)
         {
             if (this.Name == "TitleSelectionFrame")
             {
                 string currentPosition = null;
 
-                foreach (KeyValuePair<string, Vector2> keyValuePair in titleMenuDictionary)
+                foreach (KeyValuePair<string, Vector2> keyValuePair in titleMenuDictionary) // Find the current position of the menu selection image
                 {
                     if ((
                             (keyValuePair.Value.X == this.DrawLocation.X)
@@ -88,6 +95,7 @@ namespace Game1
                     }
                 }
 
+                // Move the image down if the down key is pressed
                 if (CurrentKeyboardState.IsKeyDown(Keys.Down) && PreviousKeyboardState.IsKeyUp(Keys.Down))                    
                 {
                     SoundEffectInstances["MenuMove"].Play();
@@ -103,7 +111,7 @@ namespace Game1
 
                             break;
                     }
-                }
+                }// Move the image up if the up key is pressed
                 else if (CurrentKeyboardState.IsKeyDown(Keys.Up) && PreviousKeyboardState.IsKeyUp(Keys.Up))
                 {
                     SoundEffectInstances["MenuMove"].Play();
@@ -119,7 +127,7 @@ namespace Game1
 
                             break;
                     }
-                }
+                }// Go into the menu if the enter key is pressed
                 else if (CurrentKeyboardState.IsKeyDown(Keys.Enter) && PreviousKeyboardState.IsKeyUp(Keys.Enter))
                 {
                     switch (currentPosition)

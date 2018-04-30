@@ -27,8 +27,16 @@ namespace Game1
 {
     public class GraphicElement : Environment
     {   
-        private string name;
+        public string Name { get; set; }
 
+        /// <summary>
+        /// Default constructor.  Creates a GameObject with default values.
+        /// </summary>
+        /// <param name="spriteTexture">Texture2D image for object</param>
+        /// <param name="x">Starting X coordinate of object</param>
+        /// <param name="y">Starting Y coordinate of object</param>
+        /// <param name="width">Width of object</param>
+        /// <param name="height">Height of object</param>
         public GraphicElement(string elementName, Texture2D spriteTexture, int x, int y, int width, int height) : base(spriteTexture, x, y, width, height)
         {
             this.Name = elementName;
@@ -39,6 +47,15 @@ namespace Game1
             }
         }
 
+        /// <summary>
+        /// This is a secondary constructor for the GameObject.
+        /// </summary>
+        /// <param name="spriteTexture">Texture2D image for object</param>
+        /// <param name="x">Starting X coordinate of object</param>
+        /// <param name="y">Starting Y coordinate of object</param>
+        /// <param name="width">Width of object</param>
+        /// <param name="height">Height of object</param>
+        /// <param name="addGravity">Does this object require immediate gravity implementation</param>
         public GraphicElement(string elementName, Texture2D spriteTexture, int SpritesInSheet, int x, int y, int width, int height,
                           bool addGravity) :
                 base(spriteTexture, SpritesInSheet, x, y, width, height, addGravity)
@@ -51,17 +68,6 @@ namespace Game1
             }
         }
 
-        public string Name
-        {
-            get { return this.name; }
-            set { this.name = value; }
-        }
-
-        protected override void Update(GameTime gameTime)
-        {
-
-        }
-
-
+        protected override void Update(GameTime gameTime) { }
     }
 }

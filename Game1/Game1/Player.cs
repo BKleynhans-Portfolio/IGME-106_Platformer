@@ -64,10 +64,15 @@ namespace Game1
             this.SlidesToCycle = slidesToCycle;
         }
 
+        /// <summary>
+        /// Applies movement to the player character
+        /// </summary>
+        /// <param name="gameTime"></param>
+        /// <returns>The new rectangle where the character needs to be drawn</returns>
         public override Vector2 ApplyMovement(GameTime gameTime)
         {
             Vector2 returnValue;
-
+                                                                                            // Apply movement based on keys pressed
             if ((CurrentKeyboardState.IsKeyDown(Keys.A)) && (PreviousKeyboardState.IsKeyUp(Keys.A)) ||
                 (CurrentKeyboardState.IsKeyDown(Keys.Left)) && (PreviousKeyboardState.IsKeyUp(Keys.Left)))
             {
@@ -97,7 +102,7 @@ namespace Game1
                     base.SpriteEffect = SpriteEffects.None;
                 }
             }
-
+                                                                                            // Implement the jump feature
             if (base.GravityDirection == GravityDirection.Down)
             {
                 if (((CurrentKeyboardState.IsKeyDown(Keys.Space)) && (PreviousKeyboardState.IsKeyUp(Keys.Space)) ||
@@ -149,14 +154,14 @@ namespace Game1
                     }
                 }
             }
-
+                                                                                            // Cancel movement if nothing is being pressed (because of velocity)
             if ((CurrentKeyboardState.IsKeyUp(Keys.A)) && (CurrentKeyboardState.IsKeyUp(Keys.D)) &&
                 (CurrentKeyboardState.IsKeyUp(Keys.Left)) && (CurrentKeyboardState.IsKeyUp(Keys.Right)) &&
                 (base.Falling == false) && (base.HasJumped == false) && (base.JumpInProgress == false))
             {
                 base.MovementAppliedTo = MovementAppliedTo.None;
             }
-
+                                                                                            // Attempt at working with gametime
             if (base.TimeSinceLastUpdate > 100)
             {
                 this.UpdateSprite();
@@ -176,11 +181,15 @@ namespace Game1
             return returnValue;
         }
 
+        /// <summary>
+        /// Update method
+        /// </summary>
+        /// <param name="gameTime"></param>
         protected override void Update(GameTime gameTime)
         {
             base.TimeSinceLastUpdate += gameTime.ElapsedGameTime.Milliseconds;
 
-            if ((this.DrawLocation.Y + this.DrawLocation.Height) > SCREENHEIGHT)
+            if ((this.DrawLocation.Y + this.DrawLocation.Height) > SCREENHEIGHT)            // If the player goes off the bottom of the screen, take a life
             {
                 base.TakeLife();
                 base.TookLife = false;
@@ -189,7 +198,7 @@ namespace Game1
                 base.MovementVelocity = 0f;
                 base.GravitationalVelocity = 0f;
             }
-            else if (this.DrawLocation.Y < 0)
+            else if (this.DrawLocation.Y < 0)                                               // Block the player from exiting the screen on left, top and right
             {
                 CreateRectangle(this.DrawLocation.X, 1);
             }
@@ -201,25 +210,25 @@ namespace Game1
             {
                 CreateRectangle(1600 - this.DrawLocation.Width - 1, this.DrawLocation.Y);
             }
-
+                                                                                            // If the player is alive
             if (this.IsAlive)
             {
                 for (int i = 0; i < base.intersectedBy.Count; i++)
                 {
-                    bool stillIntersecting = base.Intersects(intersectedBy[i]);
+                    bool stillIntersecting = base.Intersects(intersectedBy[i]);             // Confirm the intersections hasn't changed
 
                     if ((!stillIntersecting) && (this.HasJumped == false))
                     {
                         if ((base.intersectedBy[i].GetType() == typeof(Platform)) && (base.intersectedBy[i].GravitationalVelocity >= 0))
                         {
-                            base.Falling = true;
-                            base.HitObstacle = HitObstacle.None;
-                            base.GravitationalVelocity += (GlobalAcceleration * 2);
+                            base.Falling = true;                                            // If the player is falling
+                            base.HitObstacle = HitObstacle.None;                            // and hasn't hit anything
+                            base.GravitationalVelocity += (GlobalAcceleration * 2);         // add gravity
                         }
                         
-                        if (base.intersectedBy[i].GetType() == typeof(Enemy))
+                        if (base.intersectedBy[i].GetType() == typeof(Enemy))               // If the player hits an enemy
                         {
-                            base.TookLife = false;
+                            base.TookLife = false;                                          // take a life
                         }
 
                         base.intersectedBy.Remove(intersectedBy[i]);
@@ -263,6 +272,9 @@ namespace Game1
             }
         }
 
+        /// <summary>
+        /// Update the image of the sprite to show the next required one for animation purposes
+        /// </summary>
         public override void UpdateSprite()
         {
             if ((CurrentSpriteIndex == 0 && PreviousSpriteIndex == 0) &&

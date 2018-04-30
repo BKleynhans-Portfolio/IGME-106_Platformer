@@ -72,6 +72,10 @@ namespace Game1
             return returnValue;
         }
 
+        /// <summary>
+        /// Update method
+        /// </summary>
+        /// <param name="gameTime"></param>
         protected override void Update(GameTime gameTime)
         {
             for (int i = 0; i < base.intersectedBy.Count; i++)
@@ -181,9 +185,11 @@ namespace Game1
 
             return returnValue;
         }
-        
+
+        /// <summary>
         /// Calculates the amount of force to apply for the object during each iteration of the game loop
         /// </summary>
+        /// <param name="gameTime"></param>
         public override void CalculateGravity(GameTime gameTime)
         {
             if (base.ApplyGravity)
@@ -255,6 +261,10 @@ namespace Game1
             }
         }
 
+        /// <summary>
+        /// Selecte the next appropriate sprite to draw from the spritesheet
+        /// </summary>
+        /// <param name="spriteIndex"></param>
         public void SelectSprite(int spriteIndex)
         {
             base.SelectionArea = new Rectangle(
