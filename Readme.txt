@@ -1,6 +1,4 @@
-Hi Ash,
-
-The project you want to run is in this folder
+Please run the project from this folder
 
 team-project\Game1
 
